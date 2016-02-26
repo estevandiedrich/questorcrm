@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+		<script type="text/javascript">
+			function modalGrupoUsuarios()
+		    {
+			   $('#myModal').modal('show');
+		    }
+			function selecionarGrupoUsuarios()
+			{debugger
+				var table = $('#grupoUsuariosDataTable').DataTable();
+				var id = table.row('.selected').data()[0];
+				$('#editUsuarios\\:grupo').val(id);
+				$('#myModal').modal('hide');
+			}
+			$(document).ready(function() {
+				var table = $('#grupoUsuariosDataTable').DataTable();
+
+				$('#grupoUsuariosDataTable tbody').on('click', 'tr', function() {
+					if ($(this).hasClass('selected')) {
+						$(this).removeClass('selected');
+					} else {
+						table.$('tr.selected').removeClass('selected');
+						$(this).addClass('selected');
+					}
+				});
+			});
+		</script>
+		<h1>Edição do Usuário</h1>
+
+		<h:form id="editUsuarios" enctype="multipart/form-data">
+			<h:panelGrid>
+				<h:outputLabel for="usuario" value="Nome de Usuário:" />
+				<h:inputText id="usuario" value="#{newPrincipal.principalID}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
+				<h:message for="usuario" errorClass="invalid" />
+				<h:outputLabel for="nome" value="Nome:" />
+				<h:inputText id="nome" value="#{newPrincipal.nome}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
+				<h:message for="nome" errorClass="invalid" />
+				<h:outputLabel for="email" value="Email:" />
+				<h:inputText id="email" value="#{newPrincipal.email}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
+				<h:message for="email" errorClass="invalid" />
+				<h:outputLabel for="foto" value="Foto:" />
+				<h:inputFile id="foto" value="#{newPrincipal.imagemPart}">
+					<f:validator binding="#{fileUploadValidator}"/>
+				</h:inputFile>
+				<h:message for="foto" errorClass="invalid" />
+				<h:outputLabel for="grupo" value="Grupo:" />
+				<h:inputText id="grupo" value="#{newPrincipal.grupoUsuarios.descricao}" disabled="true" rendered="#{!loginBean.isCallerInRole('ADMIN')}"/>
+				<h:panelGroup rendered="#{loginBean.isCallerInRole('ADMIN')}">
+				<h:inputText id="grupo2" value="#{newPrincipal.grupoUsuarios.id}" />
+				<img src="/crm/resources/magnifying.png" onclick="javascript:modalGrupoUsuarios()"/>
+				</h:panelGroup>
+				<h:outputLabel for="role" value="Nivel de acesso:" />
+				<h:inputText id="role" value="#{newPrincipal.role.role}" disabled="true" rendered="#{!loginBean.isCallerInRole('ADMIN')}"/>
+				<h:selectOneMenu id="role2" value="#{newPrincipal.role.role}" rendered="#{loginBean.isCallerInRole('ADMIN')}">
+					<f:selectItem itemValue="USER" itemLabel="Usuário" />
+					<f:selectItem itemValue="ADMIN" itemLabel="Administrador" />
+				</h:selectOneMenu>
+				<h:message for="role" errorClass="invalid" />
+				<h:outputLabel for="senha" value="Senha:" />
+				<h:inputSecret id="senha" value="#{newPrincipal.password}"/>
+				<h:message for="senha" errorClass="invalid" />
+				<br/>
+				<h:commandButton id="salvar" action="#{salvarPrincipals.salvar}"
+					value="Salvar" />
+				<h:outputText value=" Salvo!"
+					rendered="#{facesContext.postback and empty facesContext.messageList}"
+					style="color: green;" />
+			</h:panelGrid>
+			<p></p>
+		</h:form>
+		<!-- Modal -->
+		<div id="myModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">X</button>
+						<h4 class="modal-title">Selecione o grupo de usuários</h4>
+					</div>
+					<div class="modal-body">
+					  <h2>Grupos de usuários</h2>
+      				  <h:panelGroup rendered="#{empty gruposUsuarios}">
+         			  	<em>Nenhum Grupo registrado.</em>
+				      </h:panelGroup>
+				      <h:dataTable id="grupoUsuariosDataTable" var="_grupoUsuarios" value="#{gruposUsuarios}"
+						rendered="#{not empty gruposUsuarios}"
+						styleClass="table"
+						 headerClass="table-header"
+						 rowClasses="table-odd-row,table-even-row">
+				         <h:column>
+				            <f:facet name="header">Id</f:facet>
+				                #{_grupoUsuarios.id}
+				            </h:column>
+				         <h:column>
+				            <f:facet name="header">Descrição</f:facet>
+				                #{_grupoUsuarios.descricao}
+				            </h:column>                
+				      </h:dataTable>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+							onclick="javascript:selecionarGrupoUsuarios()">Selecionar</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>

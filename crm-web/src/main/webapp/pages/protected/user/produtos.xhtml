@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+   template="/WEB-INF/templates/default.xhtml">
+   <ui:define name="content">
+   <h:link value="Home" outcome="index" />
+   <script type="text/javascript">   
+   function modalTipoProduto()
+   {
+	   $('#myModal').modal('show');
+   }
+	function selecionarTipoProduto()
+	{debugger
+		var table = $('#tiposProdutosDataTable').DataTable();
+		var id = table.row('.selected').data()[0];
+		$('#regProdutos\\:tipoProduto').val(id);
+		$('#myModal').modal('hide');
+	}
+   $(document).ready(function() {
+	    var table = $('#tiposProdutosDataTable').DataTable();
+	 
+	    $('#tiposProdutosDataTable tbody').on( 'click', 'tr', function () {
+	        if ( $(this).hasClass('selected') ) {
+	            $(this).removeClass('selected');
+	        }
+	        else {
+	            table.$('tr.selected').removeClass('selected');
+	            $(this).addClass('selected');
+	        }
+	    } );
+	 
+// 	    $('#button').click( function () {
+// 	        table.row('.selected').remove().draw( false );
+// 	    } );
+	} );
+   </script>
+      <h1>Cadastro de Produtos</h1>
+
+      <h:form id="regProdutos">
+
+         <table>
+            <tr>
+               <th style="text-align: right;"><h:outputLabel
+                     for="descricao" value="Descrição:" /></th>
+               <td><h:inputText id="descricao" value="#{newProduto.descricao}" />
+                  <h:message for="descricao" errorClass="invalid" /></td>
+            </tr>
+            <tr>
+               <th style="text-align: right;"><h:outputLabel
+                     for="valor" value="Valor:" /></th>
+               <td><h:inputText id="valor"
+                     value="#{newProduto.valor}" /> <h:message
+                     for="valor" errorClass="invalid" /></td>
+            </tr>
+            <tr>
+               <th style="text-align: right;"><h:outputLabel
+                     for="tipoProduto" value="Tipo de produto:" /></th>
+               <td><h:inputText id="tipoProduto"
+                     value="#{newProduto.tipoProduto.id}" /><img src="resources/magnifying.png" onclick="javascript:modalTipoProduto()"/> <h:message
+                     for="tipoProduto" errorClass="invalid" /></td>
+            </tr>
+         </table>
+         <p>
+            <h:commandButton id="salvar"
+               action="#{salvarProduto.salvar}" value="Salvar" />
+            <h:outputText value=" Salvo!"
+               rendered="#{facesContext.postback and empty facesContext.messageList}"
+               style="color: green;" />
+         </p>
+      </h:form>
+      <h2>Produtos</h2>
+      <h:panelGroup rendered="#{empty produtos}">
+         <em>Nenhum produto registrado.</em>
+      </h:panelGroup>
+      <h:dataTable var="_produto" value="#{produtos}"
+         rendered="#{not empty produtos}"
+         styleClass="table"
+		 headerClass="table-header"
+		 rowClasses="table-odd-row,table-even-row">
+         <h:column>
+            <f:facet name="header">Id</f:facet>
+                #{_produto.id}
+            </h:column>
+         <h:column>
+            <f:facet name="header">Descrição</f:facet>
+                #{_produto.descricao}
+            </h:column>
+         <h:column>
+            <f:facet name="header">Valor</f:facet>
+                #{_produto.valor}
+            </h:column>        
+         <h:column>
+            <f:facet name="header">REST URL</f:facet>
+            <a href="#{request.contextPath}/rest/produtos/#{_produto.id}">/rest/produtos/#{_produto.id}</a>
+         </h:column>
+         <f:facet name="footer">
+                REST URL para todos os produtos: <a
+               href="#{request.contextPath}/rest/produtos">/rest/produtos</a>
+         </f:facet>
+      </h:dataTable>
+      <!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">X</button>
+        <h4 class="modal-title">Selecione o tipo de produto</h4>
+      </div>
+      <div class="modal-body">
+      	<h:panelGroup rendered="#{empty tiposProduto}">
+         <em>Nenhum tipo de produto registrado.</em>
+      	</h:panelGroup>
+        <h:dataTable id="tiposProdutosDataTable" var="_tipoProduto" value="#{tiposProduto}"
+         rendered="#{not empty tiposProduto}" 
+         styleClass="table"
+		 headerClass="table-header"
+		 rowClasses="table-odd-row,table-even-row" >
+         <h:column>
+            <f:facet name="header">Id</f:facet>
+                #{_tipoProduto.id}
+            </h:column>
+         <h:column>
+            <f:facet name="header">Descrição</f:facet>
+                #{_tipoProduto.descricao}
+            </h:column>
+         <h:column>
+            <f:facet name="header">Perc. Imposto</f:facet>
+                #{_tipoProduto.percImposto}
+            </h:column>        
+         <h:column>
+            <f:facet name="header">REST URL</f:facet>
+            <a href="#{request.contextPath}/rest/tiposprodutos/#{_tipoProduto.id}">/rest/tiposprodutos/#{_tipoProduto.id}</a>
+         </h:column>
+         <f:facet name="footer">
+                REST URL para todos os tipos de produtos: <a
+               href="#{request.contextPath}/rest/tiposprodutos">/rest/tiposprodutos</a>
+         </f:facet>
+      </h:dataTable>
+      </div>
+      <div class="modal-footer">
+      <button type="button" class="btn btn-primary" onclick="javascript:selecionarTipoProduto()">Selecionar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+   </ui:define>
+</ui:composition>
