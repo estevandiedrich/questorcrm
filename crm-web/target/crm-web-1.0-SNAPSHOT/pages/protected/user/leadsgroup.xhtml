@@ -24,22 +24,17 @@
       <h1>Cadastro de Grupos de Leads</h1>
 
       <h:form id="regLeadsGroup">
-
-         <table>
-            <tr>
-               <th style="text-align: right;"><h:outputLabel
-                     for="descricao" value="Descrição:" /></th>
-               <td><h:inputText id="descricao" value="#{newLeadGroup.descricao}" />
-                  <h:message for="descricao" errorClass="invalid" /></td>
-            </tr>            
-         </table>
-         <p>
+		<h:panelGrid>
+            <h:outputLabel for="descricao" value="Descrição:" />
+            <h:inputText id="descricao" value="#{newLeadGroup.descricao}" />
+            <h:message for="descricao" errorClass="invalid" />
+			<br/>
             <h:commandButton id="salvar"
                action="#{salvarLeadGroup.salvar}" value="Salvar" />
             <h:outputText value=" Salvo!"
                rendered="#{facesContext.postback and empty facesContext.messageList}"
                style="color: green;" />
-         </p>
+		</h:panelGrid>
       </h:form>
       <h2>Grupo de Leads</h2>
       <h:panelGroup rendered="#{empty leadGroups}">

@@ -23,22 +23,17 @@
       <h1>Cadastro de Grupos de Usuários</h1>
 
       <h:form id="regGrupoUsuarios">
-
-         <table>
-            <tr>
-               <th style="text-align: right;"><h:outputLabel
-                     for="descricao" value="Descrição:" /></th>
-               <td><h:inputText id="descricao" value="#{newGrupoUsuarios.descricao}" />
-                  <h:message for="descricao" errorClass="invalid" /></td>
-            </tr>            
-         </table>
-         <p>
+		<h:panelGrid>
+        	<h:outputLabel for="descricao" value="Descrição:" />
+            <h:inputText id="descricao" value="#{newGrupoUsuarios.descricao}" />
+            <h:message for="descricao" errorClass="invalid" />
+            <br/>
             <h:commandButton id="salvar"
                action="#{salvarGrupoUsuarios.salvar}" value="Salvar" />
             <h:outputText value=" Salvo!"
                rendered="#{facesContext.postback and empty facesContext.messageList}"
                style="color: green;" />
-         </p>
+		</h:panelGrid>
       </h:form>
       <h2>Grupos de usuários</h2>
       <h:panelGroup rendered="#{empty gruposUsuarios}">

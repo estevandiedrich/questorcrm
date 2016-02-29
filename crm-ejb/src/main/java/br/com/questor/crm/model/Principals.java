@@ -50,11 +50,11 @@ public class Principals implements Serializable {
 	@NotNull
 	private String email;
 	
-	@ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+	@ManyToOne
 	  @JoinColumn(name = "role_id")
 	private Roles Role;
 	
-	@ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.DETACH)
+	@ManyToOne
 	  @JoinColumn(name = "grupousuarios_id")
 	private GrupoUsuarios grupoUsuarios;
 	
@@ -63,7 +63,7 @@ public class Principals implements Serializable {
 	
 	private boolean primeiroLogin;
 	
-	@ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+	@ManyToOne
 	  @JoinColumn(name = "imagem_id")
 	private Imagem imagem;
 	

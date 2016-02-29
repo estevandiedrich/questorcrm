@@ -20,6 +20,18 @@
 				<h:commandLink value="Leads" action="#{salvarLead.novo}" />
 			</h:form>
 			<h:link value="Grupo de Leads" outcome="leadsgroup" />
+			<h:outputLink value="/crm/pages/protected/admin/produtos.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
+				<h:outputText value="Produtos" />
+			</h:outputLink>			
+			<h:outputLink value="/crm/pages/protected/admin/tiposproduto.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
+				<h:outputText value="Tipos de Produto" />
+			</h:outputLink>
+			<h:outputLink value="/crm/pages/protected/admin/servicos.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
+				<h:outputText value="Serviços" />
+			</h:outputLink>			
+			<h:outputLink value="/crm/pages/protected/admin/tiposservico.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
+				<h:outputText value="Tipos de Serviços" />
+			</h:outputLink>
 		</h:panelGrid>
    </ui:define>
 </ui:composition>

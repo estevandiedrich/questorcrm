@@ -5,7 +5,6 @@
    xmlns:h="http://xmlns.jcp.org/jsf/html"
    template="/WEB-INF/templates/default.xhtml">
    <ui:define name="content">
-   <h:link value="Home" outcome="index" />
    <script type="text/javascript">
    $(document).ready(function() {
 	    var table = $('#tiposProdutosDataTable').DataTable();
@@ -29,29 +28,14 @@
       <h1>Cadastro de Tipos de Produtos</h1>
 
       <h:form id="regTipoProdutos">
-
-         <table>
-            <tr>
-               <th style="text-align: right;"><h:outputLabel
-                     for="descricao" value="Descrição:" /></th>
-               <td><h:inputText id="descricao" value="#{newTiposProduto.descricao}" />
-                  <h:message for="descricao" errorClass="invalid" /></td>
-            </tr>
-            <tr>
-               <th style="text-align: right;"><h:outputLabel
-                     for="percImposto" value="Perc. Imposto:" /></th>
-               <td><h:inputText id="percImposto"
-                     value="#{newTiposProduto.percImposto}" /> <h:message
-                     for="percImposto" errorClass="invalid" /></td>
-            </tr>
-         </table>
-         <p>
-            <h:commandButton id="salvar"
-               action="#{salvarTipoProduto.salvar}" value="Salvar" />
-            <h:outputText value=" Salvo!"
-               rendered="#{facesContext.postback and empty facesContext.messageList}"
-               style="color: green;" />
-         </p>
+		<h:panelGrid>
+            <h:outputLabel for="descricao" value="Descrição:" />
+            <h:inputText id="descricao" value="#{newTiposProduto.descricao}" />
+            <h:message for="descricao" errorClass="invalid" />
+            <br/>
+            <h:commandButton id="salvar" action="#{salvarTipoProduto.salvar}" value="Salvar" />
+            <h:outputText value=" Salvo!" rendered="#{facesContext.postback and empty facesContext.messageList}" style="color: green;" />
+         </h:panelGrid>
       </h:form>
       <h2>Tipos de Produtos</h2>
       <h:panelGroup rendered="#{empty tiposProduto}">
@@ -70,18 +54,6 @@
             <f:facet name="header">Descrição</f:facet>
                 #{_tipoProduto.descricao}
             </h:column>
-         <h:column>
-            <f:facet name="header">Perc. Imposto</f:facet>
-                #{_tipoProduto.percImposto}
-            </h:column>        
-         <h:column>
-            <f:facet name="header">REST URL</f:facet>
-            <a href="#{request.contextPath}/rest/tiposproduto/#{_tipoProduto.id}">/rest/tiposproduto/#{_tipoProduto.id}</a>
-         </h:column>
-         <f:facet name="footer">
-                REST URL para todos os tipos de produtos: <a
-               href="#{request.contextPath}/rest/tiposprodutos">/rest/tiposproduto</a>
-         </f:facet>
       </h:dataTable>
    </ui:define>
 </ui:composition>

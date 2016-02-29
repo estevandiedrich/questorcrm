@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+		<script type="text/javascript">
+			function modalTipoProduto() {
+				$('#myModal').modal('show');
+			}
+			function modalServico() {
+				$('#myModal2').modal('show');
+			}
+			function selecionarTipoProduto() {
+				debugger
+				var table = $('#tiposProdutosDataTable').DataTable();
+				var id = table.row('.selected').data()[0];
+				$('#regProdutos\\:tipoProduto').val(id);
+				$('#myModal').modal('hide');
+			}
+			function selecionarServico() {
+				debugger
+				var table = $('#servicosDataTable').DataTable();
+				var id = table.row('.selected').data()[0];
+				$('#regProdutos\\:servico').val(id);
+				$('#myModal2').modal('hide');
+			}
+			$(document).ready(
+				function() {
+					var table = $('#tiposProdutosDataTable').DataTable();
+					var table2 = $('#servicosDataTable').DataTable();
+					var table3 = $('#regProdutos\\:servicosProduto').DataTable();
+
+					$('#tiposProdutosDataTable tbody').on(
+							'click',
+							'tr',
+							function() {
+								if ($(this).hasClass('selected')) {
+									$(this).removeClass('selected');
+								} else {
+									table.$('tr.selected').removeClass(
+											'selected');
+									$(this).addClass('selected');
+								}
+							});
+					$('#servicosDataTable tbody').on(
+							'click',
+							'tr',
+							function() {
+								if ($(this).hasClass('selected')) {
+									$(this).removeClass('selected');
+								} else {
+									table2.$('tr.selected').removeClass(
+											'selected');
+									$(this).addClass('selected');
+								}
+							});
+					
+					$('#servicosProduto tbody').on(
+							'click',
+							'tr',
+							function() {
+								if ($(this).hasClass('selected')) {
+									$(this).removeClass('selected');
+								} else {
+									table3.$('tr.selected').removeClass(
+											'selected');
+									$(this).addClass('selected');
+								}
+							});
+
+					// 	    $('#button').click( function () {
+					// 	        table.row('.selected').remove().draw( false );
+					// 	    } );
+				});
+			$(window).load(function() {
+			    jsf.ajax.addOnEvent(function (data) {
+			        if (data.status == "success") {debugger
+			        	 var table = $('#regProdutos\\:servicosProduto').DataTable();
+			 		    $('#regProdutos\\:servicosProduto tbody').on( 'click', 'tr', function () {
+			 		        if ( $(this).hasClass('selected') ) {
+			 		            $(this).removeClass('selected');
+			 		        }
+			 		        else {
+			 		            table.$('tr.selected').removeClass('selected');
+			 		            $(this).addClass('selected');
+			 		        }
+			 		    } );
+			        }
+			    })
+			});
+		</script>
+		<h1>Cadastro de Produtos</h1>
+
+		<h:form id="regProdutos">
+			<h:panelGrid>
+				<h:outputLabel for="descricao" value="Descrição:" />
+				<h:inputText id="descricao" value="#{newProduto.descricao}" />
+				<h:message for="descricao" errorClass="invalid" />
+				<h:outputLabel for="tipoProduto" value="Tipo de produto:" />
+				<h:panelGroup>
+					<h:inputText id="tipoProduto" value="#{newProduto.tipoProduto.id}" />
+					<h:graphicImage library="images" name="magnifying.png" onclick="javascript:modalTipoProduto()" />
+				</h:panelGroup>
+				<h:message for="tipoProduto" errorClass="invalid" />
+				<h:outputLabel for="valor" value="Valor:" />
+				<h:inputText id="valor" value="#{newProduto.valor}" />
+				<h:message for="valor" errorClass="invalid" />
+				<h:outputLabel for="servico" value="Servico:" />
+				<h:panelGroup>
+					<h:inputText id="servico" value="#{newProduto.servico.id}" />
+					<h:graphicImage library="images" name="magnifying.png" onclick="javascript:modalServico()"/> 
+				</h:panelGroup>
+				<h:message for="servico" errorClass="invalid" />
+				<br/>
+				<h:commandButton id="adicionar" action="#{salvarProduto.adicionar(newProduto.servico.id)}" value="Adicionar">
+					<f:ajax execute="regProdutos:servico regProdutos:valor" render="regProdutos:container regProdutos:valor"/>
+				</h:commandButton>
+				<br/>
+				<h:panelGrid id="container">
+				<h:panelGroup rendered="#{empty newProduto.servicos}">
+		         	<em>Nenhum serviço adicionado.</em>
+		      	 </h:panelGroup>
+		         <h:dataTable id="servicosProduto" var="_servico" value="#{newProduto.servicos}"
+		         	rendered="#{not empty newProduto.servicos}"
+		         	width="100%"
+		         	style="display:inline-table;"
+		         	styleClass="table"
+				 	headerClass="table-header"
+				 	rowClasses="table-odd-row,table-even-row">
+		         	<h:column>
+		            	<f:facet name="header">Id</f:facet>
+		                	#{_servico.id}
+		            </h:column>
+		         	<h:column>
+		            	<f:facet name="header">Descrição</f:facet>
+		                	#{_servico.descricao}
+		            </h:column>
+		         	<h:column>
+		            	<f:facet name="header">Valor</f:facet>
+		                	#{_servico.valor}
+		            </h:column>
+		     	 </h:dataTable>
+		     	 </h:panelGrid>
+				<br />
+				<h:commandButton id="salvar" action="#{salvarProduto.salvar(newProduto.tipoProduto.id)}"
+					value="Salvar" />
+				<h:outputText value=" Salvo!"
+					rendered="#{facesContext.postback and empty facesContext.messageList}"
+					style="color: green;" />
+			</h:panelGrid>
+		</h:form>
+		<h2>Produtos</h2>
+		<h:panelGroup rendered="#{empty produtos}">
+			<em>Nenhum produto registrado.</em>
+		</h:panelGroup>
+		<h:dataTable var="_produto" value="#{produtos}"
+			rendered="#{not empty produtos}" styleClass="table"
+			headerClass="table-header" rowClasses="table-odd-row,table-even-row">
+			<h:column>
+				<f:facet name="header">Id</f:facet>
+                #{_produto.id}
+            </h:column>
+			<h:column>
+				<f:facet name="header">Descrição</f:facet>
+                #{_produto.descricao}
+            </h:column>
+			<h:column>
+				<f:facet name="header">Valor</f:facet>
+                #{_produto.valor}
+            </h:column>
+		</h:dataTable>
+		<!-- Modal -->
+		<div id="myModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">X</button>
+						<h4 class="modal-title">Selecione o tipo de produto</h4>
+					</div>
+					<div class="modal-body">
+						<h:panelGroup rendered="#{empty tiposProduto}">
+							<em>Nenhum tipo de produto registrado.</em>
+						</h:panelGroup>
+						<h:dataTable id="tiposProdutosDataTable" var="_tipoProduto"
+							value="#{tiposProduto}" rendered="#{not empty tiposProduto}"
+							styleClass="table" headerClass="table-header"
+							rowClasses="table-odd-row,table-even-row">
+							<h:column>
+								<f:facet name="header">Id</f:facet>
+                				#{_tipoProduto.id}
+            				</h:column>
+							<h:column>
+								<f:facet name="header">Descrição</f:facet>
+                					#{_tipoProduto.descricao}
+           					</h:column>
+						</h:dataTable>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+							onclick="javascript:selecionarTipoProduto()">Selecionar</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal -->
+		<div id="myModal2" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">X</button>
+						<h4 class="modal-title">Selecione o serviço</h4>
+					</div>
+					<div class="modal-body">
+						<h:panelGroup rendered="#{empty serviços}">
+							<em>Nenhum serviço registrado.</em>
+						</h:panelGroup>
+						<h:dataTable id="servicosDataTable" var="_servico"
+							value="#{servicos}" rendered="#{not empty servicos}"
+							styleClass="table" headerClass="table-header"
+							rowClasses="table-odd-row,table-even-row">
+							<h:column>
+								<f:facet name="header">Id</f:facet>
+                				#{_servico.id}
+            				</h:column>
+							<h:column>
+								<f:facet name="header">Descrição</f:facet>
+               					#{_servico.descricao}
+           					</h:column>
+						</h:dataTable>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+							onclick="javascript:selecionarServico()">Selecionar</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>

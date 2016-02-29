@@ -34,7 +34,7 @@ public class EmailListProducer {
 	public void onEmailListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Email email) {
 		retrieveAllEmailsOrderedByTo();
 	}
-	public List<Email> retrieveAllEmailsOrderedByLead(Lead lead) 
+	public List<Email> retrieveAllEmailsByLeadOrderedBySentDate(Lead lead) 
 	{
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Email> criteria = cb.createQuery(Email.class);

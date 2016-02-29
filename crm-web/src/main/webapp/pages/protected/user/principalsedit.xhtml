@@ -2,6 +2,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	template="/WEB-INF/templates/default.xhtml">
 	<ui:define name="content">
@@ -46,14 +47,14 @@
 				<h:message for="email" errorClass="invalid" />
 				<h:outputLabel for="foto" value="Foto:" />
 				<h:inputFile id="foto" value="#{newPrincipal.imagemPart}">
-					<f:validator binding="#{fileUploadValidator}"/>
+<!-- 					<f:validator binding="#{fileUploadValidator}"/> -->
 				</h:inputFile>
 				<h:message for="foto" errorClass="invalid" />
 				<h:outputLabel for="grupo" value="Grupo:" />
 				<h:inputText id="grupo" value="#{newPrincipal.grupoUsuarios.descricao}" disabled="true" rendered="#{!loginBean.isCallerInRole('ADMIN')}"/>
 				<h:panelGroup rendered="#{loginBean.isCallerInRole('ADMIN')}">
 				<h:inputText id="grupo2" value="#{newPrincipal.grupoUsuarios.id}" />
-				<img src="/crm/resources/magnifying.png" onclick="javascript:modalGrupoUsuarios()"/>
+				<h:graphicImage library="images" name="magnifying.png" onclick="javascript:modalGrupoUsuarios()"/>
 				</h:panelGroup>
 				<h:outputLabel for="role" value="Nivel de acesso:" />
 				<h:inputText id="role" value="#{newPrincipal.role.role}" disabled="true" rendered="#{!loginBean.isCallerInRole('ADMIN')}"/>

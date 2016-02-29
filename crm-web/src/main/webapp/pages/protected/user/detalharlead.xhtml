@@ -29,12 +29,18 @@
 						value="#{newLead.grupoUsuarios.descricao}" disabled="true" />
 				</h:panelGrid>
 				<h:panelGrid>
-					<p:graphicImage value="#{salvarLead.carregaImagem(newLead.imagem)}" cache="false" width="150px" height="200px"/>
+					<p:graphicImage value="#{salvarLead.carregaImagem(newLead.imagem)}" cache="false" width="300px" height="200px"/>
 				</h:panelGrid>
 			</h:panelGrid>
 		</h:form>
+		<ui:include src="/pages/protected/user/cotacao.xhtml">
+			<ui:param name="lead" value="#{newLead}" />
+		</ui:include>
 		<ui:include src="/pages/protected/user/emails.xhtml">
 			<ui:param name="lead" value="#{newLead}" />
 		</ui:include>
+		<h:commandButton id="salvarLead" value="Salvar" action="#{salvarLead.salvar}">
+			<f:ajax/>
+		</h:commandButton>
 	</ui:define>
 </ui:composition>

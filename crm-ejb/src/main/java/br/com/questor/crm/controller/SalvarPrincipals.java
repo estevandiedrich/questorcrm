@@ -60,6 +60,7 @@ public class SalvarPrincipals extends BaseController implements Serializable {
 			imagem.setContentType(newPrincipal.getImagemPart().getContentType());
 			imagem.setImagem(IOUtils.toByteArray(newPrincipal.getImagemPart().getInputStream()));
 			newPrincipal.setImagem(imagem);
+			em.persist(imagem);
 		}
 		if(newPrincipal.getId() == null)
 		{
@@ -91,6 +92,7 @@ public class SalvarPrincipals extends BaseController implements Serializable {
 				}
 			}
 			newPrincipal.setPassword("t+lL5RPpboxFzSPRYideWhLr3pEApCXE683X+k3NiXw=");
+			em.persist(newPrincipal.getRole());
 			em.persist(newPrincipal);
 		}
 		else

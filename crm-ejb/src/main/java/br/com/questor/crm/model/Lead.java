@@ -1,6 +1,7 @@
 package br.com.questor.crm.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -26,6 +27,8 @@ public class Lead implements Serializable {
 	{
 		this.grupo = new LeadGroup();
 		this.grupoUsuarios = new GrupoUsuarios();
+		this.cotacoes = new ArrayList<Cotacao>();
+		this.emails = new ArrayList<Email>();
 	}
 	/**
 	 * 
@@ -45,21 +48,25 @@ public class Lead implements Serializable {
 	@NotNull
 	private String email;
 	
-	@ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.DETACH)
+	@ManyToOne
 	  @JoinColumn(name = "leadgroup_id")
 	private LeadGroup grupo;
 	
-	@ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.DETACH)
+	@ManyToOne
 	  @JoinColumn(name = "grupousuarios_id")
 	private GrupoUsuarios grupoUsuarios;
 	
-	@OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
-	@JoinColumn(name="lead_id")
+	@OneToMany(mappedBy = "lead", targetEntity = Cotacao.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	private List<Email> emails; 
 	
-	@ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+	@ManyToOne
 	  @JoinColumn(name = "imagem_id")
 	private Imagem imagem;
+	
+//	@ManyToMany
+//    @JoinTable(name="cotacao_lead", joinColumns={@JoinColumn(name="lead_id")}, inverseJoinColumns={@JoinColumn(name="cotacao_id")})
+	@OneToMany(mappedBy = "lead", targetEntity = Cotacao.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<Cotacao> cotacoes;
 	
 	@Transient
 	private Part imagemPart;
@@ -134,5 +141,13 @@ public class Lead implements Serializable {
 
 	public void setImagemPart(Part imagemPart) {
 		this.imagemPart = imagemPart;
+	}
+
+	public List<Cotacao> getCotacoes() {
+		return cotacoes;
+	}
+
+	public void setCotacoes(List<Cotacao> cotacoes) {
+		this.cotacoes = cotacoes;
 	}		
 }

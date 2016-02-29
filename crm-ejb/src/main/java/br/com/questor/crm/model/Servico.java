@@ -18,6 +18,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @SequenceGenerator(name="SERVICO_SEQUENCE", sequenceName="SERVICO_SEQUENCE", allocationSize=1, initialValue=1)
 public class Servico implements Serializable{
+	public Servico()
+	{
+		this.tipoServico = new TipoServico();
+	}
 	/**
 	 * 
 	 */
@@ -31,14 +35,15 @@ public class Servico implements Serializable{
 	private String descricao;
 	
 	@NotNull	
-	private BigDecimal valorInicial;
-	
-	@NotNull	
-	private BigDecimal valorAtual;
+	private BigDecimal valor;
 	
 	@ManyToOne
 	  @JoinColumn(name = "tiposervico_id")
 	private TipoServico tipoServico;
+	
+	@ManyToOne
+	  @JoinColumn(name = "produto_id")
+	private Produto produto;
 
 	public Long getId() {
 		return id;
@@ -56,20 +61,12 @@ public class Servico implements Serializable{
 		this.descricao = descricao;
 	}
 
-	public BigDecimal getValorInicial() {
-		return valorInicial;
+	public BigDecimal getValor() {
+		return valor;
 	}
 
-	public void setValorInicial(BigDecimal valorInicial) {
-		this.valorInicial = valorInicial;
-	}
-
-	public BigDecimal getValorAtual() {
-		return valorAtual;
-	}
-
-	public void setValorAtual(BigDecimal valorAtual) {
-		this.valorAtual = valorAtual;
+	public void setValor(BigDecimal valor) {
+		this.valor = valor;
 	}
 
 	public TipoServico getTipoServico() {
@@ -79,4 +76,12 @@ public class Servico implements Serializable{
 	public void setTipoServico(TipoServico tipoServico) {
 		this.tipoServico = tipoServico;
 	}
+
+	public Produto getProduto() {
+		return produto;
+	}
+
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+	}	
 }
