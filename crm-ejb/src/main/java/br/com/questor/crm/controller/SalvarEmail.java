@@ -73,7 +73,7 @@ public class SalvarEmail {
 		log.info("Salvando Email" + newEmail.getEmailTo());
 		lead.getEmails().add(newEmail);
 		newEmail.setEmailFrom(loginBean.getPrincipalsFromDB().getEmail());
-		newEmail.setEmailTo(lead.getEmail());
+		newEmail.setEmailTo(lead.getContatoSelecionado().getEmail());
 		newEmail.setLead(lead);
 		newEmail.setSentDate(new Date());
 		em.persist(newEmail);

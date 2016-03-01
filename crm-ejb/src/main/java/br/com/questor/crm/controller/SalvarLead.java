@@ -9,7 +9,6 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -17,14 +16,12 @@ import javax.persistence.Persistence;
 
 import org.apache.commons.io.IOUtils;
 
-import br.com.questor.crm.data.CotacaoListProducer;
 import br.com.questor.crm.data.EmailListProducer;
-import br.com.questor.crm.data.NegociacaoListProducer;
-import br.com.questor.crm.model.Cotacao;
+import br.com.questor.crm.model.Contato;
 import br.com.questor.crm.model.Email;
+import br.com.questor.crm.model.GrupoUsuarios;
 import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
-import br.com.questor.crm.model.Principals;
 
 @Stateful
 //@Model
@@ -43,17 +40,11 @@ public class SalvarLead extends BaseController implements Serializable{
 	private EntityManager em;
 	
 	@Inject
-	private LoginBean loginBean;
-	
-	@Inject
 	private EmailListProducer emailListProducer;
 	
-	@Inject
-	private CotacaoListProducer cotacaoListProducer;
+//	@Inject
+//	private CotacaoListProducer cotacaoListProducer;
 	
-	@Inject
-	private NegociacaoListProducer negociacaoListProducer;
-		
 	@Inject
 	private Event<Lead> leadEventSrc;
 	
@@ -79,15 +70,25 @@ public class SalvarLead extends BaseController implements Serializable{
 			em.persist(imagem);
 			newLead.setImagem(imagem);
 		}
-		if(newLead.getGrupoUsuarios().getId() == null)
+		for(Contato contato:newLead.getContatos())
 		{
-			Principals principal = loginBean.getPrincipalsFromDB();
-			newLead.setGrupoUsuarios(principal.getGrupoUsuarios());
+			contato.setLead(newLead);
+			em.merge(contato);
 		}
-		if(newLead.getGrupo() == null || newLead.getGrupo().getId() == null)
+		for(GrupoUsuarios grupoUsuarios:newLead.getGruposUsuarios())
 		{
-			newLead.setGrupo(null);
+			grupoUsuarios.setLead(newLead);
+			em.merge(grupoUsuarios);
 		}
+//		if(newLead.getGrupoUsuarios().getId() == null)
+//		{
+//			Principals principal = loginBean.getPrincipalsFromDB();
+//			newLead.setGrupoUsuarios(principal.getGrupoUsuarios());
+//		}
+//		if(newLead.getGrupo() == null || newLead.getGrupo().getId() == null)
+//		{
+//			newLead.setGrupo(null);
+//		}
 //		for(Cotacao cotacao:newLead.getCotacoes())
 //		{
 //			for(Negociacao negociacao:cotacao.getNegociacoes())
@@ -96,9 +97,25 @@ public class SalvarLead extends BaseController implements Serializable{
 //			}
 //			em.persist(cotacao);
 //		}
-		em.merge(newLead);
+		em.persist(newLead);
 		leadEventSrc.fire(newLead);
 		initNewLead();
+	}
+	public void adicionarContato(String id)
+	{
+		if(id != null && !"".equalsIgnoreCase(id))
+		{
+			Contato contato = em.find(Contato.class, Long.parseLong(id));
+			newLead.getContatos().add(contato);
+		}
+	}
+	public void adicionarGrupoUsuarios(String id)
+	{
+		if(id != null && !"".equalsIgnoreCase(id))
+		{
+			GrupoUsuarios grupoUsuarios = em.find(GrupoUsuarios.class, Long.parseLong(id));
+			newLead.getGruposUsuarios().add(grupoUsuarios);
+		}
 	}
 	
 	public String detalhar()
@@ -115,21 +132,21 @@ public class SalvarLead extends BaseController implements Serializable{
 
 	@PostConstruct
 	public void initNewLead() {
-		this.id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
-		if(this.id != null && this.id != "")
+//		this.id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
+		if(this.id != null && "".equalsIgnoreCase(this.id))
 		{
 			newLead = em.find(Lead.class, Long.parseLong(this.id));
 			if(!Persistence.getPersistenceUtil().isLoaded(newLead, "emails"))
 			{
 				List<Email> emails = emailListProducer.retrieveAllEmailsByLeadOrderedBySentDate(newLead);
 				newLead.setEmails(emails);
-				List<Cotacao> cotacoes = cotacaoListProducer.retrieveAllCotacoesByLeadOrderedByDataEHoraCriacao(newLead);
+//				List<Cotacao> cotacoes = cotacaoListProducer.retrieveAllCotacoesByLeadOrderedByDataEHoraCriacao(newLead);
 //				for(Cotacao cotacao:cotacoes)
 //				{
 //					List<Negociacao> negociacoes = negociacaoListProducer.retrieveAllNegociacoesByCotacaoOrderedByDataEHora(cotacao);
 //					cotacao.setNegociacoes(negociacoes);
 //				}
-				newLead.setCotacoes(cotacoes);
+//				newLead.setCotacoes(cotacoes);
 			}
 			log.info(newLead.getEmails().size()+ " emails");
 		}

@@ -14,11 +14,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import br.com.questor.crm.controller.SalvarCotacao;
-import br.com.questor.crm.model.Cotacao;
+import br.com.questor.crm.controller.SalvarNegociacao;
+import br.com.questor.crm.model.Proposta;
 import br.com.questor.crm.model.Negociacao;
 
 @RequestScoped
+@Named
 public class NegociacaoListProducer {
 	@Inject
 	private EntityManager em;
@@ -26,7 +27,7 @@ public class NegociacaoListProducer {
 	private List<Negociacao> negociacoes;
 	
 	@Inject
-	private SalvarCotacao salvarCotacao;
+	private SalvarNegociacao salvarNegociacao;
 	
 	@Produces
 	@Named
@@ -39,14 +40,15 @@ public class NegociacaoListProducer {
 		retrieveAllNegociacoesOrderedByDataEHora();
 	}
 	
-	public void retrieveAllNegociacoesByCotacaoOrderedByDataEHora(Cotacao cotacao)
+	public void retrieveAllNegociacoesByCotacaoOrderedByDataEHora(Proposta cotacao)
 	{
-		salvarCotacao.setNewCotacao(cotacao);
+		salvarNegociacao.setNewCotacao(cotacao);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Negociacao> criteria = cb.createQuery(Negociacao.class);
 		Root<Negociacao> negociacao = criteria.from(Negociacao.class);
 		criteria.select(negociacao).where(cb.equal(negociacao.get("cotacao"), cotacao)).orderBy(cb.desc(negociacao.get("dataEHora")));
 		negociacoes = em.createQuery(criteria).getResultList();
+		cotacao.setNegociacoes(negociacoes);
 //		return negociacoes;
 	}
 	

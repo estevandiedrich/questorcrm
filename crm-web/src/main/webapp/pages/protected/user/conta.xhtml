@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+   template="/WEB-INF/templates/default.xhtml">
+   <ui:define name="content">
+   		<script type="text/javascript">
+			function modalGrupoUsuarios()
+		    {
+			   $('#myModal').modal('show');
+		    }
+			function modalGrupo()
+		    {
+			   $('#myModal2').modal('show');
+		    }
+			function selecionarGrupoUsuarios()
+			{debugger
+				var table = $('#grupoUsuariosDataTable').DataTable();
+				var id = table.row('.selected').data()[0];
+				$('#regLeads\\:grupoUsuarios').val(id);
+				$('#myModal').modal('hide');
+			}
+			function selecionarGrupo()
+			{debugger
+				var table = $('#leadsGroupDataTable').DataTable();
+				var id = table.row('.selected').data()[0];
+				$('#regLeads\\:grupo').val(id);
+				$('#myModal2').modal('hide');
+			}
+			$(document).ready(function() {
+				var table = $('#grupoUsuariosDataTable').DataTable();
+
+				$('#grupoUsuariosDataTable tbody').on('click', 'tr', function() {
+					if ($(this).hasClass('selected')) {
+						$(this).removeClass('selected');
+					} else {
+						table.$('tr.selected').removeClass('selected');
+						$(this).addClass('selected');
+					}
+				});
+				var table2 = $('#leadsGroupDataTable').DataTable();
+
+				$('#leadsGroupDataTable tbody').on('click', 'tr', function() {
+					if ($(this).hasClass('selected')) {
+						$(this).removeClass('selected');
+					} else {
+						table2.$('tr.selected').removeClass('selected');
+						$(this).addClass('selected');
+					}
+				});
+				var table3 = $('#leadsDataTable').DataTable();
+
+				$('#leadsDataTable tbody').on('click', 'tr', function() {
+					if ($(this).hasClass('selected')) {
+						$(this).removeClass('selected');
+					} else {
+						table3.$('tr.selected').removeClass('selected');
+						$(this).addClass('selected');
+					}
+				});
+			});
+	  </script>
+      <h1>Cadastro de Leads</h1>
+
+      <h:form id="regLeads" enctype="multipart/form-data">
+		<h:panelGrid>
+         <h:outputLabel for="nome" value="Nome:" />
+         <h:inputText id="nome" value="#{newLead.nome}" />
+         <h:message for="nome" errorClass="invalid" />
+         <h:outputLabel for="telefone" value="Telefone:" />
+         <h:inputText id="telefone" value="#{newLead.telefone}" />
+         <h:outputLabel for="email" value="Email:" />
+         <h:inputText id="email" value="#{newLead.email}" />
+         <h:outputLabel for="foto" value="Foto:" />
+		 <h:inputFile id="foto" value="#{newLead.imagemPart}">
+<!-- 			<f:validator binding="#{fileUploadValidator}"/> -->
+		 </h:inputFile>
+         <h:outputLabel for="grupo" value="Grupo:"/>
+		 <h:panelGroup>
+		 	<h:inputText id="grupo" value="#{newLead.grupo.id}"/>
+		 	<h:graphicImage library="images" name="magnifying.png" onclick="javascript:modalGrupo()"/>
+		 </h:panelGroup>
+         <h:outputLabel for="grupoUsuarios" value="Grupo de Usuários:" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
+		 <h:panelGroup  rendered="#{loginBean.isCallerInRole('ADMIN')}">
+		 	<h:inputText id="grupoUsuarios" value="#{newLead.grupoUsuarios.id}"/>
+		 	<h:graphicImage library="images" name="magnifying.png" onclick="javascript:modalGrupoUsuarios()"/>
+		 </h:panelGroup>
+         <p>
+            <h:commandButton id="salvar"
+               action="#{salvarLead.salvar}" value="Salvar" />
+            <h:outputText value=" Salvo!"
+               rendered="#{facesContext.postback and empty facesContext.messageList}"
+               style="color: green;" />
+         </p>
+        </h:panelGrid>
+      </h:form>
+      <h2>Leads</h2>
+      <h:panelGroup rendered="#{empty leads}">
+         <em>Nenhum lead registrado.</em>
+      </h:panelGroup>
+      <h:dataTable id="leadsDataTable" var="_lead" value="#{leads}"
+		rendered="#{not empty leads}"
+		styleClass="table"
+		 headerClass="table-header"
+		 rowClasses="table-odd-row,table-even-row">
+         <h:column>
+            <f:facet name="header">Id</f:facet>
+                #{_lead.id}
+            </h:column>
+         <h:column>
+            <f:facet name="header">Nome</f:facet>
+                #{_lead.nome}
+            </h:column>
+         <h:column>
+            <f:facet name="header">Email</f:facet>
+                #{_lead.email}
+            </h:column>
+         <h:column>
+            <f:facet name="header">Telefone</f:facet>
+                #{_lead.telefone}
+            </h:column>
+         <h:column>
+            <f:facet name="header">Grupo usuários</f:facet>
+                #{_lead.grupoUsuarios.descricao}
+            </h:column>
+         <h:column>
+            <f:facet name="header">Grupo</f:facet>
+                #{_lead.grupo.descricao}
+            </h:column>
+         <h:column>
+			<f:facet name="header"></f:facet>
+			<h:form>
+                <h:commandLink value="Detalhar" action="#{salvarLead.detalhar}">
+                	<f:param name="faces-redirect" value="true"/>
+                	<f:param name="includeViewParams" value="true"/>
+                	<f:param name="id" value="#{_lead.id}"/>
+                </h:commandLink>
+               </h:form>
+           </h:column>
+      </h:dataTable>
+      	<!-- Modal -->
+		<div id="myModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">X</button>
+						<h4 class="modal-title">Selecione o grupo de usuários</h4>
+					</div>
+					<div class="modal-body">
+					  <h2>Grupos de usuários</h2>
+	     				  <h:panelGroup rendered="#{empty gruposUsuarios}">
+	        			  	<em>Nenhum Grupo registrado.</em>
+				      </h:panelGroup>
+				      <h:dataTable id="grupoUsuariosDataTable" var="_grupoUsuarios" value="#{gruposUsuarios}"
+						rendered="#{not empty gruposUsuarios}"
+						styleClass="table"
+						 headerClass="table-header"
+						 rowClasses="table-odd-row,table-even-row">
+				         <h:column>
+				            <f:facet name="header">Id</f:facet>
+				                #{_grupoUsuarios.id}
+				            </h:column>
+				         <h:column>
+				            <f:facet name="header">Descrição</f:facet>
+				                #{_grupoUsuarios.descricao}
+				            </h:column>                
+				      </h:dataTable>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+							onclick="javascript:selecionarGrupoUsuarios()">Selecionar</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal -->
+		<div id="myModal2" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">X</button>
+						<h4 class="modal-title">Selecione o grupo de leads</h4>
+					</div>
+					<div class="modal-body">
+					  <h2>Grupo de Leads</h2>
+				      <h:panelGroup rendered="#{empty leadGroups}">
+				         <em>Nenhum grupo de leads registrado.</em>
+				      </h:panelGroup>
+				      <h:dataTable id="leadsGroupDataTable" var="_leadGroup" value="#{leadGroups}"
+						rendered="#{not empty leadGroups}"
+						styleClass="table"
+						 headerClass="table-header"
+						 rowClasses="table-odd-row,table-even-row">
+				         <h:column>
+				            <f:facet name="header">Id</f:facet>
+				                #{_leadGroup.id}
+				            </h:column>
+				         <h:column>
+				            <f:facet name="header">Descrição</f:facet>
+				                #{_leadGroup.descricao}
+				            </h:column>                
+				      </h:dataTable>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+							onclick="javascript:selecionarGrupo()">Selecionar</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+   </ui:define>
+</ui:composition>

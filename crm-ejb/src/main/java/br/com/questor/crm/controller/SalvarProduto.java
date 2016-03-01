@@ -1,6 +1,5 @@
 package br.com.questor.crm.controller;
 
-import java.math.BigDecimal;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -12,9 +11,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 
+import br.com.questor.crm.data.ModuloListProducer;
+import br.com.questor.crm.model.Modulo;
 import br.com.questor.crm.model.Produto;
-import br.com.questor.crm.model.Servico;
-import br.com.questor.crm.model.TiposProduto;
 @Stateful
 //@Model
 @Named
@@ -29,6 +28,9 @@ public class SalvarProduto {
 	@Inject
 	private Event<Produto> produtoEventSrc;
 	
+	@Inject
+	private ModuloListProducer moduloListProducer;
+	
 	private Produto newProduto;
 	
 	@Produces
@@ -37,26 +39,31 @@ public class SalvarProduto {
 		return newProduto;
 	}
 	
-	public void adicionar(String id)
+	public void setNewProduto(Produto produto)
 	{
-		Servico servico = em.find(Servico.class, Long.parseLong(id));		
-		newProduto.getServicos().add(servico);
-		if(newProduto.getValor() == null)
-		{
-			newProduto.setValor(BigDecimal.ZERO);
-		}
-		newProduto.setValor(newProduto.getValor().add(servico.getValor()));
+		this.newProduto = produto;
+		newProduto.setModulos(moduloListProducer.retrieveAllModulosByProdutoOrderedByNome(newProduto));
 	}
 	
-	public void salvar(String id) throws Exception {
+	public String novo()
+	{
+		initNewProduto();
+		return "/pages/protected/admin/produtos";
+	}
+	
+	public void adicionar(String id)
+	{
+		Modulo modulo = em.find(Modulo.class, Long.parseLong(id));
+		newProduto.getModulos().add(modulo);
+	}
+	
+	public void salvar() throws Exception {
 		log.info("Salvando " + newProduto.getDescricao());
-		TiposProduto newTiposProduto = em.find(TiposProduto.class, Long.parseLong(id));
-		newProduto.setTipoProduto(newTiposProduto);
 		em.persist(newProduto);
-		for(Servico servico:newProduto.getServicos())
+		for(Modulo modulo:newProduto.getModulos())
 		{
-			servico.setProduto(newProduto);
-			em.merge(servico);
+			modulo.setProduto(newProduto);
+			em.merge(modulo);
 		}
 		produtoEventSrc.fire(newProduto);
 		initNewProduto();

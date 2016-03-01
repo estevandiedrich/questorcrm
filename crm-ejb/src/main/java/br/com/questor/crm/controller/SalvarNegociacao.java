@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 
-import br.com.questor.crm.model.Cotacao;
+import br.com.questor.crm.model.Proposta;
 import br.com.questor.crm.model.Negociacao;
 
 @Stateful
@@ -29,23 +29,33 @@ public class SalvarNegociacao {
 	@Inject
 	private Event<Negociacao> negociacaoEventSrc;
 	
+	@Inject
+	private SalvarCotacao salvarCotacao;
+	
 	private Negociacao newNegociacao;
+	
+	private Proposta newCotacao;
+	
+	public void setNewCotacao(Proposta cotacao)
+	{
+		newCotacao = cotacao;
+	}
 	
 	@Produces
 	@Named
 	public Negociacao getNewNegociacao() {
 		return newNegociacao;
 	}
-	public void adicionar(Cotacao cotacao) throws Exception
+	public void adicionar() throws Exception
 	{
 		log.info("Salvando Negociacao" + newNegociacao.getTexto());
-		newNegociacao.setCotacao(cotacao);
+		newNegociacao.setCotacao(newCotacao);
 		newNegociacao.setDataEHora(new Date());
-		cotacao.getNegociacoes().add(newNegociacao);
+		salvarCotacao.getNewCotacao().getNegociacoes().add(newNegociacao);
 		em.persist(newNegociacao);
 		initNewNegociacao();
 	}
-	public void salvar(Cotacao cotacao) throws Exception {
+	public void salvar(Proposta cotacao) throws Exception {
 		log.info("Salvando Negociacao" + newNegociacao.getTexto());
 		newNegociacao.setCotacao(cotacao);
 		em.persist(newNegociacao);

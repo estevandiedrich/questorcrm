@@ -53,7 +53,7 @@
             <h:message for="valor" errorClass="invalid" />
          <p>
             <h:commandButton id="adicionar"
-               action="#{salvarNegociacao.adicionar(cotacao)}" value="Adicionar">
+               action="#{salvarNegociacao.adicionar()}" value="Adicionar">
                <f:ajax execute="regNegociacao:texto regNegociacao:valor" render="tablePanelNegociacoes"/>
             </h:commandButton>
             <h:outputText value=" Salvo!"

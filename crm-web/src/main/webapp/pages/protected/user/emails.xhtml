@@ -54,11 +54,12 @@
             <h:commandButton id="enviar"
                action="#{salvarEmail.salvar(lead)}" value="Enviar">
 <!--                <f:param name="lead" value="#{lead.id}"/> -->
-               <f:ajax execute="@form" render="envioEmails"/>
+               <f:ajax execute="@form" render="envioEmails:emailsPanelGrid"/>
             </h:commandButton>
          </p>
 		</h:panelGrid>				
 	<h2>Emails enviados</h2>
+	<h:panelGrid id="emailsPanelGrid">
 	<h:panelGroup rendered="#{empty newLead.emails}">
          <em>Nenhum email enviado.</em>
       </h:panelGroup>
@@ -90,6 +91,7 @@
 			</h:outputText>
             </h:column>
       </h:dataTable>
+      </h:panelGrid>
 	</h:form>
    </ui:define>
 </ui:composition>

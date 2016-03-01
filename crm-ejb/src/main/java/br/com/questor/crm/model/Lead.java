@@ -25,10 +25,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Lead implements Serializable {
 	public Lead()
 	{
-		this.grupo = new LeadGroup();
-		this.grupoUsuarios = new GrupoUsuarios();
-		this.cotacoes = new ArrayList<Cotacao>();
+		this.leadPai = null;
+		this.gruposUsuarios = new ArrayList<GrupoUsuarios>();
+		this.grupoUsuariosSelecionado = new GrupoUsuarios();
 		this.emails = new ArrayList<Email>();
+		this.contatos = new ArrayList<Contato>();
+		this.contatoSelecionado = new Contato();
 	}
 	/**
 	 * 
@@ -42,34 +44,34 @@ public class Lead implements Serializable {
 	@NotNull
 	private String nome;
 	
-	@NotNull
-	private String telefone;
+	@OneToMany(mappedBy = "lead", targetEntity = Contato.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<Contato> contatos;
 	
-	@NotNull
-	private String email;
+	@Transient
+	private Contato contatoSelecionado;
+	
+	@Transient
+	private GrupoUsuarios grupoUsuariosSelecionado;
 	
 	@ManyToOne
-	  @JoinColumn(name = "leadgroup_id")
-	private LeadGroup grupo;
+	  @JoinColumn(name = "leadpai_id",nullable = true)
+	private Lead leadPai;
 	
-	@ManyToOne
-	  @JoinColumn(name = "grupousuarios_id")
-	private GrupoUsuarios grupoUsuarios;
+	@OneToMany(mappedBy = "lead", targetEntity = GrupoUsuarios.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<GrupoUsuarios> gruposUsuarios;
 	
-	@OneToMany(mappedBy = "lead", targetEntity = Cotacao.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	@OneToMany(mappedBy = "lead", targetEntity = Proposta.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	private List<Email> emails; 
 	
 	@ManyToOne
 	  @JoinColumn(name = "imagem_id")
 	private Imagem imagem;
 	
-//	@ManyToMany
-//    @JoinTable(name="cotacao_lead", joinColumns={@JoinColumn(name="lead_id")}, inverseJoinColumns={@JoinColumn(name="cotacao_id")})
-	@OneToMany(mappedBy = "lead", targetEntity = Cotacao.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-	private List<Cotacao> cotacoes;
-	
 	@Transient
 	private Part imagemPart;
+	
+	@OneToMany(mappedBy = "lead", targetEntity = Anexo.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<Anexo> anexos;
 
 	public Long getId() {
 		return id;
@@ -85,38 +87,6 @@ public class Lead implements Serializable {
 
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public LeadGroup getGrupo() {
-		return grupo;
-	}
-
-	public void setGrupo(LeadGroup grupo) {
-		this.grupo = grupo;
-	}
-
-	public GrupoUsuarios getGrupoUsuarios() {
-		return grupoUsuarios;
-	}
-
-	public void setGrupoUsuarios(GrupoUsuarios grupoUsuarios) {
-		this.grupoUsuarios = grupoUsuarios;
 	}
 
 	public List<Email> getEmails() {
@@ -143,11 +113,51 @@ public class Lead implements Serializable {
 		this.imagemPart = imagemPart;
 	}
 
-	public List<Cotacao> getCotacoes() {
-		return cotacoes;
+	public List<Contato> getContatos() {
+		return contatos;
 	}
 
-	public void setCotacoes(List<Cotacao> cotacoes) {
-		this.cotacoes = cotacoes;
+	public void setContatos(List<Contato> contatos) {
+		this.contatos = contatos;
+	}
+
+	public List<GrupoUsuarios> getGruposUsuarios() {
+		return gruposUsuarios;
+	}
+
+	public void setGruposUsuarios(List<GrupoUsuarios> grupoUsuarios) {
+		this.gruposUsuarios = grupoUsuarios;
+	}
+
+	public List<Anexo> getAnexos() {
+		return anexos;
+	}
+
+	public void setAnexos(List<Anexo> anexos) {
+		this.anexos = anexos;
+	}
+
+	public Lead getLeadPai() {
+		return leadPai;
+	}
+
+	public void setLeadPai(Lead leadPai) {
+		this.leadPai = leadPai;
+	}
+
+	public Contato getContatoSelecionado() {
+		return contatoSelecionado;
+	}
+
+	public void setContatoSelecionado(Contato contatoSelecionado) {
+		this.contatoSelecionado = contatoSelecionado;
+	}
+
+	public GrupoUsuarios getGrupoUsuariosSelecionado() {
+		return grupoUsuariosSelecionado;
+	}
+
+	public void setGrupoUsuariosSelecionado(GrupoUsuarios grupoUsuariosSelecionado) {
+		this.grupoUsuariosSelecionado = grupoUsuariosSelecionado;
 	}		
 }

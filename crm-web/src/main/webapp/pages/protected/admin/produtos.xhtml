@@ -6,33 +6,28 @@
 	template="/WEB-INF/templates/default.xhtml">
 	<ui:define name="content">
 		<script type="text/javascript">
-			function modalTipoProduto() {
+			function modalModulo() {
 				$('#myModal').modal('show');
 			}
-			function modalServico() {
+			function modalModulosDoProduto()
+			{
 				$('#myModal2').modal('show');
 			}
-			function selecionarTipoProduto() {
+			function selecionarModulo() {
 				debugger
-				var table = $('#tiposProdutosDataTable').DataTable();
+				var table = $('#modulosDataTable').DataTable();
 				var id = table.row('.selected').data()[0];
-				$('#regProdutos\\:tipoProduto').val(id);
+				$('#regProdutos\\:modulo').val(id);
 				$('#myModal').modal('hide');
-			}
-			function selecionarServico() {
-				debugger
-				var table = $('#servicosDataTable').DataTable();
-				var id = table.row('.selected').data()[0];
-				$('#regProdutos\\:servico').val(id);
-				$('#myModal2').modal('hide');
 			}
 			$(document).ready(
 				function() {
-					var table = $('#tiposProdutosDataTable').DataTable();
-					var table2 = $('#servicosDataTable').DataTable();
-					var table3 = $('#regProdutos\\:servicosProduto').DataTable();
+					var table = $('#produtosDataTable').DataTable();
+					var table2 = $('#modulosDataTable').DataTable();
+					var table3 = $('#regProdutos\\:modulosProduto').DataTable();
+					var table4 = $('#modulosDoProdutoDataTable').DataTable();
 
-					$('#tiposProdutosDataTable tbody').on(
+					$('#produtosDataTable tbody').on(
 							'click',
 							'tr',
 							function() {
@@ -44,7 +39,7 @@
 									$(this).addClass('selected');
 								}
 							});
-					$('#servicosDataTable tbody').on(
+					$('#modulosDataTable tbody').on(
 							'click',
 							'tr',
 							function() {
@@ -56,8 +51,7 @@
 									$(this).addClass('selected');
 								}
 							});
-					
-					$('#servicosProduto tbody').on(
+					$('#regProdutos\\:modulosProduto tbody').on(
 							'click',
 							'tr',
 							function() {
@@ -69,16 +63,25 @@
 									$(this).addClass('selected');
 								}
 							});
-
-					// 	    $('#button').click( function () {
-					// 	        table.row('.selected').remove().draw( false );
-					// 	    } );
+					$('#modulosDoProdutoDataTable tbody').on(
+							'click',
+							'tr',
+							function() {
+								if ($(this).hasClass('selected')) {
+									$(this).removeClass('selected');
+								} else {
+									table4.$('tr.selected').removeClass(
+											'selected');
+									$(this).addClass('selected');
+								}
+							});
 				});
 			$(window).load(function() {
 			    jsf.ajax.addOnEvent(function (data) {
 			        if (data.status == "success") {debugger
-			        	 var table = $('#regProdutos\\:servicosProduto').DataTable();
-			 		    $('#regProdutos\\:servicosProduto tbody').on( 'click', 'tr', function () {
+			        	var table = $('#regProdutos\\:modulosProduto').DataTable();
+			        	var table2 = $('#modulosDoProdutoDataTable').DataTable();
+			 		    $('#regProdutos\\:modulosProduto tbody').on( 'click', 'tr', function () {
 			 		        if ( $(this).hasClass('selected') ) {
 			 		            $(this).removeClass('selected');
 			 		        }
@@ -87,6 +90,16 @@
 			 		            $(this).addClass('selected');
 			 		        }
 			 		    } );
+			 		    
+			 		   $('#modulosDoProdutoDataTable tbody').on('click','tr',function() {
+							if ($(this).hasClass('selected')) {
+								$(this).removeClass('selected');
+							} else {
+								table2.$('tr.selected').removeClass(
+										'selected');
+								$(this).addClass('selected');
+							}
+						});
 			        }
 			    })
 			});
@@ -98,53 +111,40 @@
 				<h:outputLabel for="descricao" value="Descrição:" />
 				<h:inputText id="descricao" value="#{newProduto.descricao}" />
 				<h:message for="descricao" errorClass="invalid" />
-				<h:outputLabel for="tipoProduto" value="Tipo de produto:" />
+				<h:outputLabel for="modulo" value="Módulo:" />
 				<h:panelGroup>
-					<h:inputText id="tipoProduto" value="#{newProduto.tipoProduto.id}" />
-					<h:graphicImage library="images" name="magnifying.png" onclick="javascript:modalTipoProduto()" />
+					<h:inputText id="modulo" value="#{newProduto.modulo.id}" />
+					<h:graphicImage library="images" name="magnifying.png" onclick="javascript:modalModulo()"/> 
 				</h:panelGroup>
-				<h:message for="tipoProduto" errorClass="invalid" />
-				<h:outputLabel for="valor" value="Valor:" />
-				<h:inputText id="valor" value="#{newProduto.valor}" />
-				<h:message for="valor" errorClass="invalid" />
-				<h:outputLabel for="servico" value="Servico:" />
-				<h:panelGroup>
-					<h:inputText id="servico" value="#{newProduto.servico.id}" />
-					<h:graphicImage library="images" name="magnifying.png" onclick="javascript:modalServico()"/> 
-				</h:panelGroup>
-				<h:message for="servico" errorClass="invalid" />
+				<h:message for="modulo" errorClass="invalid" />
 				<br/>
-				<h:commandButton id="adicionar" action="#{salvarProduto.adicionar(newProduto.servico.id)}" value="Adicionar">
-					<f:ajax execute="regProdutos:servico regProdutos:valor" render="regProdutos:container regProdutos:valor"/>
+				<h:commandButton id="adicionar" action="#{salvarProduto.adicionar(newProduto.modulo.id)}" value="Adicionar">
+					<f:ajax execute="regProdutos:modulo" render="regProdutos:modulosDoProdutoPanelGrid"/>
 				</h:commandButton>
 				<br/>
-				<h:panelGrid id="container">
-				<h:panelGroup rendered="#{empty newProduto.servicos}">
-		         	<em>Nenhum serviço adicionado.</em>
-		      	 </h:panelGroup>
-		         <h:dataTable id="servicosProduto" var="_servico" value="#{newProduto.servicos}"
-		         	rendered="#{not empty newProduto.servicos}"
-		         	width="100%"
-		         	style="display:inline-table;"
-		         	styleClass="table"
-				 	headerClass="table-header"
-				 	rowClasses="table-odd-row,table-even-row">
-		         	<h:column>
-		            	<f:facet name="header">Id</f:facet>
-		                	#{_servico.id}
-		            </h:column>
-		         	<h:column>
-		            	<f:facet name="header">Descrição</f:facet>
-		                	#{_servico.descricao}
-		            </h:column>
-		         	<h:column>
-		            	<f:facet name="header">Valor</f:facet>
-		                	#{_servico.valor}
-		            </h:column>
-		     	 </h:dataTable>
+				<h:panelGrid id="modulosDoProdutoPanelGrid">
+					<h:panelGroup rendered="#{empty newProduto.modulos}">
+			         	<em>Nenhum módulo adicionado.</em>
+			      	 </h:panelGroup>
+			         <h:dataTable id="modulosProduto" var="_modulo" value="#{newProduto.modulos}"
+			         	rendered="#{not empty newProduto.modulos}"
+			         	width="100%"
+			         	style="display:inline-table;"
+			         	styleClass="table"
+					 	headerClass="table-header"
+					 	rowClasses="table-odd-row,table-even-row">
+			         	<h:column>
+			            	<f:facet name="header">Id</f:facet>
+			                	#{_modulo.id}
+			            </h:column>
+			         	<h:column>
+			            	<f:facet name="header">Descrição</f:facet>
+			                	#{_modulo.descricao}
+			            </h:column>
+			     	 </h:dataTable>
 		     	 </h:panelGrid>
 				<br />
-				<h:commandButton id="salvar" action="#{salvarProduto.salvar(newProduto.tipoProduto.id)}"
+				<h:commandButton id="salvar" action="#{salvarProduto.salvar()}"
 					value="Salvar" />
 				<h:outputText value=" Salvo!"
 					rendered="#{facesContext.postback and empty facesContext.messageList}"
@@ -155,7 +155,7 @@
 		<h:panelGroup rendered="#{empty produtos}">
 			<em>Nenhum produto registrado.</em>
 		</h:panelGroup>
-		<h:dataTable var="_produto" value="#{produtos}"
+		<h:dataTable id="produtosDataTable" var="_produto" value="#{produtos}"
 			rendered="#{not empty produtos}" styleClass="table"
 			headerClass="table-header" rowClasses="table-odd-row,table-even-row">
 			<h:column>
@@ -166,9 +166,19 @@
 				<f:facet name="header">Descrição</f:facet>
                 #{_produto.descricao}
             </h:column>
-			<h:column>
-				<f:facet name="header">Valor</f:facet>
-                #{_produto.valor}
+            <h:column>
+            	<f:facet name="header"></f:facet>
+        			<h:form>
+		                <h:commandLink value="Modulos" action="#{salvarProduto.setNewProduto(_produto)}" onclick="javascript:modalModulosDoProduto()">
+		                	<f:ajax render="modulosDoProdutoPanelGrid"/>
+		                </h:commandLink>
+	                </h:form>	                
+            </h:column>
+            <h:column>
+            	<h:form>
+	                <h:commandLink value="Editar" action="#{salvarProduto.setNewProduto(_produto)}">
+	                </h:commandLink>
+                </h:form>
             </h:column>
 		</h:dataTable>
 		<!-- Modal -->
@@ -178,29 +188,29 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">X</button>
-						<h4 class="modal-title">Selecione o tipo de produto</h4>
+						<h4 class="modal-title">Selecione o modulo</h4>
 					</div>
 					<div class="modal-body">
-						<h:panelGroup rendered="#{empty tiposProduto}">
-							<em>Nenhum tipo de produto registrado.</em>
+						<h:panelGroup rendered="#{empty modulos}">
+							<em>Nenhum modulo registrado.</em>
 						</h:panelGroup>
-						<h:dataTable id="tiposProdutosDataTable" var="_tipoProduto"
-							value="#{tiposProduto}" rendered="#{not empty tiposProduto}"
+						<h:dataTable id="modulosDataTable" var="_modulo"
+							value="#{modulos}" rendered="#{not empty modulos}"
 							styleClass="table" headerClass="table-header"
 							rowClasses="table-odd-row,table-even-row">
 							<h:column>
 								<f:facet name="header">Id</f:facet>
-                				#{_tipoProduto.id}
+                				#{_modulo.id}
             				</h:column>
 							<h:column>
 								<f:facet name="header">Descrição</f:facet>
-                					#{_tipoProduto.descricao}
+               					#{_modulo.descricao}
            					</h:column>
 						</h:dataTable>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary"
-							onclick="javascript:selecionarTipoProduto()">Selecionar</button>
+							onclick="javascript:selecionarModulo()">Selecionar</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
 					</div>
 				</div>
@@ -213,29 +223,31 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">X</button>
-						<h4 class="modal-title">Selecione o serviço</h4>
+						<h4 class="modal-title">Selecione o modulo</h4>
 					</div>
 					<div class="modal-body">
-						<h:panelGroup rendered="#{empty serviços}">
-							<em>Nenhum serviço registrado.</em>
-						</h:panelGroup>
-						<h:dataTable id="servicosDataTable" var="_servico"
-							value="#{servicos}" rendered="#{not empty servicos}"
+					<h:panelGrid id="modulosDoProdutoPanelGrid">
+						<h:panelGroup rendered="#{empty newProduto.modulos}">
+							<em>Nenhum modulo registrado.</em>
+						</h:panelGroup>						
+						<h:dataTable id="modulosDoProdutoDataTable" var="_modulo"
+							value="#{newProduto.modulos}" rendered="#{not empty newProduto.modulos}"
+							style="display:inline-table"
+							width="100%"
 							styleClass="table" headerClass="table-header"
 							rowClasses="table-odd-row,table-even-row">
 							<h:column>
 								<f:facet name="header">Id</f:facet>
-                				#{_servico.id}
+                				#{_modulo.id}
             				</h:column>
 							<h:column>
 								<f:facet name="header">Descrição</f:facet>
-               					#{_servico.descricao}
+               					#{_modulo.descricao}
            					</h:column>
 						</h:dataTable>
+					</h:panelGrid>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary"
-							onclick="javascript:selecionarServico()">Selecionar</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
 					</div>
 				</div>

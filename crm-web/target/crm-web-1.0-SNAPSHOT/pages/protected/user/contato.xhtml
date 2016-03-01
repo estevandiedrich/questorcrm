@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+   template="/WEB-INF/templates/default2.xhtml">
+   <ui:define name="content2">
+   <script type="text/javascript">
+   $(document).ready(function() {
+		dataTable();	 
+	} );
+	$(window).load(function() {
+	    jsf.ajax.addOnEvent(function (data) {
+	        if (data.status == "success") {debugger
+	        	dataTable();
+	        }
+	    })
+	});
+	function dataTable()
+	{
+		var table = $('#regLeads\\:regContatos\\:contatosDataTable').DataTable();
+		 
+	    $('#regLeads\\:regContatos\\:contatosDataTable tbody').on( 'click', 'tr', function () {
+	        if ( $(this).hasClass('selected') ) {
+	            $(this).removeClass('selected');
+	        }
+	        else {
+	            table.$('tr.selected').removeClass('selected');
+	            $(this).addClass('selected');
+	        }
+	    } );
+	}
+   </script>
+   
+      <h1>Novo Contato</h1>
+
+      <h:form id="regContatos">
+		<h:panelGrid>
+			<h:outputLabel for="nome" value="Nome:" />
+            <h:inputText id="nome" value="#{newContato.nome}" />
+            <h:message for="nome" errorClass="invalid" />
+            <h:outputLabel for="email" value="Email:" />
+            <h:inputText id="email" value="#{newContato.email}" />
+            <h:message for="email" errorClass="invalid" />
+            <h:outputLabel for="telefone" value="Telefone:" />
+            <h:inputText id="telefone" value="#{newContato.telefone}" />
+            <h:message for="telefone" errorClass="invalid" />
+         <p>
+            <h:commandButton id="salvar"
+               action="#{salvarContato.adicionar(lead)}" value="Adicionar" >
+               <f:ajax execute="@form" render="regContatos:contatosDataGrid"/>
+            </h:commandButton>
+         </p>
+         </h:panelGrid>
+      <h2>Contatos</h2>
+      <h:panelGrid id="contatosDataGrid">
+	      <h:panelGroup rendered="#{empty lead.contatos}">
+	         <em>Nenhum contato registrado.</em>
+	      </h:panelGroup>
+	      <h:dataTable id="contatosDataTable" var="_contato" value="#{lead.contatos}"
+			rendered="#{not empty lead.contatos}"
+			styleClass="table"
+			width="100%"
+			style="display:inline-table;"
+			 headerClass="table-header"
+			 rowClasses="table-odd-row,table-even-row">
+	         <h:column>
+	          <f:facet name="header">Id</f:facet>
+	              #{_contato.id}
+	         </h:column>
+	         <h:column>
+	          <f:facet name="header">Nome</f:facet>
+	              #{_contato.nome}
+	          </h:column>
+	          <h:column>
+	          <f:facet name="header">Email</f:facet>
+	              #{_contato.email}
+	          </h:column>
+	          <h:column>
+	          <f:facet name="header">Telefone</f:facet>
+	              #{_contato.telefone}
+	          </h:column>                
+	      </h:dataTable>
+      </h:panelGrid>
+      </h:form>
+   </ui:define>
+</ui:composition>

@@ -12,8 +12,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 
-import br.com.questor.crm.model.Cotacao;
-import br.com.questor.crm.model.Lead;
+import br.com.questor.crm.model.Conta;
+import br.com.questor.crm.model.Proposta;
 import br.com.questor.crm.model.Produto;
 
 @Stateful
@@ -28,23 +28,23 @@ public class SalvarCotacao {
 	private EntityManager em;
 	
 	@Inject
-	private Event<Cotacao> cotacaoEventSrc;
+	private Event<Proposta> cotacaoEventSrc;
 	
-	private Cotacao newCotacao;
+	private Proposta newCotacao;
 	
 	@Produces
 	@Named
-	public Cotacao getNewCotacao() {
+	public Proposta getNewCotacao() {
 		return newCotacao;
 	}
-	public void setNewCotacao(Cotacao cotacao)
+	public void setNewCotacao(Proposta cotacao)
 	{
 		newCotacao = cotacao;
 	}
-	public void adicionarCotacao(Lead lead)
+	public void adicionarCotacao(Conta conta)
 	{
-		lead.getCotacoes().add(newCotacao);
-		newCotacao.setLead(lead);
+		conta.getCotacoes().add(newCotacao);
+		newCotacao.setLead(conta);
 		em.persist(newCotacao);
 	}
 	public void adicionar(String id)
@@ -57,7 +57,6 @@ public class SalvarCotacao {
 		{
 			newCotacao.setValorInicial(BigDecimal.ZERO);
 		}
-		newCotacao.setValorInicial(newCotacao.getValorInicial().add(produto.getValor()));
 		newCotacao.getProdutos().add(produto);
 	}
 	
@@ -70,6 +69,6 @@ public class SalvarCotacao {
 
 	@PostConstruct
 	public void initNewCotacao() {
-		newCotacao = new Cotacao();
+		newCotacao = new Proposta();
 	}
 }

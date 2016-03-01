@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Negociacao implements Serializable{
 	public Negociacao()
 	{
-		this.cotacao = new Cotacao();
+		this.cotacao = new Proposta();
 	}
 	/**
 	 * 
@@ -32,7 +32,7 @@ public class Negociacao implements Serializable{
 	private Date dataEHora;
 	@ManyToOne
 	  @JoinColumn(name = "cotacao_id")
-	private Cotacao cotacao;
+	private Proposta cotacao;
 	public Long getId() {
 		return id;
 	}
@@ -51,10 +51,10 @@ public class Negociacao implements Serializable{
 	public void setValor(BigDecimal valor) {
 		this.valor = valor;
 	}
-	public Cotacao getCotacao() {
+	public Proposta getCotacao() {
 		return cotacao;
 	}
-	public void setCotacao(Cotacao cotacao) {
+	public void setCotacao(Proposta cotacao) {
 		this.cotacao = cotacao;
 	}
 	public Date getDataEHora() {

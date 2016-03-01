@@ -14,7 +14,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import br.com.questor.crm.model.Cotacao;
+import br.com.questor.crm.model.Proposta;
 import br.com.questor.crm.model.Lead;
 
 @RequestScoped
@@ -22,30 +22,30 @@ public class CotacaoListProducer {
 	@Inject
 	private EntityManager em;
 	
-	private List<Cotacao> cotacoes;
+	private List<Proposta> cotacoes;
 	
 	@Produces
 	@Named
-	public List<Cotacao> getCotacoes()
+	public List<Proposta> getCotacoes()
 	{
 		return cotacoes;
 	}
 	
-	public void onCotacaoListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Cotacao cotacao) {
+	public void onCotacaoListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Proposta cotacao) {
 		retrieveAllCotacoesOrderedByDescricao();
 	}
 	@PostConstruct
 	public void retrieveAllCotacoesOrderedByDescricao() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Cotacao> criteria = cb.createQuery(Cotacao.class);
-		Root<Cotacao> cotacao = criteria.from(Cotacao.class);
+		CriteriaQuery<Proposta> criteria = cb.createQuery(Proposta.class);
+		Root<Proposta> cotacao = criteria.from(Proposta.class);
 		criteria.select(cotacao).orderBy(cb.asc(cotacao.get("descricao")));
 		cotacoes = em.createQuery(criteria).getResultList();
 	}
-	public List<Cotacao> retrieveAllCotacoesByLeadOrderedByDataEHoraCriacao(Lead lead) {
+	public List<Proposta> retrieveAllCotacoesByLeadOrderedByDataEHoraCriacao(Lead lead) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Cotacao> criteria = cb.createQuery(Cotacao.class);
-		Root<Cotacao> cotacao = criteria.from(Cotacao.class);
+		CriteriaQuery<Proposta> criteria = cb.createQuery(Proposta.class);
+		Root<Proposta> cotacao = criteria.from(Proposta.class);
 		criteria.select(cotacao).where(cb.equal(cotacao.get("lead"), lead)).orderBy(cb.asc(cotacao.get("dataEHoraCriacao")));
 //		criteria.select(cotacao).orderBy(cb.asc(cotacao.get("descricao")));
 		cotacoes = em.createQuery(criteria).getResultList();

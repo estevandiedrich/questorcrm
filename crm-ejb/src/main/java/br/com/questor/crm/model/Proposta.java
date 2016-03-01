@@ -23,9 +23,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @XmlRootElement
-@SequenceGenerator(name="COTACAO_SEQUENCE", sequenceName="COTACAO_SEQUENCE", allocationSize=1, initialValue=1)
-public class Cotacao implements Serializable{
-	public Cotacao()
+@SequenceGenerator(name="PROPOSTA_SEQUENCE", sequenceName="PROPOSTA_SEQUENCE", allocationSize=1, initialValue=1)
+public class Proposta implements Serializable{
+	public Proposta()
 	{
 		this.negociacoes = new ArrayList<Negociacao>();
 		this.produtos = new ArrayList<Produto>();
@@ -36,7 +36,7 @@ public class Cotacao implements Serializable{
 	 */
 	private static final long serialVersionUID = -5383574026632126252L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="COTACAO_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="PROPOSTA_SEQUENCE")
 	private Long id;
 	
 	private String descricao;
@@ -46,7 +46,6 @@ public class Cotacao implements Serializable{
 	@OneToMany(mappedBy = "cotacao", targetEntity = Negociacao.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)	
 	private List<Negociacao> negociacoes;
 	
-//	@OneToMany(mappedBy = "cotacao", targetEntity = ProdutoCotacao.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@ManyToMany
     @JoinTable(name="produto_cotacao", joinColumns={@JoinColumn(name="cotacao_id")}, inverseJoinColumns={@JoinColumn(name="produto_id")})
 	private List<Produto> produtos;
