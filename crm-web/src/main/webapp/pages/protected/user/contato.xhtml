@@ -18,9 +18,9 @@
 	});
 	function dataTable()
 	{
-		var table = $('#regLeads\\:regContatos\\:contatosDataTable').DataTable();
+		var table = $('#regLeads\\:contatosDataTable').DataTable();
 		 
-	    $('#regLeads\\:regContatos\\:contatosDataTable tbody').on( 'click', 'tr', function () {
+	    $('#regLeads\\:contatosDataTable tbody').on( 'click', 'tr', function () {
 	        if ( $(this).hasClass('selected') ) {
 	            $(this).removeClass('selected');
 	        }
@@ -48,10 +48,11 @@
          <p>
             <h:commandButton id="salvar"
                action="#{salvarContato.adicionar(lead)}" value="Adicionar" >
-               <f:ajax execute="@form" render="regContatos:contatosDataGrid"/>
+               <f:ajax execute="@form" render="regLeads:contatosDataGrid"/>
             </h:commandButton>
          </p>
          </h:panelGrid>
+      </h:form>
       <h2>Contatos</h2>
       <h:panelGrid id="contatosDataGrid">
 	      <h:panelGroup rendered="#{empty lead.contatos}">
@@ -82,6 +83,5 @@
 	          </h:column>                
 	      </h:dataTable>
       </h:panelGrid>
-      </h:form>
    </ui:define>
 </ui:composition>

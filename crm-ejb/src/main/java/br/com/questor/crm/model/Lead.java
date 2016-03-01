@@ -30,6 +30,7 @@ public class Lead implements Serializable {
 		this.grupoUsuariosSelecionado = new GrupoUsuarios();
 		this.emails = new ArrayList<Email>();
 		this.contatos = new ArrayList<Contato>();
+		this.anexos = new ArrayList<Anexo>();
 		this.contatoSelecionado = new Contato();
 	}
 	/**

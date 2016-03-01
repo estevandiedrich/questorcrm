@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
+import javax.servlet.http.Part;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -31,10 +32,10 @@ public class Anexo implements Serializable{
 	
 	private long size;
 	@NotNull
-	private byte[] imagem;
+	private Imagem imagem;
 	
 	@Transient
-	private ImagePart imagemPart;
+	private Part part;
 	
 	@ManyToOne
 	  @JoinColumn(name = "lead_id")
@@ -72,20 +73,20 @@ public class Anexo implements Serializable{
 		this.size = size;
 	}
 
-	public byte[] getImagem() {
+	public Imagem getImagem() {
 		return imagem;
 	}
 
-	public void setImagem(byte[] imagem) {
+	public void setImagem(Imagem imagem) {
 		this.imagem = imagem;
 	}
 
-	public ImagePart getImagemPart() {
-		return imagemPart;
+	public Part getPart() {
+		return part;
 	}
 
-	public void setImagemPart(ImagePart imagemPart) {
-		this.imagemPart = imagemPart;
+	public void setPart(Part part) {
+		this.part = part;
 	}
 
 	public Lead getLead() {

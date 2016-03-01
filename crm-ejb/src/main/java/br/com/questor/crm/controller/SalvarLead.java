@@ -17,6 +17,7 @@ import javax.persistence.Persistence;
 import org.apache.commons.io.IOUtils;
 
 import br.com.questor.crm.data.EmailListProducer;
+import br.com.questor.crm.model.Anexo;
 import br.com.questor.crm.model.Contato;
 import br.com.questor.crm.model.Email;
 import br.com.questor.crm.model.GrupoUsuarios;
@@ -70,15 +71,15 @@ public class SalvarLead extends BaseController implements Serializable{
 			em.persist(imagem);
 			newLead.setImagem(imagem);
 		}
+		for(Anexo anexo:newLead.getAnexos())
+		{
+			em.persist(anexo.getImagem());
+			em.persist(anexo);
+		}
 		for(Contato contato:newLead.getContatos())
 		{
 			contato.setLead(newLead);
-			em.merge(contato);
-		}
-		for(GrupoUsuarios grupoUsuarios:newLead.getGruposUsuarios())
-		{
-			grupoUsuarios.setLead(newLead);
-			em.merge(grupoUsuarios);
+			em.persist(contato);
 		}
 //		if(newLead.getGrupoUsuarios().getId() == null)
 //		{
@@ -98,6 +99,11 @@ public class SalvarLead extends BaseController implements Serializable{
 //			em.persist(cotacao);
 //		}
 		em.persist(newLead);
+		for(GrupoUsuarios grupoUsuarios:newLead.getGruposUsuarios())
+		{
+			grupoUsuarios.setLead(newLead);
+			em.merge(grupoUsuarios);
+		}
 		leadEventSrc.fire(newLead);
 		initNewLead();
 	}

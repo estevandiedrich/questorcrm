@@ -22,7 +22,6 @@
 			var table = $('#leadsDataTable').DataTable();
 			var table2 = $('#regLeads\\:grupoUsuariosLeadDataTable').DataTable();
 			var table3 = $('#grupoUsuariosDataTable').DataTable();
-			var table4 = $('#regLeads\\:contatosLeadDataTable').DataTable();
 			$('#leadsDataTable tbody').on('click','tr',
 			function() {
 				if ($(this).hasClass('selected')) {
@@ -53,22 +52,11 @@
 					$(this).addClass('selected');
 				}
 			});
-			$('#regLeads\\:contatosLeadDataTable tbody').on('click','tr',
-			function() {
-				if ($(this).hasClass('selected')) {
-					$(this).removeClass('selected');
-				} else {
-					table4.$('tr.selected').removeClass(
-							'selected');
-					$(this).addClass('selected');
-				}
-			});
 		});
 		$(window).load(function() {
 		    jsf.ajax.addOnEvent(function (data) {
 		        if (data.status == "success") {debugger
 		        	var table = $('#regLeads\\:grupoUsuariosLeadDataTable').DataTable();
-		        	var table2 = $('#regLeads\\:contatosLeadDataTable').DataTable();
 		 		    $('#regLeads\\:grupoUsuariosLeadDataTable tbody').on( 'click', 'tr', function () {
 		 		        if ( $(this).hasClass('selected') ) {
 		 		            $(this).removeClass('selected');
@@ -78,16 +66,6 @@
 		 		            $(this).addClass('selected');
 		 		        }
 		 		    } );
-		 		   $('#regLeads\\:contatosLeadDataTable tbody').on('click','tr',
- 					function() {
- 						if ($(this).hasClass('selected')) {
- 							$(this).removeClass('selected');
- 						} else {
- 							table2.$('tr.selected').removeClass(
- 									'selected');
- 							$(this).addClass('selected');
- 						}
- 					});
 		        }
 		    })
 		});
@@ -137,7 +115,11 @@
 	     
 	     <ui:include src="/pages/protected/user/contato.xhtml">
 			<ui:param name="lead" value="#{newLead}" />
-		 </ui:include> 
+		 </ui:include>
+		 
+		 <ui:include src="/pages/protected/user/anexo.xhtml">
+			<ui:param name="lead" value="#{newLead}" />
+		 </ui:include>  
 	     
          <p>
             <h:commandButton id="salvar"
