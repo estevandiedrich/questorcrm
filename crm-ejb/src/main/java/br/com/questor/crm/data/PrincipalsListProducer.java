@@ -12,7 +12,11 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 
 import br.com.questor.crm.controller.LoginBean;
 import br.com.questor.crm.model.Principals;
@@ -39,17 +43,20 @@ public class PrincipalsListProducer {
 	}
 	@PostConstruct
 	public void retrieveAllPrincipalsOrderedByNome() {
+		Metamodel metamodel = em.getMetamodel();
+	    EntityType<Principals> entityPrincipals_ = metamodel.entity(Principals.class);
 		Principals p = this.loginBean.getPrincipalsFromDB();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Principals> criteria = cb.createQuery(Principals.class);
-		Root<Principals> principal = criteria.from(Principals.class);
+		Root<Principals> principal = criteria.from(entityPrincipals_);
+		Join role = principal.join(entityPrincipals_.getSingularAttribute("Role"), JoinType.INNER);
 		if(loginBean.isCallerInRole("ADMIN"))
 		{
 			criteria.select(principal).orderBy(cb.asc(principal.get("PrincipalID")));
 		}
 		else
 		{
-			criteria.select(principal).where(cb.equal(principal.get("grupoUsuarios"), p.getGrupoUsuarios())).orderBy(cb.asc(principal.get("PrincipalID")));
+			criteria.select(principal).where(principal.get("grupoUsuarios").in(p.getGruposUsuarios())).orderBy(cb.asc(principal.get("PrincipalID")));
 		}
 		
 		principals = em.createQuery(criteria).getResultList();

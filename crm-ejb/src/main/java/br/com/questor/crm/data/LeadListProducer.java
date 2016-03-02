@@ -49,7 +49,7 @@ public class LeadListProducer {
 		}
 		else
 		{
-			criteria.select(leadRoot).where(leadRoot.get("grupoUsuarios").in(l.getGrupoUsuarios())).orderBy(cb.asc(leadRoot.get("nome")));
+			criteria.select(leadRoot).where(leadRoot.get("grupoUsuarios").in(l.getGruposUsuarios())).orderBy(cb.asc(leadRoot.get("nome")));
 		}
 		leads = em.createQuery(criteria).getResultList();
 	}

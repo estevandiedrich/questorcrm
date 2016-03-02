@@ -17,12 +17,14 @@ import javax.persistence.Persistence;
 import org.apache.commons.io.IOUtils;
 
 import br.com.questor.crm.data.EmailListProducer;
+import br.com.questor.crm.data.GrupoUsuariosListProducer;
 import br.com.questor.crm.model.Anexo;
 import br.com.questor.crm.model.Contato;
 import br.com.questor.crm.model.Email;
 import br.com.questor.crm.model.GrupoUsuarios;
 import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
+import br.com.questor.crm.model.Principals;
 
 @Stateful
 //@Model
@@ -43,8 +45,14 @@ public class SalvarLead extends BaseController implements Serializable{
 	@Inject
 	private EmailListProducer emailListProducer;
 	
+	@Inject
+	private LoginBean loginBean;
+	
 //	@Inject
 //	private CotacaoListProducer cotacaoListProducer;
+	
+	@Inject
+	private GrupoUsuariosListProducer grupoUsuariosListProducer;
 	
 	@Inject
 	private Event<Lead> leadEventSrc;
@@ -98,6 +106,7 @@ public class SalvarLead extends BaseController implements Serializable{
 //			}
 //			em.persist(cotacao);
 //		}
+		newLead.setUsuarioQueCadastrou(loginBean.getPrincipalsFromDB());
 		em.persist(newLead);
 		for(GrupoUsuarios grupoUsuarios:newLead.getGruposUsuarios())
 		{
@@ -159,6 +168,13 @@ public class SalvarLead extends BaseController implements Serializable{
 		else
 		{
 			newLead = new Lead();
+			Principals principal = loginBean.getPrincipalsFromDB();
+			principal.setGruposUsuarios(grupoUsuariosListProducer.retrieveAllGruposUsuariosByPrincipalsOrderedByNome(principal));
+			for(GrupoUsuarios grupoUsuarios:principal.getGruposUsuarios())
+			{
+				newLead.getGruposUsuarios().add(grupoUsuarios);
+			}
+			newLead.setLeadPai(new Lead());
 		}
 	}
 }

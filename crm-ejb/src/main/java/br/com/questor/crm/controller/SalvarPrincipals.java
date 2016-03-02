@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import org.apache.commons.io.IOUtils;
 import org.jboss.security.auth.spi.Util;
 
+import br.com.questor.crm.model.GrupoUsuarios;
 import br.com.questor.crm.model.ImagePart;
 import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Principals;
@@ -42,12 +43,26 @@ public class SalvarPrincipals extends BaseController implements Serializable {
 
 	@Inject
 	private Event<Principals> principalsEventSrc;
-	
 
 	@Produces
 	@Named
 	public Principals getNewPrincipal() {
 		return newPrincipal;
+	}
+	
+	public String novo()
+	{
+		initNewPrincipal();
+		return "/pages/protected/admin/principals";
+	}
+	
+	public void adicionarGrupoUsuarios(String id)
+	{
+		if(id != null && !"".equalsIgnoreCase(id))
+		{
+			GrupoUsuarios grupoUsuarios = em.find(GrupoUsuarios.class, Long.parseLong(id));
+			newPrincipal.getGruposUsuarios().add(grupoUsuarios);
+		}
 	}
 
 	public void salvar() throws Exception {
@@ -125,10 +140,12 @@ public class SalvarPrincipals extends BaseController implements Serializable {
 			imagemPart.setInputStream(IOUtils.toInputStream(new String(newPrincipal.getImagem().getImagem())));
 			imagemPart.setContentType(newPrincipal.getImagem().getContentType());
 			newPrincipal.setImagemPart(imagemPart);
+			
 		}
 		else
 		{
 			newPrincipal = new Principals();
+			
 		}
 	}
 }

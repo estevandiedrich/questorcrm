@@ -15,6 +15,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import br.com.questor.crm.model.GrupoUsuarios;
+import br.com.questor.crm.model.Lead;
+import br.com.questor.crm.model.Principals;
 
 @RequestScoped
 public class GrupoUsuariosListProducer {
@@ -40,5 +42,20 @@ public class GrupoUsuariosListProducer {
 		Root<GrupoUsuarios> grupoUsuarios = criteria.from(GrupoUsuarios.class);
 		criteria.select(grupoUsuarios).orderBy(cb.asc(grupoUsuarios.get("descricao")));
 		gruposUsuarios = em.createQuery(criteria).getResultList();
+	}
+	
+	public List<GrupoUsuarios> retrieveAllGruposUsuariosByLeadOrderedByNome(Lead lead) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<GrupoUsuarios> criteria = cb.createQuery(GrupoUsuarios.class);
+		Root<GrupoUsuarios> grupoUsuarios = criteria.from(GrupoUsuarios.class);
+		criteria.select(grupoUsuarios).where(cb.equal(grupoUsuarios.get("lead"), lead)).orderBy(cb.asc(grupoUsuarios.get("descricao")));
+		return em.createQuery(criteria).getResultList();
+	}
+	public List<GrupoUsuarios> retrieveAllGruposUsuariosByPrincipalsOrderedByNome(Principals principals) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<GrupoUsuarios> criteria = cb.createQuery(GrupoUsuarios.class);
+		Root<GrupoUsuarios> grupoUsuarios = criteria.from(GrupoUsuarios.class);
+		criteria.select(grupoUsuarios).where(cb.equal(grupoUsuarios.get("principals"), principals)).orderBy(cb.asc(grupoUsuarios.get("descricao")));
+		return em.createQuery(criteria).getResultList();
 	}
 }

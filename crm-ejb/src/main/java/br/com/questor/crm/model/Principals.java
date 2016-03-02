@@ -1,13 +1,18 @@
 package br.com.questor.crm.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -29,7 +34,8 @@ public class Principals implements Serializable {
 	public Principals()
 	{
 		Role = new Roles();
-		grupoUsuarios = new GrupoUsuarios();
+		gruposUsuarios = new ArrayList<GrupoUsuarios>();
+		grupoUsuariosSelecionado = new GrupoUsuarios();
 		imagem = new Imagem();
 		primeiroLogin = true;
 		nome = "";
@@ -52,9 +58,11 @@ public class Principals implements Serializable {
 	  @JoinColumn(name = "role_id")
 	private Roles Role;
 	
-	@ManyToOne
-	  @JoinColumn(name = "grupousuarios_id")
-	private GrupoUsuarios grupoUsuarios;
+	@Transient
+	private GrupoUsuarios grupoUsuariosSelecionado;
+	
+	@OneToMany(mappedBy = "principals", targetEntity = GrupoUsuarios.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<GrupoUsuarios> gruposUsuarios;
 	
 	@NotNull
 	private String Password;
@@ -132,12 +140,12 @@ public class Principals implements Serializable {
 		this.imagemPart = imagemPart;
 	}
 
-	public GrupoUsuarios getGrupoUsuarios() {
-		return grupoUsuarios;
+	public List<GrupoUsuarios> getGruposUsuarios() {
+		return gruposUsuarios;
 	}
 
-	public void setGrupoUsuarios(GrupoUsuarios grupoUsuarios) {
-		this.grupoUsuarios = grupoUsuarios;
+	public void setGrupoUsuarios(List<GrupoUsuarios> gruposUsuarios) {
+		this.gruposUsuarios = gruposUsuarios;
 	}
 
 	public String getEmail() {
@@ -146,5 +154,18 @@ public class Principals implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}	
+	}
+
+	public GrupoUsuarios getGrupoUsuariosSelecionado() {
+		return grupoUsuariosSelecionado;
+	}
+
+	public void setGrupoUsuariosSelecionado(GrupoUsuarios grupoUsuariosSelecionado) {
+		this.grupoUsuariosSelecionado = grupoUsuariosSelecionado;
+	}
+
+	public void setGruposUsuarios(List<GrupoUsuarios> gruposUsuarios) {
+		this.gruposUsuarios = gruposUsuarios;
+	}
+	
 }

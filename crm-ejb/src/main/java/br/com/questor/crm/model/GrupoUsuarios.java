@@ -33,6 +33,10 @@ public class GrupoUsuarios implements Serializable{
 	@ManyToOne
 	  @JoinColumn(name = "lead_id")
 	private Lead lead;
+	
+	@ManyToOne
+	  @JoinColumn(name = "principals_id")
+	private Principals principals;
 
 	public Long getId() {
 		return id;
@@ -56,5 +60,13 @@ public class GrupoUsuarios implements Serializable{
 
 	public void setLead(Lead lead) {
 		this.lead = lead;
+	}
+
+	public Principals getPrincipals() {
+		return principals;
+	}
+
+	public void setPrincipals(Principals principals) {
+		this.principals = principals;
 	}
 }

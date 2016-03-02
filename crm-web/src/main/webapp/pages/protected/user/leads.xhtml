@@ -10,12 +10,23 @@
    		{
    			$('#myModal').modal('show');
    		}
+   		function modalLeadPai()
+   		{
+   			$('#myModal2').modal('show');
+   		}
    		function selecionarGrupoUsuarios()
    		{
    			var table = $('#grupoUsuariosDataTable').DataTable();
 			var id = table.row('.selected').data()[0];
 			$('#regLeads\\:grupoUsuarios').val(id);
 			$('#myModal').modal('hide');
+   		}
+   		function selecionarLeadPai()
+   		{
+   			var table = $('#leadsPaiDataTable').DataTable();
+			var id = table.row('.selected').data()[0];
+			$('#regLeads\\:membro').val(id);
+			$('#myModal2').modal('hide');
    		}
    		$(document).ready(
 			function() {
@@ -81,8 +92,13 @@
 		 <h:inputFile id="foto" value="#{newLead.imagemPart}">
 <!-- 			<f:validator binding="#{fileUploadValidator}"/> -->
 		 </h:inputFile>
-         <h:outputLabel for="grupoUsuarios" value="Grupos de Usuários:" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
-		 <h:panelGroup  rendered="#{loginBean.isCallerInRole('ADMIN')}">
+		 <h:outputLabel for="membro" value="Membro:"/>
+		 <h:panelGroup>
+		 	<h:inputText id="membro" value="#{newLead.leadPai.id}"/>
+		 	<h:graphicImage library="images" name="magnifying.png" onclick="javascript:modalLeadPai()"/>
+		 </h:panelGroup>
+         <h:outputLabel for="grupoUsuarios" value="Grupos de Usuários:"/>
+		 <h:panelGroup>
 		 	<h:inputText id="grupoUsuarios" value="#{newLead.grupoUsuariosSelecionado.id}"/>
 		 	<h:graphicImage library="images" name="magnifying.png" onclick="javascript:modalGrupoUsuarios()"/>
 		 </h:panelGroup>
@@ -124,9 +140,7 @@
          <p>
             <h:commandButton id="salvar"
                action="#{salvarLead.salvar}" value="Salvar" />
-            <h:outputText value=" Salvo!"
-               rendered="#{facesContext.postback and empty facesContext.messageList}"
-               style="color: green;" />
+
          </p>
         </h:panelGrid>
       </h:form>
@@ -180,6 +194,42 @@
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary"
 							onclick="javascript:selecionarGrupoUsuarios()">Selecionar</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal -->
+		<div id="myModal2" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">X</button>
+						<h4 class="modal-title">Selecione o Lead pai</h4>
+					</div>
+					<div class="modal-body">
+						<h:panelGroup rendered="#{empty leads}">
+					         <em>Nenhum lead registrado.</em>
+					      </h:panelGroup>
+					      <h:dataTable id="leadsPaiDataTable" var="_lead" value="#{leads}"
+							rendered="#{not empty leads}"
+							styleClass="table"
+							 headerClass="table-header"
+							 rowClasses="table-odd-row,table-even-row">
+					         <h:column>
+					            <f:facet name="header">Id</f:facet>
+					                #{_lead.id}
+					            </h:column>
+					         <h:column>
+					            <f:facet name="header">Nome</f:facet>
+					                #{_lead.nome}
+					            </h:column>
+					      </h:dataTable>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+							onclick="javascript:selecionarLeadPai()">Selecionar</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
 					</div>
 				</div>

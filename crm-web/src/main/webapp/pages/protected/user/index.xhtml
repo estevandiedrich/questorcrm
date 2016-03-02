@@ -10,9 +10,9 @@
       <p>You have successfully deployed a Java EE 6 web application
          on JBoss AS 7.</p>
          <h:panelGrid>			
-			<h:outputLink value="/crm/pages/protected/admin/principals.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
-				<h:outputText value="Usuários" />
-			</h:outputLink>
+			<h:form>
+				<h:commandLink value="Usuários" action="#{salvarPrincipals.novo}" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
+			</h:form>
 			<h:outputLink value="/crm/pages/protected/admin/grupousuarios.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
 				<h:outputText value="Grupos de usuários" />
 			</h:outputLink>

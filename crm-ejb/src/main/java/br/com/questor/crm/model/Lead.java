@@ -73,6 +73,10 @@ public class Lead implements Serializable {
 	
 	@OneToMany(mappedBy = "lead", targetEntity = Anexo.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	private List<Anexo> anexos;
+	
+	@ManyToOne
+	  @JoinColumn(name = "principals_id")
+	private Principals usuarioQueCadastrou;
 
 	public Long getId() {
 		return id;
@@ -160,5 +164,14 @@ public class Lead implements Serializable {
 
 	public void setGrupoUsuariosSelecionado(GrupoUsuarios grupoUsuariosSelecionado) {
 		this.grupoUsuariosSelecionado = grupoUsuariosSelecionado;
+	}
+
+	public Principals getUsuarioQueCadastrou() {
+		return usuarioQueCadastrou;
+	}
+
+	public void setUsuarioQueCadastrou(Principals usuarioQueCadastrou) {
+		this.usuarioQueCadastrou = usuarioQueCadastrou;
 	}		
+	
 }
