@@ -1,14 +1,16 @@
 package br.com.questor.crm.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateful;
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Model;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,11 +22,16 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 
+import br.com.questor.crm.data.ContatoListProducer;
+import br.com.questor.crm.data.EmailListProducer;
+import br.com.questor.crm.model.Contato;
 import br.com.questor.crm.model.Email;
 import br.com.questor.crm.model.Lead;
 
 @Stateful
-@Model
+//@Model
+@Named
+@SessionScoped
 public class SalvarEmail {
 	@Inject
 	private Logger log;
@@ -42,6 +49,12 @@ public class SalvarEmail {
 	private Session mailSession;
 	
 	private Email newEmail;
+	
+	@Inject
+	private ContatoListProducer contatoListProducer;
+	
+	@Inject
+	private EmailListProducer emailListProducer;
 	
 	@Produces
 	@Named
@@ -69,17 +82,30 @@ public class SalvarEmail {
             log.info("Erro a enviar o email : " + e.getMessage());        
         }
     }
-	public void salvar(Lead lead) throws Exception {
+	public void salvar() throws Exception {
 		log.info("Salvando Email" + newEmail.getEmailTo());
-		lead.getEmails().add(newEmail);
+		newEmail.getLead().getEmails().add(newEmail);
 		newEmail.setEmailFrom(loginBean.getPrincipalsFromDB().getEmail());
-		newEmail.setEmailTo(lead.getContatoSelecionado().getEmail());
-		newEmail.setLead(lead);
+		newEmail.setEmailTo(newEmail.getSelectedTo());
+		newEmail.setLead(newEmail.getLead());
 		newEmail.setSentDate(new Date());
 		em.persist(newEmail);
 		emailEventSrc.fire(newEmail);
 		this.sendEmail(newEmail);
 		initNewEmail();
+	}
+	
+	public void setLead(Lead lead)
+	{
+		List<Contato> contatos = contatoListProducer.retrieveAllContatosByLeadOrderedByNome(lead);
+		if(contatos == null)
+			contatos = new ArrayList<Contato>();
+		lead.setContatos(contatos);
+		List<Email> emails = emailListProducer.retrieveAllEmailsByLeadOrderedBySentDate(lead);
+		if(emails == null)
+			emails = new ArrayList<Email>();
+		lead.setEmails(emails);
+		newEmail.setLead(lead);
 	}
 
 	@PostConstruct

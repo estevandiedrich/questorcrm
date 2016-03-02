@@ -17,8 +17,11 @@
 				<h:outputText value="Grupos de usuários" />
 			</h:outputLink>
 			<h:form>
-				<h:commandLink value="Leads" action="#{salvarLead.novo}" />
+				<h:commandLink value="Nova Lead" action="#{salvarLead.novo}" />
 			</h:form>
+			<h:outputLink value="/crm/pages/protected/user/emailleads.xhtml">
+				<h:outputText value="Emails lead" />
+			</h:outputLink>
 			<h:form>
 				<h:commandLink value="Produtos" action="#{salvarProduto.novo}" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
 			</h:form>

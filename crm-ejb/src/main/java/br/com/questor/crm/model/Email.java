@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -37,6 +38,9 @@ public class Email implements Serializable{
     private Lead lead;   
 	
 	private Date sentDate;
+	
+	@Transient
+	private String selectedTo;
 	
 	public Long getId() {
 		return id;
@@ -79,5 +83,11 @@ public class Email implements Serializable{
 	}
 	public void setLead(Lead lead) {
 		this.lead = lead;
+	}
+	public String getSelectedTo() {
+		return selectedTo;
+	}
+	public void setSelectedTo(String selectedTo) {
+		this.selectedTo = selectedTo;
 	}	
 }

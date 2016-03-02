@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import br.com.questor.crm.model.Contato;
+import br.com.questor.crm.model.Lead;
 
 @RequestScoped
 public class ContatoListProducer {
@@ -40,5 +41,14 @@ public class ContatoListProducer {
 		Root<Contato> contato = criteria.from(Contato.class);
 		criteria.select(contato).orderBy(cb.asc(contato.get("nome")));
 		contatos = em.createQuery(criteria).getResultList();
+	}
+	
+	public List<Contato> retrieveAllContatosByLeadOrderedByNome(Lead lead) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Contato> criteria = cb.createQuery(Contato.class);
+		Root<Contato> contato = criteria.from(Contato.class);
+		criteria.select(contato).where(cb.equal(contato.get("lead"), lead)).orderBy(cb.asc(contato.get("nome")));
+//		contatos = em.createQuery(criteria).getResultList();
+		return em.createQuery(criteria).getResultList();
 	}
 }
