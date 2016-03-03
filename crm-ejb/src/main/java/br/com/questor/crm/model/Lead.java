@@ -28,6 +28,7 @@ public class Lead implements Serializable {
 		this.leadPai = null;
 		this.gruposUsuarios = new ArrayList<GrupoUsuarios>();
 		this.grupoUsuariosSelecionado = new GrupoUsuarios();
+		this.newAtividadeAgenda = new AtividadeAgenda();
 		this.emails = new ArrayList<Email>();
 		this.contatos = new ArrayList<Contato>();
 		this.anexos = new ArrayList<Anexo>();
@@ -53,6 +54,9 @@ public class Lead implements Serializable {
 	
 	@Transient
 	private GrupoUsuarios grupoUsuariosSelecionado;
+	
+	@Transient
+	private AtividadeAgenda newAtividadeAgenda;
 	
 	@ManyToOne
 	  @JoinColumn(name = "leadpai_id",nullable = true)
@@ -172,6 +176,13 @@ public class Lead implements Serializable {
 
 	public void setUsuarioQueCadastrou(Principals usuarioQueCadastrou) {
 		this.usuarioQueCadastrou = usuarioQueCadastrou;
-	}		
-	
+	}
+
+	public AtividadeAgenda getNewAtividadeAgenda() {
+		return newAtividadeAgenda;
+	}
+
+	public void setNewAtividadeAgenda(AtividadeAgenda newAtividadeAgenda) {
+		this.newAtividadeAgenda = newAtividadeAgenda;
+	}
 }

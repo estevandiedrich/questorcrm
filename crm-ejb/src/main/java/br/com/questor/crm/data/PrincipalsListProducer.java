@@ -49,7 +49,7 @@ public class PrincipalsListProducer {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Principals> criteria = cb.createQuery(Principals.class);
 		Root<Principals> principal = criteria.from(entityPrincipals_);
-		Join role = principal.join(entityPrincipals_.getSingularAttribute("Role"), JoinType.INNER);
+//		Join role = principal.join(entityPrincipals_.getSingularAttribute("Role"), JoinType.INNER);
 		if(loginBean.isCallerInRole("ADMIN"))
 		{
 			criteria.select(principal).orderBy(cb.asc(principal.get("PrincipalID")));
