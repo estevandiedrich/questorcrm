@@ -40,6 +40,10 @@ public class Anexo implements Serializable{
 	@ManyToOne
 	  @JoinColumn(name = "lead_id")
 	private Lead lead;
+	
+	@ManyToOne
+	  @JoinColumn(name = "email_id")
+	private Lead email;
 
 	public Long getId() {
 		return id;
@@ -95,5 +99,14 @@ public class Anexo implements Serializable{
 
 	public void setLead(Lead lead) {
 		this.lead = lead;
+	}
+
+	public Lead getEmail() {
+		return email;
+	}
+
+	public void setEmail(Lead email) {
+		this.email = email;
 	}	
+	
 }

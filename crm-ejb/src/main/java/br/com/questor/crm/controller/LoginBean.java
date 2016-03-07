@@ -57,8 +57,7 @@ public class LoginBean {
 		Principals principal2 = this.getPrincipalsFromDB();
 		if(principal2.isPrimeiroLogin())
 		{
-			return salvarPrincipals.editar(principal2.getId().toString());
-//			return "/pages/protected/user/principalsedit?faces-redirect=true&includeViewParams=true&id="+principal2.getId();
+			return salvarPrincipals.primeiroAcesso(principal2);
 		}
 		else
 		{

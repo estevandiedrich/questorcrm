@@ -1,6 +1,7 @@
 package br.com.questor.crm.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -74,7 +75,6 @@ public class SalvarEmail {
             message.setSubject(newEmail.getSubject());
             //Corpo do email
             message.setText(newEmail.getText());
-
             //Envio da mensagem            
             Transport.send(message);
             log.info("Email enviado");
@@ -86,7 +86,8 @@ public class SalvarEmail {
 		log.info("Salvando Email" + newEmail.getEmailTo());
 		newEmail.getLead().getEmails().add(newEmail);
 		newEmail.setEmailFrom(loginBean.getPrincipalsFromDB().getEmail());
-		newEmail.setEmailTo(newEmail.getSelectedTo());
+		String to = Arrays.toString(newEmail.getSelectedTo()).replace("[", "").replace("]", "");
+		newEmail.setEmailTo(to);
 		newEmail.setLead(newEmail.getLead());
 		newEmail.setSentDate(new Date());
 		em.persist(newEmail);

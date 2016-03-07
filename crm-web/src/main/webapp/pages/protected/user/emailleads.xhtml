@@ -78,16 +78,19 @@
            <h:inputText id="from" value="#{loginBean.principalsFromDB.email}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
            <h:message for="from" errorClass="invalid" />
            <h:outputLabel for="to" value="Para:" />
-           <h:selectOneMenu id="to" value="#{newEmail.selectedTo}">
+           <h:selectManyMenu id="to" value="#{newEmail.selectedTo}" style="height:60px;">
 				<f:selectItems value="#{newEmail.lead.contatos}" var="contato" itemValue="#{contato.email}" itemLabel="#{contato.email}" />
-			</h:selectOneMenu>
+			</h:selectManyMenu>
 			<h:outputLabel for="subject" value="Assunto:" />
            		<h:inputText id="subject" value="#{newEmail.subject}" />
            	<h:message for="subject" errorClass="invalid" />
            	<h:outputLabel for="text" value="Texto:" />
-           		<h:inputText id="text" value="#{newEmail.text}"/>
+       		<h:inputTextarea id="text" value="#{newEmail.text}" style="width:500px;height:100px;"/>
            	<h:message for="text" errorClass="invalid" />
          </h:panelGrid>
+         <ui:include src="/pages/protected/user/anexosemail.xhtml">
+			<ui:param name="email" value="#{newEmail}" />
+		 </ui:include>
 		<br/>
          <h:commandButton id="enviar"
             action="#{salvarEmail.salvar}" value="Enviar" />

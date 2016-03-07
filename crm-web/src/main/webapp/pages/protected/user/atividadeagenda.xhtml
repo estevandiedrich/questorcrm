@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+   xmlns:p="http://primefaces.org/ui"
+   template="/WEB-INF/templates/default.xhtml">
+   <ui:define name="content">
+   <script type="text/javascript">
+   $(window).load(function() {
+	    jsf.ajax.addOnEvent(function (data) {
+	        if (data.status == "success") {debugger
+	        	atividadesAgenda();
+	        	inicializaMultiDatesPicker();
+	        }
+	    })
+   });
+   function atividadesAgenda()
+   {
+	   var table2 = $('#regAtividadeAgenda\\:atividadeAgendaDataTable').DataTable({"order": [[ 3, "desc" ]]});
+	    $('#regAtividadeAgenda\\:atividadeAgendaDataTable tbody').on( 'click', 'tr', function () {
+	        if ( $(this).hasClass('selected') ) {
+	            $(this).removeClass('selected');
+	        }
+	        else {
+	            table2.$('tr.selected').removeClass('selected');
+	            $(this).addClass('selected');
+	        }
+	    } );
+   }
+   function inicializaMultiDatesPicker()
+	{
+		$.get("#{request.contextPath}/rest/atividadesagenda", function( data ) {debugger
+			if(Array.isArray(data))
+  			{
+   				var arrayLength = data.length;
+   				var datesArray = [];
+   				for (var i = 0; i &lt; arrayLength; i++) {
+	    			var date = new Date();
+	    			datesArray[i] = date.setTime(data[i]);
+	    		}
+	 	   		$('#pre-select-dates').multiDatesPicker({
+	 	   			disabled: true,
+	 	   			addDates: datesArray
+	 	   		});	
+   			}
+		});
+	}
+   $(document).ready(function() {
+	    var table = $('#regAtividadeAgenda\\:leadsDataTable').DataTable();
+	    $('#regAtividadeAgenda\\:leadsDataTable tbody').on( 'click', 'tr', function () {
+	        if ( $(this).hasClass('selected') ) {
+	            $(this).removeClass('selected');
+	        }
+	        else {
+	            table.$('tr.selected').removeClass('selected');
+	            $(this).addClass('selected');
+	        }
+	    } );
+	    atividadesAgenda();
+	    inicializaMultiDatesPicker();
+	} );
+   </script>
+   	<br/>
+      <h:form id="regAtividadeAgenda">
+      <h:panelGroup rendered="#{empty leads}">
+         <em>Nenhum lead registrado.</em>
+      </h:panelGroup>
+      <h:dataTable id="leadsDataTable" var="_lead" value="#{leads}"
+		rendered="#{not empty leads}"
+		styleClass="table"
+		 headerClass="table-header"
+		 rowClasses="table-odd-row,table-even-row">
+         <h:column>
+            <f:facet name="header">Id</f:facet>
+                #{_lead.id}
+            </h:column>
+         <h:column>
+            <f:facet name="header">Nome</f:facet>
+                #{_lead.nome}
+            </h:column>
+         <h:column>
+            <f:facet name="header"></f:facet>
+                <h:form>
+                	<h:commandLink value="Selecionar" action="#{salvarAtividadeAgenda.setLead(_lead)}">
+                		<f:ajax render="regAtividadeAgenda:compromissosAgendadosPanelGrid regAtividadeAgenda:compromissosPanelGrid regAtividadeAgenda:pre-select-dates"/>
+                	</h:commandLink>
+                </h:form>
+            </h:column>
+      </h:dataTable>
+      
+      <h1>Novo compromisso</h1>
+      	<h:panelGrid id="compromissosPanelGrid">
+	      <h:outputLabel for="lembrete" value="Descrição:" />
+	      <h:inputText id="lembrete" value="#{newAtividadeAgenda.lembrete}"/>
+	      <h:outputLabel for="participantes" value="Participantes:" />
+	      <h:selectManyMenu id="participantes" value="#{newAtividadeAgenda.participantesSelecionados}" style="height:60px;">
+			<f:selectItems value="#{newAtividadeAgenda.lead.contatos}" var="participante" itemValue="#{participante.nome}" itemLabel="#{participante.nome}" />
+		  </h:selectManyMenu>
+	      <h:outputLabel for="dataEHora" value="Data:" />
+	      <p:calendar id="dataEHora" value="#{newAtividadeAgenda.dataEHora}" pattern="dd/MM/yyyy"/>
+	      <h:outputLabel for="hora" value="Hora:"/>
+	      <h:inputText id="hora" value="#{newAtividadeAgenda.hora}">
+	      	<f:convertDateTime type="time" pattern="HH:mm:ss"/>
+	      </h:inputText>
+	    </h:panelGrid>
+	      <br/>
+	      <h:commandButton id="adicionarAtividadeAgenda" action="#{salvarAtividadeAgenda.adicionarAtividadeAgenda()}" value="Adicionar">
+			<f:ajax execute="regAtividadeAgenda:lembrete regAtividadeAgenda:dataEHora regAtividadeAgenda:hora regAtividadeAgenda:participantes" render="regAtividadeAgenda:pre-select-dates regAtividadeAgenda:compromissosPanelGrid regAtividadeAgenda:compromissosAgendadosPanelGrid"/>
+		  </h:commandButton>
+	      
+	      <h1>Agenda</h1>
+	      <div id="pre-select-dates"></div>
+	      <br/>
+	      <h1>Compromissos</h1>
+	      <h:panelGrid id="compromissosAgendadosPanelGrid">
+			<h:panelGroup rendered="#{empty newAtividadeAgenda.lead.atividadesAgenda}">
+		         <em>Nenhum compromisso registrado.</em>
+		      </h:panelGroup>
+		      <h:dataTable id="atividadeAgendaDataTable" var="_atividadeAgenda" value="#{newAtividadeAgenda.lead.atividadesAgenda}"
+				rendered="#{not empty newAtividadeAgenda.lead.atividadesAgenda}"
+				styleClass="table"
+				width="100%"
+				style="display:inline-table;"
+				 headerClass="table-header"
+				 rowClasses="table-odd-row,table-even-row">
+		         <h:column>
+		            <f:facet name="header">Id</f:facet>
+		                #{_atividadeAgenda.id}
+		            </h:column>
+		         <h:column>
+		            <f:facet name="header">Lembrete</f:facet>
+		                #{_atividadeAgenda.lembrete}
+		            </h:column>
+		         <h:column>
+		            <f:facet name="header">Vendedor</f:facet>
+		                #{_atividadeAgenda.usuario.nome}
+		            </h:column>
+		         <h:column>
+		            <f:facet name="header">Participantes</f:facet>
+		                #{_atividadeAgenda.participantes}
+		            </h:column>
+		         <h:column>
+		            <f:facet name="header">Data</f:facet>
+		                <h:outputText value="#{_atividadeAgenda.dataEHora}">
+  							<f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm:ss"/>
+						</h:outputText>
+		            </h:column>                
+		      </h:dataTable>
+	      </h:panelGrid>
+      </h:form>
+   </ui:define>
+</ui:composition>

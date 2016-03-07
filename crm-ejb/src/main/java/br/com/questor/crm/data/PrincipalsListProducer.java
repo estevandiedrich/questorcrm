@@ -12,14 +12,13 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import br.com.questor.crm.controller.LoginBean;
 import br.com.questor.crm.model.Principals;
+import br.com.questor.crm.model.Roles;
 
 @RequestScoped
 public class PrincipalsListProducer {
@@ -27,6 +26,12 @@ public class PrincipalsListProducer {
 	private EntityManager em;
 	
 	private List<Principals> principals;
+	
+	@Inject
+	private RolesListProducer rolesListProducer;
+	
+	@Inject
+	private GrupoUsuariosListProducer grupoUsuariosListProducer;
 	
 	@Produces
 	@Named
@@ -53,12 +58,23 @@ public class PrincipalsListProducer {
 		if(loginBean.isCallerInRole("ADMIN"))
 		{
 			criteria.select(principal).orderBy(cb.asc(principal.get("PrincipalID")));
+			principals = em.createQuery(criteria).getResultList();
+			for(Principals pr:principals)
+			{
+				Roles role = rolesListProducer.retrieveAllRolesByPrincipalOrderedByNome(pr);
+				pr.setRole(role);
+			}
 		}
-		else
-		{
-			criteria.select(principal).where(principal.get("grupoUsuarios").in(p.getGruposUsuarios())).orderBy(cb.asc(principal.get("PrincipalID")));
-		}
-		
-		principals = em.createQuery(criteria).getResultList();
+//		else
+//		{
+//			List<GrupoUsuarios> gruposUsuarios = grupoUsuariosListProducer.retrieveAllGruposUsuariosByPrincipalsOrderedByNome(p);
+//			p.setGruposUsuarios(gruposUsuarios);
+//			criteria.select(principal).where(principal.get("gruposUsuarios").in(p.getGruposUsuarios())).orderBy(cb.asc(principal.get("PrincipalID")));
+//			Principals pr = em.createQuery(criteria).getSingleResult();
+//			Roles role = rolesListProducer.retrieveAllRolesByPrincipalOrderedByNome(pr);
+//			pr.setRole(role);
+//			principals = new ArrayList<Principals>();
+//			principals.add(pr);
+//		}
 	}
 }

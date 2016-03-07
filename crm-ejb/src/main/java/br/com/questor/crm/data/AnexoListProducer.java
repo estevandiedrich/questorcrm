@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import br.com.questor.crm.model.Anexo;
+import br.com.questor.crm.model.Lead;
 
 @RequestScoped
 public class AnexoListProducer {
@@ -40,5 +41,14 @@ public class AnexoListProducer {
 		Root<Anexo> anexo = criteria.from(Anexo.class);
 		criteria.select(anexo).orderBy(cb.asc(anexo.get("descricao")));
 		anexos = em.createQuery(criteria).getResultList();
+	}
+	
+	public List<Anexo> retrieveAllAnexosByLeadOrderedByDescricao(Lead lead)
+	{
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Anexo> criteria = cb.createQuery(Anexo.class);
+		Root<Anexo> anexo = criteria.from(Anexo.class);
+		criteria.select(anexo).where(cb.equal(anexo.get("lead"), lead)).orderBy(cb.asc(anexo.get("descricao")));
+		return em.createQuery(criteria).getResultList();
 	}
 }

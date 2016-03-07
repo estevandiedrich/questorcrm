@@ -2,6 +2,7 @@ package br.com.questor.crm.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -26,9 +27,11 @@ public class Lead implements Serializable {
 	public Lead()
 	{
 		this.leadPai = null;
-		this.gruposUsuarios = new ArrayList<GrupoUsuarios>();
+		this.dataCadastro = new Date();
+		this.gruposUsuarios = new ArrayList<GrupoUsuariosLead>();
 		this.grupoUsuariosSelecionado = new GrupoUsuarios();
 		this.newAtividadeAgenda = new AtividadeAgenda();
+		this.atividadesAgenda = new ArrayList<AtividadeAgenda>();
 		this.emails = new ArrayList<Email>();
 		this.contatos = new ArrayList<Contato>();
 		this.anexos = new ArrayList<Anexo>();
@@ -57,15 +60,22 @@ public class Lead implements Serializable {
 	
 	@Transient
 	private AtividadeAgenda newAtividadeAgenda;
+
+	@OneToMany(mappedBy = "lead", targetEntity = AtividadeAgenda.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<AtividadeAgenda> atividadesAgenda;
+	
+	private Date dataCadastro;
 	
 	@ManyToOne
 	  @JoinColumn(name = "leadpai_id",nullable = true)
 	private Lead leadPai;
 	
-	@OneToMany(mappedBy = "lead", targetEntity = GrupoUsuarios.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-	private List<GrupoUsuarios> gruposUsuarios;
+//	@ManyToMany
+//    @JoinTable(name="grupousuarios_lead", joinColumns={@JoinColumn(name="lead_id")}, inverseJoinColumns={@JoinColumn(name="grupousuarios_id")})
+	@OneToMany(mappedBy = "lead", targetEntity = GrupoUsuariosLead.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<GrupoUsuariosLead> gruposUsuarios;
 	
-	@OneToMany(mappedBy = "lead", targetEntity = Proposta.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	@OneToMany(mappedBy = "lead", targetEntity = Email.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	private List<Email> emails; 
 	
 	@ManyToOne
@@ -130,11 +140,11 @@ public class Lead implements Serializable {
 		this.contatos = contatos;
 	}
 
-	public List<GrupoUsuarios> getGruposUsuarios() {
+	public List<GrupoUsuariosLead> getGruposUsuarios() {
 		return gruposUsuarios;
 	}
 
-	public void setGruposUsuarios(List<GrupoUsuarios> grupoUsuarios) {
+	public void setGruposUsuarios(List<GrupoUsuariosLead> grupoUsuarios) {
 		this.gruposUsuarios = grupoUsuarios;
 	}
 
@@ -185,4 +195,21 @@ public class Lead implements Serializable {
 	public void setNewAtividadeAgenda(AtividadeAgenda newAtividadeAgenda) {
 		this.newAtividadeAgenda = newAtividadeAgenda;
 	}
+
+	public List<AtividadeAgenda> getAtividadesAgenda() {
+		return atividadesAgenda;
+	}
+
+	public void setAtividadesAgenda(List<AtividadeAgenda> atividadesAgenda) {
+		this.atividadesAgenda = atividadesAgenda;
+	}
+
+	public Date getDataCadastro() {
+		return dataCadastro;
+	}
+
+	public void setDataCadastro(Date dataCadastro) {
+		this.dataCadastro = dataCadastro;
+	}
+	
 }

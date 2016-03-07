@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+   template="/WEB-INF/templates/default2.xhtml">
+   <ui:define name="content2">
+   <script type="text/javascript">
+   $(window).load(function() {
+	    jsf.ajax.addOnEvent(function (data) {
+	        if (data.status == "success") {debugger
+	        	emailsEnviados();
+	        }
+	    })
+   });
+   function emailsEnviados()
+   {
+	   var table2 = $('#regEnvioEmails\\:emailsEnviadosDataTable').DataTable({"order": [[ 4, "desc" ]]});
+	    $('#regEnvioEmails\\:emailsEnviadosDataTable tbody').on( 'click', 'tr', function () {
+	        if ( $(this).hasClass('selected') ) {
+	            $(this).removeClass('selected');
+	        }
+	        else {
+	            table2.$('tr.selected').removeClass('selected');
+	            $(this).addClass('selected');
+	        }
+	    } );
+   }
+   $(document).ready(function() {
+	    emailsEnviados();
+	} );
+   </script>
+   	<br/>
+      <h:form id="regEnvioEmails">
+      
+      <h1>Enviar emails</h1>
+
+		<h:panelGrid id="emailPanelGrid">
+           <h:outputLabel for="lead" value="Lead:" />
+           <h:inputText id="lead" value="#{newEmail.lead.nome}" disabled="true"/>
+           <h:message for="lead" errorClass="invalid" />
+           <h:outputLabel for="from" value="De:" />
+           <h:inputText id="from" value="#{loginBean.principalsFromDB.email}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
+           <h:message for="from" errorClass="invalid" />
+           <h:outputLabel for="to" value="Para:" />
+           <h:selectOneMenu id="to" value="#{newEmail.selectedTo}">
+				<f:selectItems value="#{newEmail.lead.contatos}" var="contato" itemValue="#{contato.email}" itemLabel="#{contato.email}" />
+			</h:selectOneMenu>
+			<h:outputLabel for="subject" value="Assunto:" />
+           		<h:inputText id="subject" value="#{newEmail.subject}" />
+           	<h:message for="subject" errorClass="invalid" />
+           	<h:outputLabel for="text" value="Texto:" />
+           		<h:inputText id="text" value="#{newEmail.text}"/>
+           	<h:message for="text" errorClass="invalid" />
+         </h:panelGrid>
+		<br/>
+         <h:commandButton id="enviar"
+            action="#{salvarEmail.salvar}" value="Enviar">
+            <f:ajax execute="regEnvioEmails:subject regEnvioEmails:text regEnvioEmails:to" render="regEnvioEmails:emailsEnviadosPanelGrid"/>
+         </h:commandButton>
+
+      <h2>Emails enviados</h2>      
+      <h:panelGrid id="emailsEnviadosPanelGrid">
+	      <h:panelGroup rendered="#{empty newEmail.lead.emails}">
+	         <em>Nenhum email enviado.</em>
+	      </h:panelGroup>
+	      <h:dataTable id="emailsEnviadosDataTable" var="_email" value="#{newEmail.lead.emails}"
+			rendered="#{not empty newEmail.lead.emails}"
+			styleClass="table"
+			width="100%"
+			style="display:inline-table"
+			 headerClass="table-header"
+			 rowClasses="table-odd-row,table-even-row">
+	         <h:column>
+	            <f:facet name="header">Id</f:facet>
+	                #{_email.id}
+	         </h:column>
+	         <h:column>
+	            <f:facet name="header">De</f:facet>
+	                #{_email.emailFrom}
+	          </h:column>                
+	          <h:column>
+	            <f:facet name="header">Para</f:facet>
+	                #{_email.emailTo}
+	          </h:column>
+	          <h:column>
+	            <f:facet name="header">Assunto</f:facet>
+	                #{_email.subject}
+	          </h:column>
+	          <h:column>
+	            <f:facet name="header">Data</f:facet>
+	                <h:outputText value="#{_email.sentDate}">
+		  				<f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm:ss"/>
+					</h:outputText>
+	          </h:column>
+	      </h:dataTable>
+      </h:panelGrid>
+      </h:form>
+   </ui:define>
+</ui:composition>

@@ -34,7 +34,7 @@ public class Principals implements Serializable {
 	public Principals()
 	{
 		Role = new Roles();
-		gruposUsuarios = new ArrayList<GrupoUsuarios>();
+		gruposUsuarios = new ArrayList<GrupoUsuariosPrincipals>();
 		grupoUsuariosSelecionado = new GrupoUsuarios();
 		imagem = new Imagem();
 		primeiroLogin = true;
@@ -61,8 +61,10 @@ public class Principals implements Serializable {
 	@Transient
 	private GrupoUsuarios grupoUsuariosSelecionado;
 	
-	@OneToMany(mappedBy = "principals", targetEntity = GrupoUsuarios.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-	private List<GrupoUsuarios> gruposUsuarios;
+//	@ManyToMany
+//    @JoinTable(name="grupousuarios_principals", joinColumns={@JoinColumn(name="principals_id")}, inverseJoinColumns={@JoinColumn(name="grupousuarios_id")})
+	@OneToMany(mappedBy = "principals", targetEntity = GrupoUsuariosPrincipals.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<GrupoUsuariosPrincipals> gruposUsuarios;
 	
 	@NotNull
 	private String Password;
@@ -140,11 +142,11 @@ public class Principals implements Serializable {
 		this.imagemPart = imagemPart;
 	}
 
-	public List<GrupoUsuarios> getGruposUsuarios() {
+	public List<GrupoUsuariosPrincipals> getGruposUsuarios() {
 		return gruposUsuarios;
 	}
 
-	public void setGrupoUsuarios(List<GrupoUsuarios> gruposUsuarios) {
+	public void setGruposUsuarios(List<GrupoUsuariosPrincipals> gruposUsuarios) {
 		this.gruposUsuarios = gruposUsuarios;
 	}
 
@@ -162,10 +164,6 @@ public class Principals implements Serializable {
 
 	public void setGrupoUsuariosSelecionado(GrupoUsuarios grupoUsuariosSelecionado) {
 		this.grupoUsuariosSelecionado = grupoUsuariosSelecionado;
-	}
-
-	public void setGruposUsuarios(List<GrupoUsuarios> gruposUsuarios) {
-		this.gruposUsuarios = gruposUsuarios;
 	}
 	
 }

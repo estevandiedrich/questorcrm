@@ -1,5 +1,6 @@
 package br.com.questor.crm.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -15,6 +16,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import br.com.questor.crm.controller.LoginBean;
+import br.com.questor.crm.model.GrupoUsuariosLead;
+import br.com.questor.crm.model.GrupoUsuariosPrincipals;
 import br.com.questor.crm.model.Lead;
 import br.com.questor.crm.model.Principals;
 
@@ -24,6 +27,10 @@ public class LeadListProducer {
 	private EntityManager em;
 	@Inject
 	private LoginBean loginBean;
+	@Inject
+	private GrupoUsuariosPrincipalsListProducer grupoUsuariosPrincipalsListProducer;
+	@Inject
+	private GrupoUsuariosLeadListProducer grupoUsuariosLeadListProducer;
 	
 	private List<Lead> leads;
 	
@@ -49,7 +56,20 @@ public class LeadListProducer {
 		}
 		else
 		{
-			criteria.select(leadRoot).where(leadRoot.get("grupoUsuarios").in(l.getGruposUsuarios())).orderBy(cb.asc(leadRoot.get("nome")));
+			List<GrupoUsuariosPrincipals> grupoUsuariosPrincipals = grupoUsuariosPrincipalsListProducer.retrieveAllGrupoUsuariosPrincipalsByPrincipal(l);
+			l.setGruposUsuarios(grupoUsuariosPrincipals);
+			List<GrupoUsuariosLead> grupoUsuariosLeads2 = new ArrayList<GrupoUsuariosLead>();
+			List<Long> leadsId = new ArrayList<Long>();
+			for(GrupoUsuariosPrincipals g:l.getGruposUsuarios())
+			{
+				List<GrupoUsuariosLead> grupoUsuariosLeads = grupoUsuariosLeadListProducer.retrieveAllGrupoUsuariosLeadByGrupoUsuarios(g.getGrupoUsuarios());
+				grupoUsuariosLeads2.addAll(grupoUsuariosLeads);
+			}
+			for(GrupoUsuariosLead g:grupoUsuariosLeads2)
+			{
+				leadsId.add(g.getLead().getId());
+			}
+			criteria.select(leadRoot).where(leadRoot.get("id").in(leadsId)).orderBy(cb.asc(leadRoot.get("nome")));
 		}
 		leads = em.createQuery(criteria).getResultList();
 	}

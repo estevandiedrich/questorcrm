@@ -51,7 +51,7 @@ public class SalvarNegociacao {
 		log.info("Salvando Negociacao" + newNegociacao.getTexto());
 		newNegociacao.setCotacao(newCotacao);
 		newNegociacao.setDataEHora(new Date());
-		salvarCotacao.getNewCotacao().getNegociacoes().add(newNegociacao);
+//		salvarCotacao.getNewCotacao().getNegociacoes().add(newNegociacao);
 		em.persist(newNegociacao);
 		initNewNegociacao();
 	}

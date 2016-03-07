@@ -32,7 +32,7 @@ public class EmailListProducer {
 	}
 	
 	public void onEmailListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Email email) {
-		retrieveAllEmailsOrderedByTo();
+		retrieveAllEmailsOrderedBySentDate();
 	}
 	public List<Email> retrieveAllEmailsByLeadOrderedBySentDate(Lead lead) 
 	{
@@ -43,11 +43,11 @@ public class EmailListProducer {
 		return em.createQuery(criteria).getResultList();
 	}
 	@PostConstruct
-	public void retrieveAllEmailsOrderedByTo() {
+	public void retrieveAllEmailsOrderedBySentDate() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Email> criteria = cb.createQuery(Email.class);
 		Root<Email> email = criteria.from(Email.class);
-		criteria.select(email).orderBy(cb.asc(email.get("emailTo")));
+		criteria.select(email).orderBy(cb.asc(email.get("sentDate")));
 		emails = em.createQuery(criteria).getResultList();
 	}
 }

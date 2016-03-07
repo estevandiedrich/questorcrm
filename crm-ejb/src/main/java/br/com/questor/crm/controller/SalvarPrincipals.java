@@ -1,6 +1,7 @@
 package br.com.questor.crm.controller;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -15,7 +16,10 @@ import javax.persistence.EntityManager;
 import org.apache.commons.io.IOUtils;
 import org.jboss.security.auth.spi.Util;
 
+import br.com.questor.crm.data.GrupoUsuariosPrincipalsListProducer;
+import br.com.questor.crm.data.RolesListProducer;
 import br.com.questor.crm.model.GrupoUsuarios;
+import br.com.questor.crm.model.GrupoUsuariosPrincipals;
 import br.com.questor.crm.model.ImagePart;
 import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Principals;
@@ -33,8 +37,6 @@ public class SalvarPrincipals extends BaseController implements Serializable {
 	
 	@Inject
 	private Logger log;
-//	@ManagedProperty("#{param.id}")
-	private String id;
 
 	@Inject
 	private EntityManager em;
@@ -43,7 +45,13 @@ public class SalvarPrincipals extends BaseController implements Serializable {
 
 	@Inject
 	private Event<Principals> principalsEventSrc;
-
+	
+	@Inject
+	private GrupoUsuariosPrincipalsListProducer grupoUsuariosPrincipalsListProducer;
+	
+	@Inject
+	private RolesListProducer rolesListProducer;
+	
 	@Produces
 	@Named
 	public Principals getNewPrincipal() {
@@ -61,7 +69,10 @@ public class SalvarPrincipals extends BaseController implements Serializable {
 		if(id != null && !"".equalsIgnoreCase(id))
 		{
 			GrupoUsuarios grupoUsuarios = em.find(GrupoUsuarios.class, Long.parseLong(id));
-			newPrincipal.getGruposUsuarios().add(grupoUsuarios);
+			GrupoUsuariosPrincipals grupoUsuariosPrincipals = new GrupoUsuariosPrincipals();
+			grupoUsuariosPrincipals.setPrincipals(newPrincipal);
+			grupoUsuariosPrincipals.setGrupoUsuarios(grupoUsuarios);
+			newPrincipal.getGruposUsuarios().add(grupoUsuariosPrincipals);
 		}
 	}
 
@@ -109,43 +120,62 @@ public class SalvarPrincipals extends BaseController implements Serializable {
 			newPrincipal.setPassword("t+lL5RPpboxFzSPRYideWhLr3pEApCXE683X+k3NiXw=");
 			em.persist(newPrincipal.getRole());
 			em.persist(newPrincipal);
+			for(GrupoUsuariosPrincipals grupoUsuarios:newPrincipal.getGruposUsuarios())
+			{
+				grupoUsuarios.setPrincipals(newPrincipal);
+				em.persist(grupoUsuarios);
+			}
 		}
 		else
 		{
 			newPrincipal.setPrimeiroLogin(Boolean.FALSE);
-			newPrincipal.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, newPrincipal.getPassword()));  
-
+			for(GrupoUsuariosPrincipals grupoUsuarios:newPrincipal.getGruposUsuarios())
+			{
+				grupoUsuarios.setPrincipals(newPrincipal);
+				em.persist(grupoUsuarios);
+			}
+			if(!"".equalsIgnoreCase(newPrincipal.getPassword()))
+			{
+				newPrincipal.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, newPrincipal.getPassword()));
+			}
 			em.merge(newPrincipal);
 		}
 		principalsEventSrc.fire(newPrincipal);
 		initNewPrincipal();
 	}
-
-	public String editar(String id)
+	public String primeiroAcesso(Principals principals)
 	{
-		this.id = id;
-		initNewPrincipal();
-		return "/pages/protected/user/principalsedit";
+		newPrincipal = principals;
+		lazyInicializationPrincipals();
+		return "/pages/protected/user/principals";
 	}
-
+	public String editar(Principals principals)
+	{
+		newPrincipal = principals;
+		lazyInicializationPrincipals();
+		return "/pages/protected/admin/principals";
+	}
+	private void lazyInicializationPrincipals()
+	{
+		if(newPrincipal != null && newPrincipal.getId() != null)
+		{
+			if(newPrincipal.getImagem() != null)
+			{
+				ImagePart imagemPart = new ImagePart();
+				imagemPart.setSize(newPrincipal.getImagem().getSize());
+				imagemPart.setName(newPrincipal.getImagem().getNome());
+				imagemPart.setInputStream(IOUtils.toInputStream(new String(newPrincipal.getImagem().getImagem())));
+				imagemPart.setContentType(newPrincipal.getImagem().getContentType());
+				newPrincipal.setImagemPart(imagemPart);
+			}
+			List<GrupoUsuariosPrincipals> gruposUsuariosPrincipals = grupoUsuariosPrincipalsListProducer.retrieveAllGrupoUsuariosPrincipalsByPrincipal(newPrincipal);
+			newPrincipal.setGruposUsuarios(gruposUsuariosPrincipals);
+			Roles roles = rolesListProducer.retrieveAllRolesByPrincipalOrderedByNome(newPrincipal);
+			newPrincipal.setRole(roles);
+		}
+	}
 	@PostConstruct
 	public void initNewPrincipal() {
-//		this.id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
-		if(this.id != null && this.id != "")
-		{
-			newPrincipal = em.find(Principals.class, Long.parseLong(this.id));
-			ImagePart imagemPart = new ImagePart();
-			imagemPart.setSize(newPrincipal.getImagem().getSize());
-			imagemPart.setName(newPrincipal.getImagem().getNome());
-			imagemPart.setInputStream(IOUtils.toInputStream(new String(newPrincipal.getImagem().getImagem())));
-			imagemPart.setContentType(newPrincipal.getImagem().getContentType());
-			newPrincipal.setImagemPart(imagemPart);
-			
-		}
-		else
-		{
-			newPrincipal = new Principals();
-			
-		}
+		newPrincipal = new Principals();
 	}
 }

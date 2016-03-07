@@ -22,6 +22,9 @@
 			<h:outputLink value="/crm/pages/protected/user/emailleads.xhtml">
 				<h:outputText value="Emails lead" />
 			</h:outputLink>
+			<h:outputLink value="/crm/pages/protected/user/atividadeagenda.xhtml">
+				<h:outputText value="Agenda" />
+			</h:outputLink>
 			<h:form>
 				<h:commandLink value="Produtos" action="#{salvarProduto.novo}" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
 			</h:form>

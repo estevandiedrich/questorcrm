@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import org.apache.commons.io.IOUtils;
 
 import br.com.questor.crm.model.Anexo;
+import br.com.questor.crm.model.Email;
 import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
 
@@ -41,6 +42,17 @@ public class SalvarAnexo {
 		imagem.setSize(newAnexo.getPart().getSize());
 		newAnexo.setImagem(imagem);
 		lead.getAnexos().add(newAnexo);
+	}
+	
+	public void adicionar(Email email) throws IOException
+	{
+		Imagem imagem = new Imagem();
+		imagem.setContentType(newAnexo.getPart().getContentType());
+		imagem.setImagem(IOUtils.toByteArray(newAnexo.getPart().getInputStream()));
+		imagem.setNome(newAnexo.getPart().getName());
+		imagem.setSize(newAnexo.getPart().getSize());
+		newAnexo.setImagem(imagem);
+		email.getAnexos().add(newAnexo);
 	}
 	
 	@Produces

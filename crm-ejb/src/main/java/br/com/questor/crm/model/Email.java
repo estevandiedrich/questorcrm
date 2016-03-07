@@ -1,14 +1,19 @@
 package br.com.questor.crm.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -18,6 +23,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @SequenceGenerator(name="EMAIL_SEQUENCE", sequenceName="EMAIL_SEQUENCE", allocationSize=1, initialValue=1)
 public class Email implements Serializable{
+	public Email()
+	{
+		anexos = new ArrayList<Anexo>();
+	}
 	/**
 	 * 
 	 */
@@ -39,8 +48,11 @@ public class Email implements Serializable{
 	
 	private Date sentDate;
 	
+	@OneToMany(mappedBy = "email", targetEntity = Anexo.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<Anexo> anexos;
+	
 	@Transient
-	private String selectedTo;
+	private String[] selectedTo;
 	
 	public Long getId() {
 		return id;
@@ -84,10 +96,16 @@ public class Email implements Serializable{
 	public void setLead(Lead lead) {
 		this.lead = lead;
 	}
-	public String getSelectedTo() {
+	public String[] getSelectedTo() {
 		return selectedTo;
 	}
-	public void setSelectedTo(String selectedTo) {
+	public void setSelectedTo(String[] selectedTo) {
 		this.selectedTo = selectedTo;
+	}
+	public List<Anexo> getAnexos() {
+		return anexos;
+	}
+	public void setAnexos(List<Anexo> anexos) {
+		this.anexos = anexos;
 	}	
 }
