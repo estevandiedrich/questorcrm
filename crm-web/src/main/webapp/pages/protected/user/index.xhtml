@@ -31,6 +31,9 @@
 			<h:outputLink value="/crm/pages/protected/admin/modulo.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
 				<h:outputText value="Módulos" />
 			</h:outputLink>
+			<h:outputLink value="/crm/pages/protected/admin/tipocontratacao.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
+				<h:outputText value="Tipos de contratação" />
+			</h:outputLink>
 		</h:panelGrid>
    </ui:define>
 </ui:composition>

@@ -15,16 +15,19 @@
    });
    function emailsEnviados()
    {
-	   var table2 = $('#regEnvioEmails\\:emailsEnviadosDataTable').DataTable({"order": [[ 4, "desc" ]]});
-	    $('#regEnvioEmails\\:emailsEnviadosDataTable tbody').on( 'click', 'tr', function () {
-	        if ( $(this).hasClass('selected') ) {
-	            $(this).removeClass('selected');
-	        }
-	        else {
-	            table2.$('tr.selected').removeClass('selected');
-	            $(this).addClass('selected');
-	        }
-	    } );
+	   if(!$.fn.dataTable.isDataTable('#regEnvioEmails\\:emailsEnviadosDataTable'))
+	   {
+		   var table2 = $('#regEnvioEmails\\:emailsEnviadosDataTable').DataTable({"order": [[ 4, "desc" ]]});
+		    $('#regEnvioEmails\\:emailsEnviadosDataTable tbody').on( 'click', 'tr', function () {
+		        if ( $(this).hasClass('selected') ) {
+		            $(this).removeClass('selected');
+		        }
+		        else {
+		            table2.$('tr.selected').removeClass('selected');
+		            $(this).addClass('selected');
+		        }
+		    } );
+	   }
    }
    $(document).ready(function() {
 	    var table = $('#regEnvioEmails\\:leadsDataTable').DataTable();

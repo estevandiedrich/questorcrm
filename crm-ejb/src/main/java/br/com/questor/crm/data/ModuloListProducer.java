@@ -41,6 +41,14 @@ public class ModuloListProducer {
 		Root<Modulo> modulo = criteria.from(Modulo.class);
 		criteria.select(modulo).orderBy(cb.asc(modulo.get("descricao")));
 		modulos = em.createQuery(criteria).getResultList();
+		for(Modulo m:modulos)
+		{
+			if(m.getProduto() != null)
+			{
+				Produto p = em.find(Produto.class, m.getProduto().getId());
+				m.setProduto(p);
+			}
+		}
 	}
 	
 	public List<Modulo> retrieveAllModulosByProdutoOrderedByNome(Produto produto) {

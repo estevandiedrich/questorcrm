@@ -97,4 +97,10 @@ public class ImagePart implements Part {
 		this.size = size;
 	}
 
+	@Override
+	public String getSubmittedFileName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

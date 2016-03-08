@@ -47,6 +47,11 @@
 		});
 	}
    $(document).ready(function() {
+	   $('#regAtividadeAgenda\\:hora').inputmask({
+           mask: "99:59:59",
+           definitions: {'5': {validator: "[0-5]"}}
+ 		});
+
 	    var table = $('#regAtividadeAgenda\\:leadsDataTable').DataTable();
 	    $('#regAtividadeAgenda\\:leadsDataTable tbody').on( 'click', 'tr', function () {
 	        if ( $(this).hasClass('selected') ) {

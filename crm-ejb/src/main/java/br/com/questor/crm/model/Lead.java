@@ -20,6 +20,8 @@ import javax.servlet.http.Part;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import br.com.questor.crm.enums.LeadEnum;
+
 @Entity
 @XmlRootElement
 @SequenceGenerator(name="LEAD_SEQUENCE", sequenceName="LEAD_SEQUENCE", allocationSize=1, initialValue=1)
@@ -27,6 +29,7 @@ public class Lead implements Serializable {
 	public Lead()
 	{
 		this.leadPai = null;
+		this.statusLead = LeadEnum.QUALIFICADA;
 		this.dataCadastro = new Date();
 		this.gruposUsuarios = new ArrayList<GrupoUsuariosLead>();
 		this.grupoUsuariosSelecionado = new GrupoUsuarios();
@@ -49,8 +52,22 @@ public class Lead implements Serializable {
 	@NotNull
 	private String nome;
 	
+	private LeadEnum statusLead;
+	
 	@OneToMany(mappedBy = "lead", targetEntity = Contato.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	private List<Contato> contatos;
+	
+	private String numero;
+	
+	private String rua;
+	
+	private String bairro;
+	
+	private String cep;
+	
+	private String cidade;
+	
+	private String estado;
 	
 	@Transient
 	private Contato contatoSelecionado;
@@ -91,6 +108,11 @@ public class Lead implements Serializable {
 	@ManyToOne
 	  @JoinColumn(name = "principals_id")
 	private Principals usuarioQueCadastrou;
+	
+	public LeadEnum[] getStatusLeadValues()
+	{
+		return LeadEnum.values();
+	}
 
 	public Long getId() {
 		return id;
@@ -210,6 +232,62 @@ public class Lead implements Serializable {
 
 	public void setDataCadastro(Date dataCadastro) {
 		this.dataCadastro = dataCadastro;
+	}
+
+	public LeadEnum getStatusLead() {
+		return statusLead;
+	}
+
+	public void setStatusLead(LeadEnum statusLead) {
+		this.statusLead = statusLead;
+	}
+
+	public String getNumero() {
+		return numero;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+
+	public String getRua() {
+		return rua;
+	}
+
+	public void setRua(String rua) {
+		this.rua = rua;
+	}
+
+	public String getBairro() {
+		return bairro;
+	}
+
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
+	}
+
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
+	}
+
+	public String getCidade() {
+		return cidade;
+	}
+
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
 	}
 	
 }

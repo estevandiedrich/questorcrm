@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.activation.DataHandler;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Asynchronous;
@@ -15,18 +16,24 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.persistence.EntityManager;
 
 import br.com.questor.crm.data.ContatoListProducer;
 import br.com.questor.crm.data.EmailListProducer;
+import br.com.questor.crm.model.Anexo;
 import br.com.questor.crm.model.Contato;
 import br.com.questor.crm.model.Email;
+import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
 
 @Stateful
@@ -75,6 +82,18 @@ public class SalvarEmail {
             message.setSubject(newEmail.getSubject());
             //Corpo do email
             message.setText(newEmail.getText());
+            
+            BodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setText("Anexos");
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+            messageBodyPart = new MimeBodyPart();
+            for(Anexo anexo:newEmail.getAnexos())
+            {
+            	addAttachment(multipart, anexo.getImagem());
+            }
+            message.setContent(multipart);
+            
             //Envio da mensagem            
             Transport.send(message);
             log.info("Email enviado");
@@ -82,6 +101,20 @@ public class SalvarEmail {
             log.info("Erro a enviar o email : " + e.getMessage());        
         }
     }
+	private static void addAttachment(Multipart multipart, Imagem imagem)
+	{
+//	    DataSource source = new FileDataSource(filename);
+		DataHandler source = new DataHandler(imagem.getImagem(),imagem.getContentType());
+	    BodyPart messageBodyPart = new MimeBodyPart();        
+	    try {
+			messageBodyPart.setDataHandler(source);
+			messageBodyPart.setFileName(imagem.getNome());
+			multipart.addBodyPart(messageBodyPart);
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public void salvar() throws Exception {
 		log.info("Salvando Email" + newEmail.getEmailTo());
 		newEmail.getLead().getEmails().add(newEmail);

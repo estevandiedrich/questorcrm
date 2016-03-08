@@ -30,7 +30,7 @@ public class SalvarNegociacao {
 	private Event<Negociacao> negociacaoEventSrc;
 	
 	@Inject
-	private SalvarCotacao salvarCotacao;
+	private SalvarProposta salvarCotacao;
 	
 	private Negociacao newNegociacao;
 	

@@ -89,6 +89,28 @@
 						<h:inputFile id="foto" value="#{newLead.imagemPart}">
 							<!-- 			<f:validator binding="#{fileUploadValidator}"/> -->
 						</h:inputFile>
+						<h:outputLabel for="statusLead" value="Status:" />
+						<h:selectOneMenu id="statusLead" value="#{newLead.statusLead}">
+    						<f:selectItems value="#{newLead.statusLeadValues}"/>
+						</h:selectOneMenu>
+						<h:outputLabel for="uf" value="UF:" />
+						<h:inputText id="uf" value="#{newLead.estado}" />
+						<h:message for="uf" errorClass="invalid" />
+						<h:outputLabel for="cidade" value="Cidade:" />
+						<h:inputText id="cidade" value="#{newLead.cidade}" />
+						<h:message for="cidade" errorClass="invalid" />
+						<h:outputLabel for="bairro" value="Bairro:" />
+						<h:inputText id="bairro" value="#{newLead.bairro}" />
+						<h:message for="bairro" errorClass="invalid" />
+						<h:outputLabel for="rua" value="Rua:" />
+						<h:inputText id="rua" value="#{newLead.rua}" />
+						<h:message for="rua" errorClass="invalid" />
+						<h:outputLabel for="numero" value="Número:" />
+						<h:inputText id="numero" value="#{newLead.numero}" />
+						<h:message for="numero" errorClass="invalid" />
+						<h:outputLabel for="cep" value="CEP:" />
+						<h:inputText id="cep" value="#{newLead.cep}" />
+						<h:message for="cep" errorClass="invalid" />
 						<h:outputLabel for="membro" value="Membro:" />
 						<h:panelGroup>
 							<h:inputText id="membro" value="#{newLead.leadPai.id}" />

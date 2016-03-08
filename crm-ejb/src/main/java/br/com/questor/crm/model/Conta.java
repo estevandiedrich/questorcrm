@@ -19,16 +19,16 @@ public class Conta extends Lead implements Serializable{
 	 */
 	private static final long serialVersionUID = -1151091731613794812L;
 	
-	@OneToMany(mappedBy = "lead", targetEntity = Proposta.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-	private List<Proposta> cotacoes;
+//	@OneToMany(mappedBy = "lead", targetEntity = Proposta.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+//	private List<Proposta> cotacoes;
 
-	public List<Proposta> getCotacoes() {
-		return cotacoes;
-	}
-
-	public void setCotacoes(List<Proposta> cotacoes) {
-		this.cotacoes = cotacoes;
-	}
+//	public List<Proposta> getCotacoes() {
+//		return cotacoes;
+//	}
+//
+//	public void setCotacoes(List<Proposta> cotacoes) {
+//		this.cotacoes = cotacoes;
+//	}
 	
 	
 }

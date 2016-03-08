@@ -38,7 +38,7 @@ public class SalvarAnexo {
 		Imagem imagem = new Imagem();
 		imagem.setContentType(newAnexo.getPart().getContentType());
 		imagem.setImagem(IOUtils.toByteArray(newAnexo.getPart().getInputStream()));
-		imagem.setNome(newAnexo.getPart().getName());
+		imagem.setNome(newAnexo.getPart().getSubmittedFileName());
 		imagem.setSize(newAnexo.getPart().getSize());
 		newAnexo.setImagem(imagem);
 		lead.getAnexos().add(newAnexo);
@@ -49,7 +49,7 @@ public class SalvarAnexo {
 		Imagem imagem = new Imagem();
 		imagem.setContentType(newAnexo.getPart().getContentType());
 		imagem.setImagem(IOUtils.toByteArray(newAnexo.getPart().getInputStream()));
-		imagem.setNome(newAnexo.getPart().getName());
+		imagem.setNome(newAnexo.getPart().getSubmittedFileName());
 		imagem.setSize(newAnexo.getPart().getSize());
 		newAnexo.setImagem(imagem);
 		email.getAnexos().add(newAnexo);

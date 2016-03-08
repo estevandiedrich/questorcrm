@@ -18,7 +18,7 @@ import br.com.questor.crm.model.Proposta;
 import br.com.questor.crm.model.Lead;
 
 @RequestScoped
-public class CotacaoListProducer {
+public class PropostaListProducer {
 	@Inject
 	private EntityManager em;
 	

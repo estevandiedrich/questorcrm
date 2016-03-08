@@ -18,9 +18,9 @@
 	});
    function anexosDataTable()
    {
-	   var table = $('#regLeads\\:anexosDataTable').DataTable();
+	   var table = $('#regEnvioEmails\\:anexosDataTable').DataTable();
 		 
-	    $('#regLeads\\:anexosDataTable tbody').on( 'click', 'tr', function () {
+	    $('#regEnvioEmails\\:anexosDataTable tbody').on( 'click', 'tr', function () {
 	        if ( $(this).hasClass('selected') ) {
 	            $(this).removeClass('selected');
 	        }
@@ -44,7 +44,7 @@
          <p>
             <h:commandButton id="salvar"
                action="#{salvarAnexo.adicionar(email)}" value="Adicionar" >
-               <f:ajax execute="regAnexos:nome regAnexos:anexo" render="regLeads:anexosPanelGrid"/>
+               <f:ajax execute="regAnexos:nome regAnexos:anexo" render="regEnvioEmails:anexosPanelGrid"/>
             </h:commandButton>
          </p>
          </h:panelGrid>

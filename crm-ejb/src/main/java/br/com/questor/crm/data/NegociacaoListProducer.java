@@ -48,8 +48,7 @@ public class NegociacaoListProducer {
 		Root<Negociacao> negociacao = criteria.from(Negociacao.class);
 		criteria.select(negociacao).where(cb.equal(negociacao.get("cotacao"), cotacao)).orderBy(cb.desc(negociacao.get("dataEHora")));
 		negociacoes = em.createQuery(criteria).getResultList();
-		cotacao.setNegociacoes(negociacoes);
-//		return negociacoes;
+//		cotacao.setNegociacoes(negociacoes);
 	}
 	
 	@PostConstruct

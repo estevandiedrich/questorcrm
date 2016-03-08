@@ -30,6 +30,9 @@ public class ProdutosListProducer {
 		return produtos;
 	}
 	
+//	@Inject
+//	private ModuloListProducer moduloListProducer;
+	
 	public void onProdutoListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Produto produto) {
 		retrieveAllProdutosOrderedByDescricao();
 	}
@@ -40,5 +43,10 @@ public class ProdutosListProducer {
 		Root<Produto> produto = criteria.from(Produto.class);
 		criteria.select(produto).orderBy(cb.asc(produto.get("descricao")));
 		produtos = em.createQuery(criteria).getResultList();
+//		for(Produto p:produtos)
+//		{
+//			List<Modulo> m = moduloListProducer.retrieveAllModulosByProdutoOrderedByNome(p);
+//			p.setModulos(m);
+//		}
 	}
 }
