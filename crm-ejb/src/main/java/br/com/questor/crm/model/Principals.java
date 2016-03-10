@@ -37,6 +37,7 @@ public class Principals implements Serializable {
 		gruposUsuarios = new ArrayList<GrupoUsuariosPrincipals>();
 		grupoUsuariosSelecionado = new GrupoUsuarios();
 		imagem = new Imagem();
+		assinaturaEmail = new Imagem();
 		primeiroLogin = true;
 		nome = "";
 	}
@@ -72,11 +73,18 @@ public class Principals implements Serializable {
 	private boolean primeiroLogin;
 	
 	@ManyToOne
+	  @JoinColumn(name = "assinturaemail_id")
+	private Imagem assinaturaEmail;
+	
+	@ManyToOne
 	  @JoinColumn(name = "imagem_id")
 	private Imagem imagem;
 	
 	@Transient
 	private Part imagemPart;
+	
+	@Transient
+	private Part assinaturaPart;
 
 	public Long getId() {
 		return id;
@@ -164,6 +172,22 @@ public class Principals implements Serializable {
 
 	public void setGrupoUsuariosSelecionado(GrupoUsuarios grupoUsuariosSelecionado) {
 		this.grupoUsuariosSelecionado = grupoUsuariosSelecionado;
+	}
+
+	public Imagem getAssinaturaEmail() {
+		return assinaturaEmail;
+	}
+
+	public void setAssinaturaEmail(Imagem assinaturaEmail) {
+		this.assinaturaEmail = assinaturaEmail;
+	}
+
+	public Part getAssinaturaPart() {
+		return assinaturaPart;
+	}
+
+	public void setAssinaturaPart(Part assinaturaPart) {
+		this.assinaturaPart = assinaturaPart;
 	}
 	
 }

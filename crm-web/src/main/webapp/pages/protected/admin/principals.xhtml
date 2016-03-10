@@ -84,6 +84,10 @@
 					<p:graphicImage
 						value="#{salvarPrincipals.carregaImagem(newPrincipal.imagem)}"
 						cache="false" width="150px" height="200px" />
+					<br/>
+					<p:graphicImage
+						value="#{salvarPrincipals.carregaImagem(newPrincipal.assinaturaEmail)}"
+						cache="false" width="300px" height="200px"  />
 				</h:panelGrid>
 				<h:panelGrid>
 					<h:outputLabel for="usuario" value="Nome de Usuário:" />
@@ -106,6 +110,10 @@
 					<h:message for="role" errorClass="invalid" />
 					<h:outputLabel for="foto" value="Foto:" />
 					<h:inputFile id="foto" value="#{newPrincipal.imagemPart}">
+						<!-- 			<f:validator binding="#{fileUploadValidator}"/> -->
+					</h:inputFile>
+					<h:outputLabel for="assinatura" value="Assinatura:" />
+					<h:inputFile id="assinatura" value="#{newPrincipal.assinaturaPart}">
 						<!-- 			<f:validator binding="#{fileUploadValidator}"/> -->
 					</h:inputFile>
 					<br />

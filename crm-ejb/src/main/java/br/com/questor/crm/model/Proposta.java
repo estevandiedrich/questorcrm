@@ -1,11 +1,18 @@
 package br.com.questor.crm.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -15,6 +22,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Proposta implements Serializable{
 	public Proposta()
 	{
+		lead = new Lead();
+		produtoModulosSelecionados = new ArrayList<ProdutoModulosSelecionados>();
 	}
 	/**
 	 * 
@@ -25,6 +34,11 @@ public class Proposta implements Serializable{
 	private Long id;
 	
 	private String descricao;
+	@ManyToOne
+	  @JoinColumn(name = "lead_id")
+	private Lead lead;
+	@OneToMany(mappedBy = "proposta", targetEntity = ProdutoModulosSelecionados.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<ProdutoModulosSelecionados> produtoModulosSelecionados;
 
 	public Long getId() {
 		return id;
@@ -40,5 +54,21 @@ public class Proposta implements Serializable{
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	public Lead getLead() {
+		return lead;
+	}
+
+	public void setLead(Lead lead) {
+		this.lead = lead;
+	}
+
+	public List<ProdutoModulosSelecionados> getProdutoModulosSelecionados() {
+		return produtoModulosSelecionados;
+	}
+
+	public void setProdutoModulosSelecionados(List<ProdutoModulosSelecionados> produtoModulosSelecionados) {
+		this.produtoModulosSelecionados = produtoModulosSelecionados;
 	}
 }

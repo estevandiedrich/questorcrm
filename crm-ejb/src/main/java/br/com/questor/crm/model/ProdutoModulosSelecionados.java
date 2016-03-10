@@ -28,6 +28,7 @@ public class ProdutoModulosSelecionados implements Serializable{
 		this.modulosSelecionados = new ArrayList<ModuloSelecionado>();
 		this.tipoContratacao = new TipoContratacao();
 		this.quantidade = BigDecimal.ZERO;
+		this.proposta = new Proposta();
 	}
 	/**
 	 * 
@@ -38,8 +39,8 @@ public class ProdutoModulosSelecionados implements Serializable{
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="PRODUTO_MODULOS_SELECIONADOS_SEQUENCE")
 	private Long id;
 	@ManyToOne
-	  @JoinColumn(name = "produtoModulosTipoContratacaoQuantidade_id")
-	private ProdutoModulosTipoContratacaoQuantidade produtoModulosTipoContratacaoQuantidade;
+	  @JoinColumn(name = "proposta_id")
+	private Proposta proposta;
 	@ManyToOne
 	  @JoinColumn(name = "produto_id")
 	private Produto produto;
@@ -47,7 +48,8 @@ public class ProdutoModulosSelecionados implements Serializable{
 	private List<ModuloSelecionado> modulosSelecionados;
 	@Transient
 	private Modulo moduloSelecionado;
-	
+	@ManyToOne
+	  @JoinColumn(name = "tipocontratacao_id")
 	private TipoContratacao tipoContratacao;
 	
 	private BigDecimal quantidade;
@@ -75,21 +77,20 @@ public class ProdutoModulosSelecionados implements Serializable{
 		this.modulosSelecionados = modulosSelecionados;
 	}
 
-	public ProdutoModulosTipoContratacaoQuantidade getProdutoModulosTipoContratacaoQuantidade() {
-		return produtoModulosTipoContratacaoQuantidade;
-	}
-
-	public void setProdutoModulosTipoContratacaoQuantidade(
-			ProdutoModulosTipoContratacaoQuantidade produtoModulosTipoContratacaoQuantidade) {
-		this.produtoModulosTipoContratacaoQuantidade = produtoModulosTipoContratacaoQuantidade;
-	}
-
 	public Modulo getModuloSelecionado() {
 		return moduloSelecionado;
 	}
 
 	public void setModuloSelecionado(Modulo moduloSelecionado) {
 		this.moduloSelecionado = moduloSelecionado;
+	}
+
+	public BigDecimal getQuantidade() {
+		return quantidade;
+	}
+
+	public void setQuantidade(BigDecimal quantidade) {
+		this.quantidade = quantidade;
 	}
 
 	public TipoContratacao getTipoContratacao() {
@@ -100,11 +101,11 @@ public class ProdutoModulosSelecionados implements Serializable{
 		this.tipoContratacao = tipoContratacao;
 	}
 
-	public BigDecimal getQuantidade() {
-		return quantidade;
+	public Proposta getProposta() {
+		return proposta;
 	}
 
-	public void setQuantidade(BigDecimal quantidade) {
-		this.quantidade = quantidade;
+	public void setProposta(Proposta proposta) {
+		this.proposta = proposta;
 	}	
 }

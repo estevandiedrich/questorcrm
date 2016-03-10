@@ -88,6 +88,16 @@ public class SalvarPrincipals extends BaseController implements Serializable {
 			newPrincipal.setImagem(imagem);
 			em.persist(imagem);
 		}
+		if(newPrincipal.getAssinaturaPart() != null)
+		{
+			Imagem assinatura = new Imagem();
+			assinatura.setNome(newPrincipal.getAssinaturaPart().getName());
+			assinatura.setSize(newPrincipal.getAssinaturaPart().getSize());
+			assinatura.setContentType(newPrincipal.getAssinaturaPart().getContentType());
+			assinatura.setImagem(IOUtils.toByteArray(newPrincipal.getAssinaturaPart().getInputStream()));
+			newPrincipal.setAssinaturaEmail(assinatura);
+			em.persist(assinatura);
+		}
 		if(newPrincipal.getId() == null)
 		{
 			if(newPrincipal.getRole().getRole() == null)
@@ -131,8 +141,11 @@ public class SalvarPrincipals extends BaseController implements Serializable {
 			newPrincipal.setPrimeiroLogin(Boolean.FALSE);
 			for(GrupoUsuariosPrincipals grupoUsuarios:newPrincipal.getGruposUsuarios())
 			{
-				grupoUsuarios.setPrincipals(newPrincipal);
-				em.persist(grupoUsuarios);
+				if(grupoUsuarios.getId() == null)
+				{
+					grupoUsuarios.setPrincipals(newPrincipal);
+					em.persist(grupoUsuarios);
+				}
 			}
 			if(!"".equalsIgnoreCase(newPrincipal.getPassword()))
 			{

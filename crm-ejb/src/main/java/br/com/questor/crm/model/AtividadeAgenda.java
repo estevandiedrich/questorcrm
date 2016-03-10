@@ -50,6 +50,8 @@ public class AtividadeAgenda implements Serializable{
 	private String participantes;
 	@Transient
 	private String[] participantesSelecionados;
+
+	private String antecedencia;
 	
 	public Long getId() {
 		return id;
@@ -121,6 +123,14 @@ public class AtividadeAgenda implements Serializable{
 
 	public void setParticipantesSelecionados(String[] participantesSelecionados) {
 		this.participantesSelecionados = participantesSelecionados;
+	}
+
+	public String getAntecedencia() {
+		return antecedencia;
+	}
+
+	public void setAntecedencia(String antecedencia) {
+		this.antecedencia = antecedencia;
 	}
 	
 }

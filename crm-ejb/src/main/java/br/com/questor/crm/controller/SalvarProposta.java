@@ -38,6 +38,7 @@ public class SalvarProposta {
 	{
 		newProposta = proposta;
 	}
+	
 //	public void adicionarCotacao(Conta conta)
 //	{
 //		conta.getCotacoes().add(newProposta);

@@ -13,10 +13,13 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 
 import br.com.questor.crm.data.ModuloListProducer;
+import br.com.questor.crm.data.ModuloSelecionadoListProducer;
 import br.com.questor.crm.model.Modulo;
 import br.com.questor.crm.model.ModuloSelecionado;
 import br.com.questor.crm.model.Produto;
 import br.com.questor.crm.model.ProdutoModulosSelecionados;
+import br.com.questor.crm.model.Proposta;
+import br.com.questor.crm.model.TipoContratacao;
 
 @Stateful
 //@Model
@@ -33,6 +36,9 @@ public class SalvarProdutoModulosSelecionados {
 	private ModuloListProducer moduloListProducer;
 	
 	@Inject
+	private ModuloSelecionadoListProducer moduloSelecionadoListProducer;
+	
+	@Inject
 	private Event<ProdutoModulosSelecionados> produtoModulosSelecionadosEventSrc;
 	
 	private ProdutoModulosSelecionados newProdutoModulosSelecionados;
@@ -42,10 +48,17 @@ public class SalvarProdutoModulosSelecionados {
 	public ProdutoModulosSelecionados getNewProdutoModulosSelecionados() {
 		return newProdutoModulosSelecionados;
 	}
-	
+	public void setProdutoModulosSelecionados(ProdutoModulosSelecionados produto)
+	{
+		newProdutoModulosSelecionados = produto;
+//		List<ModuloSelecionado> modulosSelecionados = moduloSelecionadoListProducer.retrieveAllModuloSelecionadoByProdutoModulosSelecionados(newProdutoModulosSelecionados);
+//		List<Modulo> modulos = moduloListProducer.retrieveAllModulosByProdutoOrderedByNome(newProdutoModulosSelecionados.getProduto());
+//		newProdutoModulosSelecionados.getProduto().setModulos(modulos);
+//		newProdutoModulosSelecionados.setModulosSelecionados(modulosSelecionados);
+	}
 	public void setProduto() {
         Long id = newProdutoModulosSelecionados.getProduto().getId();
-        Produto p =em.find(Produto.class, id);
+        Produto p = em.find(Produto.class, id);
         List<Modulo> modulos = moduloListProducer.retrieveAllModulosByProdutoOrderedByNome(p);
         p.setModulos(modulos);
         newProdutoModulosSelecionados.setProduto(p);
@@ -58,9 +71,28 @@ public class SalvarProdutoModulosSelecionados {
 //		moduloSelecionado.setProdutosModulosSelecionados(newProdutoModulosSelecionados);
 		newProdutoModulosSelecionados.getModulosSelecionados().add(moduloSelecionado);
 	}
-	
+	public void adicionar(Proposta proposta) throws Exception
+	{
+		log.info("Salvando " + newProdutoModulosSelecionados.getId());
+		
+		TipoContratacao tipoContratacao = em.find(TipoContratacao.class, newProdutoModulosSelecionados.getTipoContratacao().getId());
+		newProdutoModulosSelecionados.setTipoContratacao(tipoContratacao);
+		
+//		em.persist(newProdutoModulosSelecionados);
+		for(ModuloSelecionado moduloSelecionado:newProdutoModulosSelecionados.getModulosSelecionados())
+		{
+			moduloSelecionado.setProdutosModulosSelecionados(newProdutoModulosSelecionados);
+//			em.persist(moduloSelecionado);
+		}
+		proposta.getProdutoModulosSelecionados().add(newProdutoModulosSelecionados);
+		initNewProdutoModulosSelecionados();
+	}
 	public void salvar() throws Exception {
 		log.info("Salvando " + newProdutoModulosSelecionados.getId());
+		
+		TipoContratacao tipoContratacao = em.find(TipoContratacao.class, newProdutoModulosSelecionados.getTipoContratacao().getId());
+		newProdutoModulosSelecionados.setTipoContratacao(tipoContratacao);
+		
 		em.persist(newProdutoModulosSelecionados);
 		for(ModuloSelecionado moduloSelecionado:newProdutoModulosSelecionados.getModulosSelecionados())
 		{

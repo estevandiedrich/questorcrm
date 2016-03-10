@@ -14,6 +14,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import br.com.questor.crm.model.ProdutoModulosSelecionados;
 import br.com.questor.crm.model.TipoContratacao;
 
 @RequestScoped
@@ -37,8 +38,16 @@ public class TiposContratacaoListProducer {
 	public void retrieveAllTipoContratacaosOrderedByDescricao() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<TipoContratacao> criteria = cb.createQuery(TipoContratacao.class);
-		Root<TipoContratacao> tipoProduto = criteria.from(TipoContratacao.class);
-		criteria.select(tipoProduto).orderBy(cb.asc(tipoProduto.get("descricao")));
+		Root<TipoContratacao> tipoContratacao = criteria.from(TipoContratacao.class);
+		criteria.select(tipoContratacao).orderBy(cb.asc(tipoContratacao.get("descricao")));
 		tiposContratacao = em.createQuery(criteria).getResultList();
+	}
+	public TipoContratacao retrieveTipoContratacaoByProdutoModulosSelecionados(ProdutoModulosSelecionados produtoModulosSelecionados)
+	{
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<TipoContratacao> criteria = cb.createQuery(TipoContratacao.class);
+		Root<TipoContratacao> tipoContratacao = criteria.from(TipoContratacao.class);
+		criteria.select(tipoContratacao).where(cb.equal(tipoContratacao.get("produtoModulosSelecionados"), produtoModulosSelecionados));
+		return em.createQuery(criteria).getSingleResult();
 	}
 }

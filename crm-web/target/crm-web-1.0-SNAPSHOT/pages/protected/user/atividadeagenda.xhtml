@@ -108,6 +108,12 @@
 	      <h:inputText id="hora" value="#{newAtividadeAgenda.hora}">
 	      	<f:convertDateTime type="time" pattern="HH:mm:ss"/>
 	      </h:inputText>
+	      <h:outputLabel for="antecedencia" value="Avisar com antecedencia de:" />
+	      <h:selectOneMenu id="antecedencia" value="#{newAtividadeAgenda.antecedencia}">
+	      	<f:selectItem itemLabel="10 minutos" itemValue="10"/>
+	      	<f:selectItem itemLabel="20 minutos" itemValue="20"/>
+	      	<f:selectItem itemLabel="30 minutos" itemValue="30"/>
+	      </h:selectOneMenu>
 	    </h:panelGrid>
 	      <br/>
 	      <h:commandButton id="adicionarAtividadeAgenda" action="#{salvarAtividadeAgenda.adicionarAtividadeAgenda()}" value="Adicionar">

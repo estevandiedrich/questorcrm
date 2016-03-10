@@ -18,7 +18,28 @@
 	            $(this).addClass('selected');
 	        }
 	    } );
+	    var table2 = $('#leadsDataTable').DataTable();
+	 
+	    $('#leadsDataTable tbody').on( 'click', 'tr', function () {
+	        if ( $(this).hasClass('selected') ) {
+	            $(this).removeClass('selected');
+	        }
+	        else {
+	            table2.$('tr.selected').removeClass('selected');
+	            $(this).addClass('selected');
+	        }
+	    } );
 	} );
+   function modalLead()
+   {
+	   $('#myModalLeadProposta').modal('show');
+   }
+   function selecionarLead() {
+		var table = $('#leadsDataTable').DataTable();
+		var id = table.row('.selected').data()[0];
+		$('#regProposta\\:lead').val(id);
+		$('#myModalLeadProposta').modal('hide');
+	}
    </script>
    
       <h1>Nova Proposta</h1>
@@ -28,11 +49,23 @@
 			<h:outputLabel for="descricao" value="Descrição:" />
             <h:inputText id="descricao" value="#{newProposta.descricao}" />
             <h:message for="descricao" errorClass="invalid" />
+            <h:outputLabel for="lead" value="Conta:" />
+			<h:panelGroup>
+				<h:inputText id="lead" value="#{newProposta.lead.id}" />
+				<h:graphicImage library="images" name="magnifying.png"
+					onclick="javascript:modalLead()" />
+			</h:panelGroup>
             <br/>
-            <h:commandButton id="salvar"
-               action="#{salvarProposta.salvar}" value="Salvar" />
+         
+	 		<ui:include src="/pages/protected/user/_produtomodulosselecionados.xhtml">
+				<ui:param name="proposta" value="#{newProposta}" />
+		 	</ui:include>
+		 	<h:commandButton id="salvar" action="#{salvarProposta.salvar}" value="Salvar"/>
          </h:panelGrid>
-      </h:form>
+     </h:form>
+	 <br/>
+	 
+      <br/>      
       <h2>Propostas</h2>
       <h:panelGroup rendered="#{empty proposta}">
          <em>Nenhuma Proposta registrada.</em>
@@ -51,5 +84,58 @@
                 #{_proposta.descricao}
             </h:column>                
       </h:dataTable>
+      	<!-- Modal -->
+		<div id="myModalLeadProposta" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">X</button>
+						<h4 class="modal-title">Selecione a Lead</h4>
+					</div>
+					<div class="modal-body">
+						<h:panelGroup rendered="#{empty leads}">
+							<em>Nenhum lead registrado.</em>
+						</h:panelGroup>
+						<h:dataTable id="leadsDataTable" var="_lead" value="#{leads}"
+							rendered="#{not empty leads}" styleClass="table"
+							headerClass="table-header" rowClasses="table-odd-row,table-even-row">
+							<h:column>
+								<f:facet name="header">Id</f:facet>
+				                <h:outputText value="#{_lead.id}"/>
+				            </h:column>
+							<h:column>
+								<f:facet name="header">Nome</f:facet>
+				                <h:outputText value="#{_lead.nome}"/>
+				            </h:column>
+							<h:column>
+								<f:facet name="header"></f:facet>
+								<h:form>
+									<h:commandLink value="Editar" action="#{salvarLead.editar(_lead)}" />
+								</h:form>
+							</h:column>
+							<h:column>
+								<f:facet name="header"></f:facet>
+								<h:outputLink value="/crm/pages/protected/user/emailleads.xhtml">
+									<h:outputText value="Email" />
+								</h:outputLink>
+							</h:column>
+							<h:column>
+								<f:facet name="header"></f:facet>
+								<h:outputLink
+									value="/crm/pages/protected/user/atividadeagenda.xhtml">
+									<h:outputText value="Agenda" />
+								</h:outputLink>
+							</h:column>
+						</h:dataTable>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+							onclick="javascript:selecionarLead()">Selecionar</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+					</div>
+				</div>
+			</div>
+		</div>
    </ui:define>
 </ui:composition>
