@@ -49,6 +49,12 @@
 			<h:outputLabel for="descricao" value="Descrição:" />
             <h:inputText id="descricao" value="#{newProposta.descricao}" />
             <h:message for="descricao" errorClass="invalid" />
+            <h:outputLabel for="validade" value="Validade:" />
+		      <h:selectOneMenu id="validade" value="#{newProposta.validade}">
+		      	<f:selectItem itemLabel="10 dias" itemValue="10"/>
+		      	<f:selectItem itemLabel="20 dias" itemValue="20"/>
+		      	<f:selectItem itemLabel="30 dias" itemValue="30"/>
+		      </h:selectOneMenu>
             <h:outputLabel for="lead" value="Conta:" />
 			<h:panelGroup>
 				<h:inputText id="lead" value="#{newProposta.lead.id}" />
@@ -67,11 +73,11 @@
 	 
       <br/>      
       <h2>Propostas</h2>
-      <h:panelGroup rendered="#{empty proposta}">
+      <h:panelGroup rendered="#{empty propostas}">
          <em>Nenhuma Proposta registrada.</em>
       </h:panelGroup>
-      <h:dataTable id="propostaDataTable" var="_proposta" value="#{proposta}"
-		rendered="#{not empty proposta}"
+      <h:dataTable id="propostaDataTable" var="_proposta" value="#{propostas}"
+		rendered="#{not empty propostas}"
 		styleClass="table"
 		 headerClass="table-header"
 		 rowClasses="table-odd-row,table-even-row">

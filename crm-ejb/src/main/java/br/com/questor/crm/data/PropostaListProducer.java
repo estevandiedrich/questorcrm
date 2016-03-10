@@ -22,33 +22,33 @@ public class PropostaListProducer {
 	@Inject
 	private EntityManager em;
 	
-	private List<Proposta> cotacoes;
+	private List<Proposta> propostas;
 	
 	@Produces
 	@Named
 	public List<Proposta> getCotacoes()
 	{
-		return cotacoes;
+		return propostas;
 	}
 	
-	public void onCotacaoListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Proposta cotacao) {
+	public void onCotacaoListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Proposta proposta) {
 		retrieveAllCotacoesOrderedByDescricao();
 	}
 	@PostConstruct
 	public void retrieveAllCotacoesOrderedByDescricao() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Proposta> criteria = cb.createQuery(Proposta.class);
-		Root<Proposta> cotacao = criteria.from(Proposta.class);
-		criteria.select(cotacao).orderBy(cb.asc(cotacao.get("descricao")));
-		cotacoes = em.createQuery(criteria).getResultList();
+		Root<Proposta> proposta = criteria.from(Proposta.class);
+		criteria.select(proposta).orderBy(cb.asc(proposta.get("descricao")));
+		propostas = em.createQuery(criteria).getResultList();
 	}
 	public List<Proposta> retrieveAllCotacoesByLeadOrderedByDataEHoraCriacao(Lead lead) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Proposta> criteria = cb.createQuery(Proposta.class);
-		Root<Proposta> cotacao = criteria.from(Proposta.class);
-		criteria.select(cotacao).where(cb.equal(cotacao.get("lead"), lead)).orderBy(cb.asc(cotacao.get("dataEHoraCriacao")));
-//		criteria.select(cotacao).orderBy(cb.asc(cotacao.get("descricao")));
-		cotacoes = em.createQuery(criteria).getResultList();
-		return cotacoes;
+		Root<Proposta> proposta = criteria.from(Proposta.class);
+		criteria.select(proposta).where(cb.equal(proposta.get("lead"), lead)).orderBy(cb.asc(proposta.get("dataEHoraCriacao")));
+//		criteria.select(proposta).orderBy(cb.asc(proposta.get("descricao")));
+		propostas = em.createQuery(criteria).getResultList();
+		return propostas;
 	}
 }

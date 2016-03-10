@@ -67,11 +67,11 @@
 	 
       <br/>      
       <h2>Propostas</h2>
-      <h:panelGroup rendered="#{empty proposta}">
+      <h:panelGroup rendered="#{empty propostas}">
          <em>Nenhuma Proposta registrada.</em>
       </h:panelGroup>
-      <h:dataTable id="propostaDataTable" var="_proposta" value="#{proposta}"
-		rendered="#{not empty proposta}"
+      <h:dataTable id="propostaDataTable" var="_proposta" value="#{propostas}"
+		rendered="#{not empty propostas}"
 		styleClass="table"
 		 headerClass="table-header"
 		 rowClasses="table-odd-row,table-even-row">

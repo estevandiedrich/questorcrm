@@ -2,6 +2,7 @@ package br.com.questor.crm.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -24,6 +25,7 @@ public class Proposta implements Serializable{
 	{
 		lead = new Lead();
 		produtoModulosSelecionados = new ArrayList<ProdutoModulosSelecionados>();
+		dataEHoraCriacao = new Date();
 	}
 	/**
 	 * 
@@ -39,6 +41,12 @@ public class Proposta implements Serializable{
 	private Lead lead;
 	@OneToMany(mappedBy = "proposta", targetEntity = ProdutoModulosSelecionados.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	private List<ProdutoModulosSelecionados> produtoModulosSelecionados;
+	@OneToMany(mappedBy = "proposta", targetEntity = Cotacao.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<Cotacao> cotacoes;
+	
+	private Date dataEHoraCriacao;
+	
+	private String validade;
 
 	public Long getId() {
 		return id;
@@ -71,4 +79,21 @@ public class Proposta implements Serializable{
 	public void setProdutoModulosSelecionados(List<ProdutoModulosSelecionados> produtoModulosSelecionados) {
 		this.produtoModulosSelecionados = produtoModulosSelecionados;
 	}
+
+	public Date getDataEHoraCriacao() {
+		return dataEHoraCriacao;
+	}
+
+	public void setDataEHoraCriacao(Date dataEHoraCriacao) {
+		this.dataEHoraCriacao = dataEHoraCriacao;
+	}
+
+	public String getValidade() {
+		return validade;
+	}
+
+	public void setValidade(String validade) {
+		this.validade = validade;
+	}
+	
 }
