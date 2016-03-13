@@ -39,6 +39,9 @@ public class Lead implements Serializable {
 		this.contatos = new ArrayList<Contato>();
 		this.anexos = new ArrayList<Anexo>();
 		this.contatoSelecionado = new Contato();
+		this.uf = new UF();
+		this.cidade = new Cidade();
+		this.cidadesPorUf = new ArrayList<Cidade>();
 	}
 	/**
 	 * 
@@ -64,10 +67,12 @@ public class Lead implements Serializable {
 	private String bairro;
 	
 	private String cep;
-	
-	private String cidade;
-	
-	private String estado;
+	@ManyToOne
+	  @JoinColumn(name = "cidade_id")
+	private Cidade cidade;
+	@ManyToOne
+	  @JoinColumn(name = "uf_id")
+	private UF uf;
 	
 	@Transient
 	private Contato contatoSelecionado;
@@ -101,6 +106,9 @@ public class Lead implements Serializable {
 	
 	@Transient
 	private Part imagemPart;
+	
+	@Transient
+	private List<Cidade> cidadesPorUf;
 	
 	@OneToMany(mappedBy = "lead", targetEntity = Anexo.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	private List<Anexo> anexos;
@@ -274,20 +282,28 @@ public class Lead implements Serializable {
 		this.cep = cep;
 	}
 
-	public String getCidade() {
+	public Cidade getCidade() {
 		return cidade;
 	}
 
-	public void setCidade(String cidade) {
+	public void setCidade(Cidade cidade) {
 		this.cidade = cidade;
 	}
 
-	public String getEstado() {
-		return estado;
+	public UF getUf() {
+		return uf;
 	}
 
-	public void setEstado(String estado) {
-		this.estado = estado;
+	public void setUf(UF uf) {
+		this.uf = uf;
+	}
+
+	public List<Cidade> getCidadesPorUf() {
+		return cidadesPorUf;
+	}
+
+	public void setCidadesPorUf(List<Cidade> cidadesPorUf) {
+		this.cidadesPorUf = cidadesPorUf;
 	}
 	
 }

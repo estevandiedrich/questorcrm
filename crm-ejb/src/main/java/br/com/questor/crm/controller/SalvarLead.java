@@ -1,6 +1,7 @@
 package br.com.questor.crm.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -18,12 +19,14 @@ import org.apache.commons.io.IOUtils;
 
 import br.com.questor.crm.data.AnexoListProducer;
 import br.com.questor.crm.data.AtividadeAgendaListProducer;
+import br.com.questor.crm.data.CidadeListProducer;
 import br.com.questor.crm.data.ContatoListProducer;
 import br.com.questor.crm.data.EmailListProducer;
 import br.com.questor.crm.data.GrupoUsuariosLeadListProducer;
 import br.com.questor.crm.data.GrupoUsuariosPrincipalsListProducer;
 import br.com.questor.crm.model.Anexo;
 import br.com.questor.crm.model.AtividadeAgenda;
+import br.com.questor.crm.model.Cidade;
 import br.com.questor.crm.model.Contato;
 import br.com.questor.crm.model.Email;
 import br.com.questor.crm.model.GrupoUsuarios;
@@ -32,6 +35,7 @@ import br.com.questor.crm.model.GrupoUsuariosPrincipals;
 import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
 import br.com.questor.crm.model.Principals;
+import br.com.questor.crm.model.UF;
 
 @Stateful
 // @Model
@@ -69,6 +73,9 @@ public class SalvarLead extends BaseController implements Serializable {
 
 	@Inject
 	private AtividadeAgendaListProducer atividadeAgendaListProducer;
+	
+	@Inject
+	private CidadeListProducer cidadeListProducer;
 
 	@Inject
 	private Event<Lead> leadEventSrc;
@@ -79,6 +86,13 @@ public class SalvarLead extends BaseController implements Serializable {
 	@Named
 	public Lead getNewLead() {
 		return newLead;
+	}
+	
+	public void setUF()
+	{
+		UF uf = em.find(UF.class, newLead.getUf().getId());
+		List<Cidade> cidadesPorUf = cidadeListProducer.retrieveAllCidadesByUfOrderedByNome(uf);
+		newLead.setCidadesPorUf(cidadesPorUf);
 	}
 
 	public void salvar() throws Exception {
@@ -186,6 +200,18 @@ public class SalvarLead extends BaseController implements Serializable {
 			if (!Persistence.getPersistenceUtil().isLoaded(newLead, "anexos")) {
 				List<Anexo> anexos = anexoListProducer.retrieveAllAnexosByLeadOrderedByDescricao(newLead);
 				newLead.setAnexos(anexos);
+			}
+			if(newLead.getUf() == null)
+			{
+				newLead.setUf(new UF());
+			}
+			if(newLead.getCidade() == null)
+			{
+				newLead.setCidade(new Cidade());
+			}
+			if(newLead.getCidadesPorUf() == null)
+			{
+				newLead.setCidadesPorUf(new ArrayList<Cidade>());
 			}
 			log.info(newLead.getEmails().size() + " emails");
 		} else {

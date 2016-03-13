@@ -16,6 +16,8 @@ import javax.persistence.criteria.Root;
 
 import br.com.questor.crm.model.Proposta;
 import br.com.questor.crm.model.Lead;
+import br.com.questor.crm.model.ModuloSelecionado;
+import br.com.questor.crm.model.ProdutoModulosSelecionados;
 
 @RequestScoped
 public class PropostaListProducer {
@@ -24,9 +26,15 @@ public class PropostaListProducer {
 	
 	private List<Proposta> propostas;
 	
+	@Inject
+	private ProdutoModulosSelecionadosListProducer produtoModulosSelecionadosListProducer;
+	
+	@Inject
+	private ModuloSelecionadoListProducer modulosSelecionadosListProducer;
+	
 	@Produces
 	@Named
-	public List<Proposta> getCotacoes()
+	public List<Proposta> getPropostas()
 	{
 		return propostas;
 	}
@@ -41,6 +49,16 @@ public class PropostaListProducer {
 		Root<Proposta> proposta = criteria.from(Proposta.class);
 		criteria.select(proposta).orderBy(cb.asc(proposta.get("descricao")));
 		propostas = em.createQuery(criteria).getResultList();
+		for(Proposta p:propostas)
+		{
+			List<ProdutoModulosSelecionados> produtosModulosSelecionados = produtoModulosSelecionadosListProducer.retrieveAllProdutoModulosSelecionadosByPropostaOrderedByDescricao(p);
+			for(ProdutoModulosSelecionados produtoModulosSelecionados:produtosModulosSelecionados)
+			{
+				List<ModuloSelecionado> modulosSelecionados = modulosSelecionadosListProducer.retrieveAllModuloSelecionadoByProdutoModulosSelecionados(produtoModulosSelecionados);
+				produtoModulosSelecionados.setModulosSelecionados(modulosSelecionados);
+			}
+			p.setProdutoModulosSelecionados(produtosModulosSelecionados);
+		}
 	}
 	public List<Proposta> retrieveAllCotacoesByLeadOrderedByDataEHoraCriacao(Lead lead) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();

@@ -12,21 +12,17 @@
 						grupoUsuarios();
 					});
 			function grupoUsuarios() {
-				var table3 = $('#regPrincipals\\:grupoUsuariosLeadDataTable')
-						.DataTable();
-				$('#regPrincipals\\:grupoUsuariosLeadDataTable tbody')
-						.on(
-								'click',
-								'tr',
-								function() {
-									if ($(this).hasClass('selected')) {
-										$(this).removeClass('selected');
-									} else {
-										table3.$('tr.selected').removeClass(
-												'selected');
-										$(this).addClass('selected');
-									}
-								});
+				var table3 = $('#regPrincipals\\:grupoUsuariosLeadDataTable').DataTable();
+				$('#regPrincipals\\:grupoUsuariosLeadDataTable tbody').on('click','tr',
+					function() {
+						if ($(this).hasClass('selected')) {
+							$(this).removeClass('selected');
+						} else {
+							table3.$('tr.selected').removeClass(
+									'selected');
+							$(this).addClass('selected');
+						}
+					});
 			}
 		</script>
 
@@ -78,11 +74,11 @@
 					rowClasses="table-odd-row,table-even-row">
 					<h:column>
 						<f:facet name="header">Id</f:facet>
-	                #{_grupoUsuarios.id}
+	                #{_grupoUsuarios.grupoUsuarios.id}
 	            </h:column>
 					<h:column>
 						<f:facet name="header">Descrição</f:facet>
-	                #{_grupoUsuarios.descricao}
+	                #{_grupoUsuarios.grupoUsuarios.descricao}
 	            </h:column>
 				</h:dataTable>
 			</h:panelGrid>

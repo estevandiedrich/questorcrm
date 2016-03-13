@@ -1,5 +1,6 @@
 package br.com.questor.crm.controller;
 
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -55,6 +56,14 @@ public class SalvarProdutoModulosSelecionados {
 //		List<Modulo> modulos = moduloListProducer.retrieveAllModulosByProdutoOrderedByNome(newProdutoModulosSelecionados.getProduto());
 //		newProdutoModulosSelecionados.getProduto().setModulos(modulos);
 //		newProdutoModulosSelecionados.setModulosSelecionados(modulosSelecionados);
+	}
+	public void calculaValorTotal()
+	{
+		if(newProdutoModulosSelecionados.getQuantidade() != null && newProdutoModulosSelecionados.getValorUnitario() != null)
+		{
+			newProdutoModulosSelecionados.setValorTotal(newProdutoModulosSelecionados.getQuantidade().multiply(newProdutoModulosSelecionados.getValorUnitario()));
+			newProdutoModulosSelecionados.getValorTotal().setScale(2, RoundingMode.HALF_UP);
+		}
 	}
 	public void setProduto() {
         Long id = newProdutoModulosSelecionados.getProduto().getId();

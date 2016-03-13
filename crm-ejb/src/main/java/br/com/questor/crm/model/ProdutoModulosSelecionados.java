@@ -28,6 +28,8 @@ public class ProdutoModulosSelecionados implements Serializable{
 		this.modulosSelecionados = new ArrayList<ModuloSelecionado>();
 		this.tipoContratacao = new TipoContratacao();
 		this.quantidade = BigDecimal.ZERO;
+		this.valorUnitario = BigDecimal.ZERO;
+		this.valorTotal = BigDecimal.ZERO;
 		this.proposta = new Proposta();
 	}
 	/**
@@ -53,6 +55,11 @@ public class ProdutoModulosSelecionados implements Serializable{
 	private TipoContratacao tipoContratacao;
 	
 	private BigDecimal quantidade;
+	
+	private BigDecimal valorUnitario;
+	
+	private BigDecimal valorTotal;
+	
 	public Long getId() {
 		return id;
 	}
@@ -107,5 +114,22 @@ public class ProdutoModulosSelecionados implements Serializable{
 
 	public void setProposta(Proposta proposta) {
 		this.proposta = proposta;
-	}	
+	}
+
+	public BigDecimal getValorUnitario() {
+		return valorUnitario;
+	}
+
+	public void setValorUnitario(BigDecimal valorUnitario) {
+		this.valorUnitario = valorUnitario;
+	}
+
+	public BigDecimal getValorTotal() {
+		return valorTotal;
+	}
+
+	public void setValorTotal(BigDecimal valorTotal) {
+		this.valorTotal = valorTotal;
+	}
+	
 }

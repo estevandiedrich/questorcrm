@@ -41,7 +41,7 @@
 	});
    </script>
    
-      <h1>Nova negociação</h1>
+      <h1>Nova Cotação</h1>
 
       <h:form id="regCotacao">
 		<h:panelGrid>
@@ -62,10 +62,10 @@
          </p>
          </h:panelGrid>
       </h:form>
-      <h2>Negociações</h2>
+      <h2>Cotações</h2>
       <h:panelGrid id="tablePanelCotacoes">
 	      <h:panelGroup rendered="#{empty cotacoes}">
-	         <em>Nenhuma negociação registrada.</em>
+	         <em>Nenhuma cotação registrada.</em>
 	      </h:panelGroup>
 	      <h:dataTable id="cotacoesDataTable" var="_cotacao" value="#{cotacoes}"
 			rendered="#{not empty cotacoes}"

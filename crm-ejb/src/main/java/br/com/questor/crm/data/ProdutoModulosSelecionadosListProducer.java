@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import br.com.questor.crm.model.ProdutoModulosSelecionados;
+import br.com.questor.crm.model.Proposta;
 
 @RequestScoped
 public class ProdutoModulosSelecionadosListProducer {
@@ -40,5 +41,14 @@ public class ProdutoModulosSelecionadosListProducer {
 		Root<ProdutoModulosSelecionados> produtoModuloSelecionado = criteria.from(ProdutoModulosSelecionados.class);
 		criteria.select(produtoModuloSelecionado);
 		produtoModulosSelecionados = em.createQuery(criteria).getResultList();
+	}
+	
+	public List<ProdutoModulosSelecionados> retrieveAllProdutoModulosSelecionadosByPropostaOrderedByDescricao(Proposta proposta)
+	{
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<ProdutoModulosSelecionados> criteria = cb.createQuery(ProdutoModulosSelecionados.class);
+		Root<ProdutoModulosSelecionados> produtoModuloSelecionado = criteria.from(ProdutoModulosSelecionados.class);
+		criteria.select(produtoModuloSelecionado).where(cb.equal(produtoModuloSelecionado.get("proposta"), proposta));
+		return em.createQuery(criteria).getResultList();
 	}
 }

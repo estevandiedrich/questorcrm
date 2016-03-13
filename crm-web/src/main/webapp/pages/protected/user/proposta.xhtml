@@ -66,6 +66,9 @@
 	 		<ui:include src="/pages/protected/user/_produtomodulosselecionados.xhtml">
 				<ui:param name="proposta" value="#{newProposta}" />
 		 	</ui:include>
+		 	<ui:include src="/pages/protected/user/cotacao.xhtml">
+				<ui:param name="proposta" value="#{newProposta}" />
+		 	</ui:include>
 		 	<h:commandButton id="salvar" action="#{salvarProposta.salvar}" value="Salvar"/>
          </h:panelGrid>
      </h:form>
@@ -83,12 +86,42 @@
 		 rowClasses="table-odd-row,table-even-row">
          <h:column>
             <f:facet name="header">Id</f:facet>
-                #{_proposta.id}
+                <h:outputText value="#{_proposta.id}"/>
             </h:column>
          <h:column>
             <f:facet name="header">Descrição</f:facet>
-                #{_proposta.descricao}
-            </h:column>                
+                <h:outputText value="#{_proposta.descricao}"/>
+            </h:column>
+         <h:column>
+			<f:facet name="header">Id</f:facet>
+               <h:outputText value="#{_proposta.produtoModulosSelecionados.produto.id}"/>
+           </h:column>
+		 <h:column>
+			<f:facet name="header">Descrição</f:facet>
+               <h:outputText value="#{_proposta.produtoModulosSelecionados.produto.descricao}"/>
+           </h:column>
+           <h:column>
+			<f:facet name="header">Tipo contratação</f:facet>
+               <h:outputText value="#{_proposta.produtoModulosSelecionados.tipoContratacao.descricao}"/>
+           </h:column>
+           <h:column>
+			<f:facet name="header">Quantidade</f:facet>
+               <h:outputText value="#{_proposta.produtoModulosSelecionados.quantidade}"/>
+           </h:column>
+           <h:column>
+			<f:facet name="header">Valor unitatio</f:facet>
+               <h:outputText value="#{_proposta.produtoModulosSelecionados.valorUnitario}"/>
+           </h:column>
+           <h:column>
+			<f:facet name="header">Valor total</f:facet>
+               <h:outputText value="#{_proposta.produtoModulosSelecionados.valorTotal}"/>
+           </h:column>
+           <h:column>
+           	<f:facet name="header"></f:facet>
+                <h:commandLink id="modulosDoProdutoCommandLink" value="Modulos" action="#{salvarProdutoModulosSelecionados.setProdutoModulosSelecionados(_proposta.produtoModulosSelecionados)}" onclick="javascript:modalModulosDoProduto()">
+                	<f:ajax render="regProposta:modulosDoProdutoPanelGrid"/>
+                </h:commandLink>
+           </h:column>
       </h:dataTable>
       	<!-- Modal -->
 		<div id="myModalLeadProposta" class="modal fade" role="dialog">

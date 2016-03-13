@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 
+import br.com.questor.crm.model.ProdutoModulosSelecionados;
 import br.com.questor.crm.model.Proposta;
 
 @Stateful
@@ -61,6 +62,11 @@ public class SalvarProposta {
 	public void salvar() throws Exception {
 		log.info("Salvando Proposta" + newProposta.getDescricao());
 		em.persist(newProposta);
+		for(ProdutoModulosSelecionados p:newProposta.getProdutoModulosSelecionados())
+		{
+			p.setProposta(newProposta);
+			em.merge(p);
+		}
 		propostaEventSrc.fire(newProposta);
 		initNewProposta();
 	}

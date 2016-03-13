@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+   template="/WEB-INF/templates/default.xhtml">
+   <ui:define name="content">
+   <script type="text/javascript">
+   $(document).ready(function() {
+		dataTable();	 
+	} );
+	$(window).load(function() {
+	    jsf.ajax.addOnEvent(function (data) {
+	        if (data.status == "success") {debugger
+	        	dataTable();
+	        }
+	    })
+	});
+	function dataTable()
+	{
+		var table = $('#ufsDataTable').DataTable();
+		 
+	    $('#ufsDataTable tbody').on( 'click', 'tr', function () {
+	        if ( $(this).hasClass('selected') ) {
+	            $(this).removeClass('selected');
+	        }
+	        else {
+	            table.$('tr.selected').removeClass('selected');
+	            $(this).addClass('selected');
+	        }
+	    } );
+	}
+   </script>
+   
+      <h1>Novo UF</h1>
+
+      <h:form id="regUFs">
+		<h:panelGrid>
+			<h:outputLabel for="nome" value="Nome:" />
+            <h:inputText id="nome" value="#{newUf.nome}" />
+            <h:message for="nome" errorClass="invalid" />
+            <h:outputLabel for="sigla" value="Sigla:" />
+            <h:inputText id="sigla" value="#{newUf.sigla}" />
+            <h:message for="sigla" errorClass="invalid" />
+            <h:outputLabel for="prazo" value="Prazo:" />
+            <h:selectOneMenu id="prazo" value="#{newUf.prazo}">
+		      	<f:selectItem itemLabel="10 dias" itemValue="10"/>
+		      	<f:selectItem itemLabel="20 dias" itemValue="20"/>
+		      	<f:selectItem itemLabel="30 dias" itemValue="30"/>
+		      </h:selectOneMenu>
+            <h:message for="prazo" errorClass="invalid" />
+         <p>
+            <h:commandButton id="salvar"
+               action="#{salvarUF.salvar}" value="Salvar" />
+         </p>
+         </h:panelGrid>
+      </h:form>
+	  <h2>UFs</h2>
+      <h:panelGrid id="ufsDataGrid">
+	      <h:panelGroup rendered="#{empty ufs}">
+	         <em>Nenhuma uf registrada.</em>
+	      </h:panelGroup>
+	      <h:dataTable id="ufsDataTable" var="_uf" value="#{ufs}"
+			rendered="#{not empty ufs}"
+			styleClass="table"
+			width="100%"
+			style="display:inline-table;"
+			headerClass="table-header"
+			rowClasses="table-odd-row,table-even-row">
+	        <h:column>
+	          <f:facet name="header">Id</f:facet>
+	              <h:outputText value="#{_uf.id}"/>
+	        </h:column>
+	        <h:column>
+	          <f:facet name="header">Nome</f:facet>
+	              <h:outputText value="#{_uf.nome}"/>
+	        </h:column>
+	        <h:column>
+	          <f:facet name="header">Sigla</f:facet>
+	              <h:outputText value="#{_uf.sigla}"/>
+	        </h:column>
+	        <h:column>
+	          <f:facet name="header">Prazo</f:facet>
+	              <h:outputText value="#{_uf.prazo}"/>
+	        </h:column>
+	      </h:dataTable>
+      </h:panelGrid>
+   </ui:define>
+</ui:composition>

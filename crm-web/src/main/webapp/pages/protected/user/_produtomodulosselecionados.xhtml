@@ -73,6 +73,7 @@
 									}
 								});
 						modulosDoProdutoDataTable();
+						modulosSelecionadosDataTable();
 						modulosDataTable();
 						tipoContratacaoDataTable();
 					});
@@ -158,8 +159,20 @@
 				</h:panelGroup>
 				<h:outputLabel for="quantidade" value="Quantidade:" />
 				<h:inputText id="quantidade"
-					value="#{newProdutoModulosSelecionados.quantidade}" />
+					value="#{newProdutoModulosSelecionados.quantidade}">
+					<f:ajax event="change" execute="regProdutoModulosSelecionados:quantidade regProdutoModulosSelecionados:valorUnitario" render="regProdutoModulosSelecionados:valorTotal" listener="#{salvarProdutoModulosSelecionados.calculaValorTotal}"/>
+				</h:inputText>
 				<h:message for="quantidade" errorClass="invalid" />
+				<h:outputLabel for="valorUnitario" value="Valor unitário:" />
+				<h:inputText id="valorUnitario"
+					value="#{newProdutoModulosSelecionados.valorUnitario}">
+					<f:ajax event="change" execute="regProdutoModulosSelecionados:quantidade regProdutoModulosSelecionados:valorUnitario" render="regProdutoModulosSelecionados:valorTotal" listener="#{salvarProdutoModulosSelecionados.calculaValorTotal}"/>
+				</h:inputText>
+				<h:message for="quantidade" errorClass="invalid" />
+				<h:outputLabel for="valorTotal" value="Valor total:" />
+				<h:inputText id="valorTotal"
+					value="#{newProdutoModulosSelecionados.valorTotal}" disabled="true"/>
+				<h:message for="valorTotal" errorClass="invalid" />
 				<h:outputLabel for="produto" value="Produto:" />
 				<h:panelGroup>
 					<h:inputText id="produto"
@@ -244,6 +257,14 @@
 	            <h:column>
 					<f:facet name="header">Quantidade</f:facet>
 	                <h:outputText value="#{_produtoModulosSelecionados.quantidade}"/>
+	            </h:column>
+	            <h:column>
+					<f:facet name="header">Valor unitatio</f:facet>
+	                <h:outputText value="#{_produtoModulosSelecionados.valorUnitario}"/>
+	            </h:column>
+	            <h:column>
+					<f:facet name="header">Valor total</f:facet>
+	                <h:outputText value="#{_produtoModulosSelecionados.valorTotal}"/>
 	            </h:column>
 	            <h:column>
 	            	<f:facet name="header"></f:facet>
