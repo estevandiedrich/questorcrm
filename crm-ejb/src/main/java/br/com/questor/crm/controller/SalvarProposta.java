@@ -1,5 +1,6 @@
 package br.com.questor.crm.controller;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -11,6 +12,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 
+import br.com.questor.crm.data.ModuloListProducer;
+import br.com.questor.crm.data.ModuloSelecionadoListProducer;
+import br.com.questor.crm.model.Modulo;
+import br.com.questor.crm.model.ModuloSelecionado;
 import br.com.questor.crm.model.ProdutoModulosSelecionados;
 import br.com.questor.crm.model.Proposta;
 
@@ -28,6 +33,12 @@ public class SalvarProposta {
 	@Inject
 	private Event<Proposta> propostaEventSrc;
 	
+	@Inject
+	private ModuloSelecionadoListProducer moduloSelecionadoListProducer;
+	
+	@Inject
+	private ModuloListProducer moduloListProducer;
+	
 	private Proposta newProposta;
 	
 	@Produces
@@ -38,6 +49,18 @@ public class SalvarProposta {
 	public void setNewProposta(Proposta proposta)
 	{
 		newProposta = proposta;
+	}
+	public void setProdutoModulosSelecionados(List<ProdutoModulosSelecionados> produtosModulosSelecionados)
+	{
+		newProposta.setProdutosModulosSelecionados(produtosModulosSelecionados);
+	}
+	public void setProdutoModulosSelecionados(ProdutoModulosSelecionados produto)
+	{
+		newProposta.setProdutoModulosSelecionados(produto);
+		List<ModuloSelecionado> modulosSelecionados = moduloSelecionadoListProducer.retrieveAllModuloSelecionadoByProdutoModulosSelecionados(produto);
+		List<Modulo> modulos = moduloListProducer.retrieveAllModulosByProdutoOrderedByNome(produto.getProduto());
+		produto.getProduto().setModulos(modulos);
+		produto.setModulosSelecionados(modulosSelecionados);
 	}
 	public String novo() {
 		initNewProposta();
@@ -65,10 +88,15 @@ public class SalvarProposta {
 	public void salvar() throws Exception {
 		log.info("Salvando Proposta" + newProposta.getDescricao());
 		em.persist(newProposta);
-		for(ProdutoModulosSelecionados p:newProposta.getProdutoModulosSelecionados())
+		for(ProdutoModulosSelecionados p:newProposta.getProdutosModulosSelecionados())
 		{
 			p.setProposta(newProposta);
-			em.merge(p);
+			em.persist(p);
+			for(ModuloSelecionado m:p.getModulosSelecionados())
+			{
+				m.setProdutosModulosSelecionados(p);
+				em.persist(m);
+			}
 		}
 		propostaEventSrc.fire(newProposta);
 		initNewProposta();

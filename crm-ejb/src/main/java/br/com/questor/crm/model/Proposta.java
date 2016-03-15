@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
@@ -24,7 +25,7 @@ public class Proposta implements Serializable{
 	public Proposta()
 	{
 		lead = new Lead();
-		produtoModulosSelecionados = new ArrayList<ProdutoModulosSelecionados>();
+		produtosModulosSelecionados = new ArrayList<ProdutoModulosSelecionados>();
 		dataEHoraCriacao = new Date();
 	}
 	/**
@@ -40,9 +41,11 @@ public class Proposta implements Serializable{
 	  @JoinColumn(name = "lead_id")
 	private Lead lead;
 	@OneToMany(mappedBy = "proposta", targetEntity = ProdutoModulosSelecionados.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-	private List<ProdutoModulosSelecionados> produtoModulosSelecionados;
+	private List<ProdutoModulosSelecionados> produtosModulosSelecionados;
 	@OneToMany(mappedBy = "proposta", targetEntity = Cotacao.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	private List<Cotacao> cotacoes;
+	@Transient
+	private ProdutoModulosSelecionados produtoModulosSelecionados;
 	
 	private Date dataEHoraCriacao;
 	
@@ -72,12 +75,12 @@ public class Proposta implements Serializable{
 		this.lead = lead;
 	}
 
-	public List<ProdutoModulosSelecionados> getProdutoModulosSelecionados() {
-		return produtoModulosSelecionados;
+	public List<ProdutoModulosSelecionados> getProdutosModulosSelecionados() {
+		return produtosModulosSelecionados;
 	}
 
-	public void setProdutoModulosSelecionados(List<ProdutoModulosSelecionados> produtoModulosSelecionados) {
-		this.produtoModulosSelecionados = produtoModulosSelecionados;
+	public void setProdutosModulosSelecionados(List<ProdutoModulosSelecionados> produtoModulosSelecionados) {
+		this.produtosModulosSelecionados = produtoModulosSelecionados;
 	}
 
 	public Date getDataEHoraCriacao() {
@@ -95,5 +98,12 @@ public class Proposta implements Serializable{
 	public void setValidade(String validade) {
 		this.validade = validade;
 	}
-	
+
+	public ProdutoModulosSelecionados getProdutoModulosSelecionados() {
+		return produtoModulosSelecionados;
+	}
+
+	public void setProdutoModulosSelecionados(ProdutoModulosSelecionados produtoModulosSelecionados) {
+		this.produtoModulosSelecionados = produtoModulosSelecionados;
+	}
 }

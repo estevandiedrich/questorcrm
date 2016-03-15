@@ -40,10 +40,10 @@ public class PropostaListProducer {
 	}
 	
 	public void onCotacaoListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Proposta proposta) {
-		retrieveAllCotacoesOrderedByDescricao();
+		retrieveAllPropostasOrderedByDescricao();
 	}
 	@PostConstruct
-	public void retrieveAllCotacoesOrderedByDescricao() {
+	public void retrieveAllPropostasOrderedByDescricao() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Proposta> criteria = cb.createQuery(Proposta.class);
 		Root<Proposta> proposta = criteria.from(Proposta.class);
@@ -57,7 +57,7 @@ public class PropostaListProducer {
 				List<ModuloSelecionado> modulosSelecionados = modulosSelecionadosListProducer.retrieveAllModuloSelecionadoByProdutoModulosSelecionados(produtoModulosSelecionados);
 				produtoModulosSelecionados.setModulosSelecionados(modulosSelecionados);
 			}
-			p.setProdutoModulosSelecionados(produtosModulosSelecionados);
+			p.setProdutosModulosSelecionados(produtosModulosSelecionados);
 		}
 	}
 	public List<Proposta> retrieveAllCotacoesByLeadOrderedByDataEHoraCriacao(Lead lead) {

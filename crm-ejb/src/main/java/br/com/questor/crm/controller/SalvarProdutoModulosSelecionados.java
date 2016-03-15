@@ -14,7 +14,6 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 
 import br.com.questor.crm.data.ModuloListProducer;
-import br.com.questor.crm.data.ModuloSelecionadoListProducer;
 import br.com.questor.crm.model.Modulo;
 import br.com.questor.crm.model.ModuloSelecionado;
 import br.com.questor.crm.model.Produto;
@@ -36,8 +35,8 @@ public class SalvarProdutoModulosSelecionados {
 	@Inject
 	private ModuloListProducer moduloListProducer;
 	
-	@Inject
-	private ModuloSelecionadoListProducer moduloSelecionadoListProducer;
+//	@Inject
+//	private ModuloSelecionadoListProducer moduloSelecionadoListProducer;
 	
 	@Inject
 	private Event<ProdutoModulosSelecionados> produtoModulosSelecionadosEventSrc;
@@ -93,7 +92,7 @@ public class SalvarProdutoModulosSelecionados {
 			moduloSelecionado.setProdutosModulosSelecionados(newProdutoModulosSelecionados);
 //			em.persist(moduloSelecionado);
 		}
-		proposta.getProdutoModulosSelecionados().add(newProdutoModulosSelecionados);
+		proposta.getProdutosModulosSelecionados().add(newProdutoModulosSelecionados);
 		initNewProdutoModulosSelecionados();
 	}
 	public void salvar() throws Exception {
