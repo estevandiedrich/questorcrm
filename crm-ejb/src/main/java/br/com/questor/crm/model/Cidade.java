@@ -9,10 +9,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hibernate.annotations.Index;
+
 @Entity
+@Table(name = "cidade")
+@org.hibernate.annotations.Table(appliesTo = "cidade",indexes = {
+        @Index(columnNames = "id",name = "id_idx"),
+        @Index(columnNames = "uf_id",name = "uf_id_idx")
+})
 @XmlRootElement
 @SequenceGenerator(name="CIDADE_SEQUENCE", sequenceName="CIDADE_SEQUENCE", allocationSize=1, initialValue=1)
 public class Cidade implements Serializable{

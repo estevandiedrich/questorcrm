@@ -39,7 +39,10 @@ public class SalvarProposta {
 	{
 		newProposta = proposta;
 	}
-	
+	public String novo() {
+		initNewProposta();
+		return "/pages/protected/user/proposta?faces-redirect=true";
+	}
 //	public void adicionarCotacao(Conta conta)
 //	{
 //		conta.getCotacoes().add(newProposta);

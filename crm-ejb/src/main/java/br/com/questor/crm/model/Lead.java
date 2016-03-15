@@ -67,7 +67,7 @@ public class Lead implements Serializable {
 	private String bairro;
 	
 	private String cep;
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.DETACH)
 	  @JoinColumn(name = "cidade_id")
 	private Cidade cidade;
 	@ManyToOne
@@ -89,7 +89,7 @@ public class Lead implements Serializable {
 	private Date dataCadastro;
 	
 	@ManyToOne
-	  @JoinColumn(name = "leadpai_id",nullable = true)
+	  @JoinColumn(name = "leadpai_id",referencedColumnName = "id", nullable=true)
 	private Lead leadPai;
 	
 //	@ManyToMany

@@ -52,7 +52,7 @@ public class LoginBean {
 			log.info("Is caller in role ADMIN "+request.isUserInRole("ADMIN"));
 		} catch (ServletException e) {
 			context.addMessage(null, new FacesMessage("Login failed."));
-			return "/pages/public/error";
+			return "/pages/public/error?faces-redirect=true";
 		}
 		Principals principal2 = this.getPrincipalsFromDB();
 		if(principal2.isPrimeiroLogin())
@@ -61,7 +61,7 @@ public class LoginBean {
 		}
 		else
 		{
-			return "/pages/protected/user/index";
+			return "/pages/protected/user/index?faces-redirect=true";
 		}
 	}
 	public Principals getPrincipalsFromDB()
@@ -88,10 +88,11 @@ public class LoginBean {
 		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 		try {
 			request.logout();
+			context.getExternalContext().invalidateSession();
 		} catch (ServletException e) {
 			context.addMessage(null, new FacesMessage("Logout failed."));
 			
 		}
-		return "/pages/public/login";
+		return "/pages/public/login?faces-redirect=true";
 	}
 }

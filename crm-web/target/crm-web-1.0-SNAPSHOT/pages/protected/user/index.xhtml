@@ -19,19 +19,22 @@
 			<h:form>
 				<h:commandLink value="Nova Lead" action="#{salvarLead.novo}" />
 			</h:form>
-			<h:outputLink value="/crm/pages/protected/user/emailleads.xhtml">
+			<h:form>
+				<h:commandLink value="Nova Proposta" action="#{salvarProposta.novo}" />
+			</h:form>
+			<h:outputLink value="/crm/pages/protected/user/emailleads.xhtml?faces-redirect=true">
 				<h:outputText value="Emails lead" />
 			</h:outputLink>
-			<h:outputLink value="/crm/pages/protected/user/atividadeagenda.xhtml">
+			<h:outputLink value="/crm/pages/protected/user/atividadeagenda.xhtml?faces-redirect=true">
 				<h:outputText value="Agenda" />
 			</h:outputLink>
 			<h:form>
 				<h:commandLink value="Produtos" action="#{salvarProduto.novo}" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
 			</h:form>
-			<h:outputLink value="/crm/pages/protected/admin/modulo.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
+			<h:outputLink value="/crm/pages/protected/admin/modulo.xhtml?faces-redirect=true" rendered="#{loginBean.isCallerInRole('ADMIN')}">
 				<h:outputText value="Módulos" />
 			</h:outputLink>
-			<h:outputLink value="/crm/pages/protected/admin/tipocontratacao.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
+			<h:outputLink value="/crm/pages/protected/admin/tipocontratacao.xhtml?faces-redirect=true" rendered="#{loginBean.isCallerInRole('ADMIN')}">
 				<h:outputText value="Tipos de contratação" />
 			</h:outputLink>
 		</h:panelGrid>

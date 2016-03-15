@@ -69,7 +69,14 @@ public class LeadListProducer {
 			{
 				leadsId.add(g.getLead().getId());
 			}
-			criteria.select(leadRoot).where(leadRoot.get("id").in(leadsId)).orderBy(cb.asc(leadRoot.get("nome")));
+			if(leadsId.size() > 0)
+			{
+				criteria.select(leadRoot).where(leadRoot.get("id").in(leadsId)).orderBy(cb.asc(leadRoot.get("nome")));
+			}
+			else
+			{
+				criteria.select(leadRoot).where(cb.equal(leadRoot.get("id"), -1l)).orderBy(cb.asc(leadRoot.get("nome")));
+			}
 		}
 		leads = em.createQuery(criteria).getResultList();
 	}

@@ -61,7 +61,7 @@ public class SalvarPrincipals extends BaseController implements Serializable {
 	public String novo()
 	{
 		initNewPrincipal();
-		return "/pages/protected/admin/principals";
+		return "/pages/protected/admin/principals?faces-redirect=true";
 	}
 	
 	public void adicionarGrupoUsuarios(String id)

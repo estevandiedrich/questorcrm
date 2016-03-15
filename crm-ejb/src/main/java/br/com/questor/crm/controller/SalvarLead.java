@@ -90,12 +90,18 @@ public class SalvarLead extends BaseController implements Serializable {
 	
 	public void setUF()
 	{
-		UF uf = em.find(UF.class, newLead.getUf().getId());
-		List<Cidade> cidadesPorUf = cidadeListProducer.retrieveAllCidadesByUfOrderedByNome(uf);
-		newLead.setCidadesPorUf(cidadesPorUf);
+		if(newLead.getUf().getId() != null)
+		{
+			UF uf = em.find(UF.class, newLead.getUf().getId());
+			List<Cidade> cidadesPorUf = cidadeListProducer.retrieveAllCidadesByUfOrderedByNome(uf);
+			newLead.setCidadesPorUf(cidadesPorUf);
+		}
 	}
-
-	public void salvar() throws Exception {
+	public boolean imagemCarregada()
+	{
+		return newLead != null && newLead.getImagem() != null;
+	}
+	public String salvar() throws Exception {
 		log.info("Salvando Lead" + newLead.getNome());
 			if (newLead.getImagemPart() != null) {
 				Imagem imagem = new Imagem();
@@ -109,18 +115,19 @@ public class SalvarLead extends BaseController implements Serializable {
 			if (newLead.getLeadPai() != null && newLead.getLeadPai().getId() == null) {
 				newLead.setLeadPai(null);
 			}
-			for (Anexo anexo : newLead.getAnexos()) {
-				if(anexo.getId() == null)
-				{
-					em.persist(anexo.getImagem());
-					em.persist(anexo);
-				}
-			}
 			if (newLead.getId() == null) {
 				newLead.setUsuarioQueCadastrou(loginBean.getPrincipalsFromDB());
 				em.persist(newLead);
 			} else {
 				em.merge(newLead);
+			}
+			for (Anexo anexo : newLead.getAnexos()) {
+				if(anexo.getId() == null)
+				{
+					anexo.setLead(newLead);
+					em.persist(anexo.getImagem());
+					em.persist(anexo);
+				}
 			}
 			for (Contato contato : newLead.getContatos()) {
 				if(contato.getId() == null)
@@ -142,8 +149,9 @@ public class SalvarLead extends BaseController implements Serializable {
 				}
 			}
 			leadEventSrc.fire(newLead);
+			initNewLead();
+			return "/pages/protected/user/leads?faces-redirect=true";
 
-		initNewLead();
 	}
 
 	public void adicionarContato(String id) {
@@ -164,21 +172,20 @@ public class SalvarLead extends BaseController implements Serializable {
 
 	public String editar(Lead lead) {
 		newLead = lead;
-		initNewLead();
-		return "/pages/protected/user/leads";
+		editNewLead();
+		return "/pages/protected/user/leads?faces-redirect=true";
 	}
 
 	public String novo() {
 		initNewLead();
-		return "/pages/protected/user/leads";
+		return "/pages/protected/user/leads?faces-redirect=true";
 	}
-
-	@PostConstruct
-	public void initNewLead() {
+	public void editNewLead()
+	{
 		if (newLead != null && newLead.getId() != null) {
-			if (newLead.getLeadPai() == null) {
-				newLead.setLeadPai(new Lead());
-			}
+//			if (newLead.getLeadPai() == null) {
+//				newLead.setLeadPai(new Lead());
+//			}
 			if (!Persistence.getPersistenceUtil().isLoaded(newLead, "emails")) {
 				List<Email> emails = emailListProducer.retrieveAllEmailsByLeadOrderedBySentDate(newLead);
 				newLead.setEmails(emails);
@@ -214,7 +221,10 @@ public class SalvarLead extends BaseController implements Serializable {
 				newLead.setCidadesPorUf(new ArrayList<Cidade>());
 			}
 			log.info(newLead.getEmails().size() + " emails");
-		} else {
+		}
+	}
+	@PostConstruct
+	public void initNewLead() {
 			newLead = new Lead();
 			Principals principal = loginBean.getPrincipalsFromDB();
 			principal.setGruposUsuarios(
@@ -226,6 +236,5 @@ public class SalvarLead extends BaseController implements Serializable {
 				newLead.getGruposUsuarios().add(grupoUsuariosLead);
 			}
 			newLead.setLeadPai(new Lead());
-		}
 	}
 }

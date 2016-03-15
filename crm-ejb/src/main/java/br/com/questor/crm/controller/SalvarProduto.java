@@ -48,7 +48,7 @@ public class SalvarProduto {
 	public String novo()
 	{
 		initNewProduto();
-		return "/pages/protected/admin/produtos";
+		return "/pages/protected/admin/produtos?faces-redirect=true";
 	}
 	
 	public void adicionar(String id)

@@ -9,7 +9,7 @@ import org.primefaces.model.StreamedContent;
 import br.com.questor.crm.model.Imagem;
 
 public class BaseController {
-	
+
 	public StreamedContent carregaImagem(Imagem imagem) throws IOException
 	{
 //		FacesContext context = FacesContext.getCurrentInstance();
