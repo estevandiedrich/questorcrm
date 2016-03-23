@@ -16,6 +16,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @SequenceGenerator(name="CONTATO_SEQUENCE", sequenceName="CONTATO_SEQUENCE", allocationSize=1, initialValue=1)
 public class Contato implements Serializable{
+	public Contato()
+	{
+		cargo = new Cargo();
+	}
 	/**
 	 * 
 	 */
@@ -31,6 +35,9 @@ public class Contato implements Serializable{
 	
 	private String telefone;
 	
+	@ManyToOne
+	  @JoinColumn(name = "cargo_id")
+	private Cargo cargo;	
 	@ManyToOne
 	  @JoinColumn(name = "lead_id")
 	private Lead lead;
@@ -74,5 +81,12 @@ public class Contato implements Serializable{
 	public void setLead(Lead lead) {
 		this.lead = lead;
 	}
-	
+
+	public Cargo getCargo() {
+		return cargo;
+	}
+
+	public void setCargo(Cargo cargo) {
+		this.cargo = cargo;
+	}
 }

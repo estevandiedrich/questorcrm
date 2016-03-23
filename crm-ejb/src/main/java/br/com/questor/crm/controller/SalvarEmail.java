@@ -28,10 +28,12 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.persistence.EntityManager;
 
+import br.com.questor.crm.data.ContatoEmailListProducer;
 import br.com.questor.crm.data.ContatoListProducer;
 import br.com.questor.crm.data.EmailListProducer;
 import br.com.questor.crm.model.Anexo;
 import br.com.questor.crm.model.Contato;
+import br.com.questor.crm.model.ContatoEmail;
 import br.com.questor.crm.model.Email;
 import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
@@ -62,6 +64,9 @@ public class SalvarEmail {
 	private ContatoListProducer contatoListProducer;
 	
 	@Inject
+	private ContatoEmailListProducer contatoEmailListProducer;
+	
+	@Inject
 	private EmailListProducer emailListProducer;
 	
 	@Produces
@@ -78,7 +83,14 @@ public class SalvarEmail {
             Message message = new MimeMessage(mailSession);
             //Cabeçalho do Email
             message.setFrom(new InternetAddress(newEmail.getEmailFrom()));
-            message.setRecipients(Message.RecipientType.TO,InternetAddress.parse(newEmail.getEmailTo()));            
+            String[] destinatarios = new String[newEmail.getEmailTo().size()];
+            for(int i = 0;i < newEmail.getEmailTo().size();i++)
+            {   
+            	ContatoEmail contatoEmail = newEmail.getEmailTo().get(i);
+            	destinatarios[i] = contatoEmail.getContato().getEmail();
+            }
+            String emailTo = Arrays.toString(destinatarios).replace("[", "").replace("]","");
+            message.setRecipients(Message.RecipientType.TO,InternetAddress.parse(emailTo));            
             message.setSubject(newEmail.getSubject());
             //Corpo do email
             message.setText(newEmail.getText());
@@ -115,29 +127,53 @@ public class SalvarEmail {
 			e.printStackTrace();
 		}
 	}
+	public void adicionarContato(){
+		ContatoEmail contatoEmail = new ContatoEmail();
+		Contato contato = em.find(Contato.class, newEmail.getContatoSelecionado().getId());
+		contatoEmail.setContato(contato);
+		newEmail.getEmailTo().add(contatoEmail);
+	}
 	public void salvar() throws Exception {
 		log.info("Salvando Email" + newEmail.getEmailTo());
-		newEmail.getLead().getEmails().add(newEmail);
-		newEmail.setEmailFrom(loginBean.getPrincipalsFromDB().getEmail());
-		String to = Arrays.toString(newEmail.getSelectedTo()).replace("[", "").replace("]", "");
-		newEmail.setEmailTo(to);
-		newEmail.setLead(newEmail.getLead());
-		newEmail.setSentDate(new Date());
-		em.persist(newEmail);
+		if(newEmail.getId() == null)
+		{
+			newEmail.getLead().getEmails().add(newEmail);
+			newEmail.setEmailFrom(loginBean.getPrincipalsFromDB().getEmail());
+			newEmail.setSentDate(new Date());
+			em.persist(newEmail);
+			for(ContatoEmail contatoEmail:newEmail.getEmailTo())
+			{
+				if(contatoEmail.getId() == null)
+				{
+					contatoEmail.setEmail(newEmail);
+					em.persist(contatoEmail);
+				}
+			}
+		}
 		emailEventSrc.fire(newEmail);
 		this.sendEmail(newEmail);
 		initNewEmail();
 	}
 	
-	public void setLead(Lead lead)
+	public void setLead()
 	{
+		Lead lead = em.find(Lead.class, newEmail.getLead().getId());
 		List<Contato> contatos = contatoListProducer.retrieveAllContatosByLeadOrderedByNome(lead);
 		if(contatos == null)
 			contatos = new ArrayList<Contato>();
 		lead.setContatos(contatos);
 		List<Email> emails = emailListProducer.retrieveAllEmailsByLeadOrderedBySentDate(lead);
 		if(emails == null)
+		{
 			emails = new ArrayList<Email>();
+		}
+		else
+		{
+			for(Email email:emails)
+			{
+				email.setEmailTo(contatoEmailListProducer.retrieveAllContatoEmailsByEmailOrderedByNome(email));
+			}
+		}
 		lead.setEmails(emails);
 		newEmail.setLead(lead);
 	}

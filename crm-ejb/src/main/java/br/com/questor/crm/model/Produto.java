@@ -17,6 +17,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import br.com.questor.crm.enums.TipoProdutoEnum;
+
 @Entity
 @XmlRootElement
 @SequenceGenerator(name="PRODUTO_SEQUENCE", sequenceName="PRODUTO_SEQUENCE", allocationSize=1, initialValue=1)
@@ -46,6 +48,13 @@ public class Produto implements Serializable {
 	@ManyToMany
     @JoinTable(name="produto_modulo", joinColumns={@JoinColumn(name="produto_id")}, inverseJoinColumns={@JoinColumn(name="modulo_id")})
 	private List<Modulo> modulos;
+	
+	private TipoProdutoEnum tipoProduto;
+	
+	public TipoProdutoEnum[] getTipoProdutoValues()
+	{
+		return TipoProdutoEnum.values();
+	}
 
 	public Long getId() {
 		return id;
@@ -77,5 +86,14 @@ public class Produto implements Serializable {
 
 	public void setModulo(Modulo modulo) {
 		this.modulo = modulo;
+	}
+
+	public TipoProdutoEnum getTipoProduto() {
+		return tipoProduto;
+	}
+
+	public void setTipoProduto(TipoProdutoEnum tipoProduto) {
+		this.tipoProduto = tipoProduto;
 	}	
+	
 }

@@ -42,6 +42,7 @@ public class Lead implements Serializable {
 		this.uf = new UF();
 		this.cidade = new Cidade();
 		this.cidadesPorUf = new ArrayList<Cidade>();
+		this.notas = new ArrayList<Nota>();
 	}
 	/**
 	 * 
@@ -59,6 +60,9 @@ public class Lead implements Serializable {
 	
 	@OneToMany(mappedBy = "lead", targetEntity = Contato.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	private List<Contato> contatos;
+	
+	@OneToMany(mappedBy = "lead", targetEntity = Nota.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<Nota> notas;
 	
 	private String numero;
 	
@@ -305,5 +309,12 @@ public class Lead implements Serializable {
 	public void setCidadesPorUf(List<Cidade> cidadesPorUf) {
 		this.cidadesPorUf = cidadesPorUf;
 	}
-	
+
+	public List<Nota> getNotas() {
+		return notas;
+	}
+
+	public void setNotas(List<Nota> notas) {
+		this.notas = notas;
+	}
 }

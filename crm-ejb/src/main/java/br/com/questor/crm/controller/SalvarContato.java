@@ -37,6 +37,7 @@ public class SalvarContato {
 	{
 		log.info("Adicionando Contato" + newContato.getNome());
 		lead.getContatos().add(newContato);
+		initNewContato();
 	}
 	public void salvar() throws Exception {
 		log.info("Salvando Contato" + newContato.getNome());

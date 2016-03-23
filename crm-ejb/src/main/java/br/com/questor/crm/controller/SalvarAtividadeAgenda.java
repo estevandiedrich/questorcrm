@@ -1,7 +1,6 @@
 package br.com.questor.crm.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -19,8 +18,11 @@ import javax.persistence.EntityManager;
 import br.com.questor.crm.data.AtividadeAgendaListProducer;
 import br.com.questor.crm.data.ContatoListProducer;
 import br.com.questor.crm.model.AtividadeAgenda;
+import br.com.questor.crm.model.AtividadeAgendaParticipantesExternos;
+import br.com.questor.crm.model.AtividadeAgendaParticipantesInternos;
 import br.com.questor.crm.model.Contato;
 import br.com.questor.crm.model.Lead;
+import br.com.questor.crm.model.Principals;
 
 @Stateful
 //@Model
@@ -85,16 +87,19 @@ public class SalvarAtividadeAgenda {
 		return dataEHoraAtividadesAgenda;
 	}
 	
-	public void setLead(Lead lead)
+	public void setLead()
 	{
-		leadSelecionada = lead;
-		List<Contato> contatos = contatoListProducer.retrieveAllContatosByLeadOrderedByNome(lead);
-		if(contatos == null)
-			contatos = new ArrayList<Contato>();
-		lead.setContatos(contatos);
-		List<AtividadeAgenda> atividadesAgenda = atividadeAgendaListProducer.retrieveAllAtividadeAgendasByLeadOrderedByDataEHora(lead);
-		lead.setAtividadesAgenda(atividadesAgenda);
-		newAtividadeAgenda.setLead(lead);
+		if(newAtividadeAgenda.getLead().getId() != null)
+		{
+			leadSelecionada = em.find(Lead.class, newAtividadeAgenda.getLead().getId());
+			List<Contato> contatos = contatoListProducer.retrieveAllContatosByLeadOrderedByNome(leadSelecionada);
+			if(contatos == null)
+				contatos = new ArrayList<Contato>();
+			leadSelecionada.setContatos(contatos);
+			List<AtividadeAgenda> atividadesAgenda = atividadeAgendaListProducer.retrieveAllAtividadeAgendasByLeadOrderedByDataEHora(leadSelecionada);
+			leadSelecionada.setAtividadesAgenda(atividadesAgenda);
+			newAtividadeAgenda.setLead(leadSelecionada);
+		}
 	}
 	
 	@Produces
@@ -105,12 +110,45 @@ public class SalvarAtividadeAgenda {
 	
 	public void salvar() throws Exception {
 		log.info("Salvando AtividadeAgenda" + newAtividadeAgenda.getLembrete());
-		String participantes = Arrays.toString(newAtividadeAgenda.getParticipantesSelecionados()).replace("[", "").replace("]", "");
-		newAtividadeAgenda.setParticipantes(participantes);
 		em.persist(newAtividadeAgenda);
+		List<AtividadeAgendaParticipantesExternos> participantesExternos = new ArrayList<>();
+		for(AtividadeAgendaParticipantesExternos participanteExterno:newAtividadeAgenda.getParticipantesExternos())
+		{
+			participanteExterno.setAtividadeAgenda(newAtividadeAgenda);
+			em.persist(participanteExterno);
+		}
+		newAtividadeAgenda.setParticipantesExternos(participantesExternos);
+		List<AtividadeAgendaParticipantesInternos> participantesInternos = new ArrayList<>();
+		for(AtividadeAgendaParticipantesInternos participanteInterno:newAtividadeAgenda.getParticipantesInternos())
+		{
+			participanteInterno.setAtividadeAgenda(newAtividadeAgenda);
+			em.persist(participanteInterno);
+		}
+		newAtividadeAgenda.setParticipantesInternos(participantesInternos);
 		em.merge(newAtividadeAgenda.getLead());
 		atividadeAgendaEventSrc.fire(newAtividadeAgenda);
 		initNewAtividadeAgenda();
+	}
+	
+	public void adicionarParticipanteExterno()
+	{
+		if(newAtividadeAgenda.getParticipanteExternoSelecionado().getId() != null)
+		{
+			Contato participanteExterno = em.find(Contato.class, newAtividadeAgenda.getParticipanteExternoSelecionado().getId());
+			AtividadeAgendaParticipantesExternos atividadeAgendaParticipantesExternos = new AtividadeAgendaParticipantesExternos();
+			atividadeAgendaParticipantesExternos.setParticipanteExterno(participanteExterno);
+			newAtividadeAgenda.getParticipantesExternos().add(atividadeAgendaParticipantesExternos);
+		}
+	}
+	public void adicionarParticipanteInterno()
+	{
+		if(newAtividadeAgenda.getParticipanteInternoSelecionado().getId() != null)
+		{
+			Principals participanteInterno = em.find(Principals.class, newAtividadeAgenda.getParticipanteInternoSelecionado().getId());
+			AtividadeAgendaParticipantesInternos atividadeAgendaParticipantesInternos = new AtividadeAgendaParticipantesInternos();
+			atividadeAgendaParticipantesInternos.setParticipantesInternos(participanteInterno);
+			newAtividadeAgenda.getParticipantesInternos().add(atividadeAgendaParticipantesInternos);
+		}
 	}
 
 	@PostConstruct

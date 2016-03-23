@@ -25,7 +25,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Email implements Serializable{
 	public Email()
 	{
+		lead = new Lead();
+		contatoSelecionado = new Contato();
 		anexos = new ArrayList<Anexo>();
+		emailTo = new ArrayList<>();
 	}
 	/**
 	 * 
@@ -36,8 +39,8 @@ public class Email implements Serializable{
 	private Long id;
 	@NotNull
 	private String emailFrom;
-	@NotNull
-	private String emailTo;
+	@OneToMany(mappedBy = "email", targetEntity = ContatoEmail.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<ContatoEmail> emailTo;
 	@NotNull
 	private String subject;
 	@NotNull
@@ -54,6 +57,9 @@ public class Email implements Serializable{
 	@Transient
 	private String[] selectedTo;
 	
+	@Transient
+	private Contato contatoSelecionado;
+	
 	public Long getId() {
 		return id;
 	}
@@ -66,10 +72,10 @@ public class Email implements Serializable{
 	public void setEmailFrom(String from) {
 		this.emailFrom = from;
 	}
-	public String getEmailTo() {
+	public List<ContatoEmail> getEmailTo() {
 		return emailTo;
 	}
-	public void setEmailTo(String to) {
+	public void setEmailTo(List<ContatoEmail> to) {
 		this.emailTo = to;
 	}
 	public String getSubject() {
@@ -107,5 +113,11 @@ public class Email implements Serializable{
 	}
 	public void setAnexos(List<Anexo> anexos) {
 		this.anexos = anexos;
+	}
+	public Contato getContatoSelecionado() {
+		return contatoSelecionado;
+	}
+	public void setContatoSelecionado(Contato contatoSelecionado) {
+		this.contatoSelecionado = contatoSelecionado;
 	}	
 }

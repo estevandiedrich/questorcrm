@@ -18,10 +18,6 @@
 	            $(this).addClass('selected');
 	        }
 	    } );
-	 
-// 	    $('#button').click( function () {
-// 	        table.row('.selected').remove().draw( false );
-// 	    } );
 	} );
    </script>
    
@@ -34,7 +30,6 @@
             <h:message for="descricao" errorClass="invalid" />
             <br/>
             <h:commandButton id="salvar" action="#{salvarTipoProduto.salvar}" value="Salvar" />
-            <h:outputText value=" Salvo!" rendered="#{facesContext.postback and empty facesContext.messageList}" style="color: green;" />
          </h:panelGrid>
       </h:form>
       <h2>Tipos de Produtos</h2>
@@ -48,11 +43,11 @@
 		 rowClasses="table-odd-row,table-even-row">
          <h:column>
             <f:facet name="header">Id</f:facet>
-                #{_tipoProduto.id}
+                <h:outputText value="#{_tipoProduto.id}"/>
             </h:column>
          <h:column>
             <f:facet name="header">Descrição</f:facet>
-                #{_tipoProduto.descricao}
+                <h:outputText value="#{_tipoProduto.descricao}"/>
             </h:column>
       </h:dataTable>
    </ui:define>

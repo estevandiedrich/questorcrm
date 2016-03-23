@@ -44,11 +44,12 @@ public class GrupoUsuariosPrincipalsListProducer {
 		grupoUsuariosPrincipals = em.createQuery(criteria).getResultList();
 	}
 	public List<GrupoUsuariosPrincipals> retrieveAllGrupoUsuariosPrincipalsByPrincipal(Principals principal) {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<GrupoUsuariosPrincipals> criteria = cb.createQuery(GrupoUsuariosPrincipals.class);
-		Root<GrupoUsuariosPrincipals> grupoUsuariosPrincipalsRoot = criteria.from(GrupoUsuariosPrincipals.class);
-		criteria.select(grupoUsuariosPrincipalsRoot).where(cb.equal(grupoUsuariosPrincipalsRoot.get("principals"), principal));
-		return em.createQuery(criteria).getResultList();
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<GrupoUsuariosPrincipals> criteria = cb.createQuery(GrupoUsuariosPrincipals.class);
+//		Root<GrupoUsuariosPrincipals> grupoUsuariosPrincipalsRoot = criteria.from(GrupoUsuariosPrincipals.class);
+//		criteria.select(grupoUsuariosPrincipalsRoot).where(cb.equal(grupoUsuariosPrincipalsRoot.get("principals"), principal));
+//		return em.createQuery(criteria).getResultList();
+		return em.createNamedQuery("GrupoUsuariosPrincipals.findByPrincipal").setParameter("principal", principal.getId()).getResultList();
 	}
 	public List<GrupoUsuariosPrincipals> retrieveAllGrupoUsuariosPrincipalsByGrupoUsuarios(GrupoUsuarios grupoUsuarios) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();

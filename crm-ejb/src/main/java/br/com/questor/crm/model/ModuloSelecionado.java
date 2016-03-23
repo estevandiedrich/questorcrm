@@ -6,12 +6,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
+@Table(name="moduloselecionado",
+	indexes = 
+		{
+				@Index(columnList = "produtomodulosselecionados_id",name = "produtomodulosselecionados_idx"),
+				@Index(columnList = "modulo_id",name = "modulo_idx")
+		}
+)
+@NamedQueries(value = {@NamedQuery(name = "ModuloSelecionado.findByProdutoModuloSelecionado",query = "SELECT ms FROM ModuloSelecionado ms WHERE ms.produtoModulosSelecionados.id = :produtoModulosSelecionados")})
 @XmlRootElement
 @SequenceGenerator(name="MODULO_SELECIONADO_SEQUENCE", sequenceName="MODULO_SELECIONADO_SEQUENCE", allocationSize=1, initialValue=1)
 public class ModuloSelecionado implements Serializable{
@@ -29,6 +41,7 @@ public class ModuloSelecionado implements Serializable{
 	@ManyToOne
 	  @JoinColumn(name = "produtomodulosselecionados_id")
 	private ProdutoModulosSelecionados produtoModulosSelecionados;
+	
 	public Long getId() {
 		return id;
 	}

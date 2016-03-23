@@ -20,14 +20,17 @@ public class FileUploadValidator implements Validator {
 		// TODO Auto-generated method stub
 		List<FacesMessage> msgs = new ArrayList<FacesMessage>();
 		Part file = (Part) value;
-		if (file.getSize() > 1024) {
-			msgs.add(new FacesMessage("Imagem muito grande"));
-		}
-		if (!"image/jpeg".equals(file.getContentType())) {
-			msgs.add(new FacesMessage("Este arquivo não é uma imagem"));
-		}
-		if (!msgs.isEmpty()) {
-			throw new ValidatorException(msgs);
+		if(file != null)
+		{
+			if (file.getSize() > 1024) {
+				msgs.add(new FacesMessage("Imagem muito grande"));
+			}
+	//		if (!"image/jpeg".equals(file.getContentType())) {
+	//			msgs.add(new FacesMessage("Este arquivo não é uma imagem"));
+	//		}
+			if (!msgs.isEmpty()) {
+				throw new ValidatorException(msgs);
+			}
 		}
 	}
 

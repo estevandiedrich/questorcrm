@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-   xmlns:f="http://xmlns.jcp.org/jsf/core"
-   xmlns:h="http://xmlns.jcp.org/jsf/html"
-   xmlns:p="http://primefaces.org/ui"
-   template="/WEB-INF/templates/default.xhtml">
-   <ui:define name="content">
-   <script type="text/javascript">
-   $(window).load(function() {
-	    jsf.ajax.addOnEvent(function (data) {
-	        if (data.status == "success") {debugger
-	        	atividadesAgenda();
-	        	inicializaMultiDatesPicker();
-	        }
-	    })
-   });
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+	<script type="text/javascript">
    function atividadesAgenda()
    {
 	   var table2 = $('#regAtividadeAgenda\\:atividadeAgendaDataTable').DataTable({"order": [[ 3, "desc" ]]});
@@ -51,114 +43,492 @@
            mask: "99:59:59",
            definitions: {'5': {validator: "[0-5]"}}
  		});
-
-	    var table = $('#regAtividadeAgenda\\:leadsDataTable').DataTable();
-	    $('#regAtividadeAgenda\\:leadsDataTable tbody').on( 'click', 'tr', function () {
-	        if ( $(this).hasClass('selected') ) {
-	            $(this).removeClass('selected');
-	        }
-	        else {
-	            table.$('tr.selected').removeClass('selected');
-	            $(this).addClass('selected');
-	        }
-	    } );
+	   	leadsDataTable();
 	    atividadesAgenda();
 	    inicializaMultiDatesPicker();
+	    participantesExternosDataTable();
+	    participantesInternosDataTable();
+	    modalParticipantesInternosDataTable();
 	} );
+   $(window).load(function() {
+			jsf.ajax.addOnEvent(function(data) {
+						if (data.status == "success") {
+							debugger
+							if (data.source.id == "regAtividadeAgenda:adicionarParticipanteExterno") {
+								participantesExternosDataTable();
+							} else if(data.source.id == "regAtividadeAgenda:adicionarParticipanteInterno") {
+								participantesInternosDataTable();
+							} else if(data.source.id == "regAtividadeAgenda:participantesExternosImg"){
+								modalParticipantesExternos();
+								modalParticipantesExternosDataTable();
+								atividadesAgenda();
+							} else if(data.source.id == "regAtividadeAgenda:participantesInternosImg"){
+							} else {
+								atividadesAgenda();
+					        	inicializaMultiDatesPicker();
+							}
+						}
+					})
+			});
+   function modalParticipantesExternosDataTable()
+   {
+	   var table3 = $('#regAtividadeAgenda\\:modalParticipantesExternosDataTable').DataTable();
+
+		$('#regAtividadeAgenda\\:modalParticipantesExternosDataTable tbody').on('click','tr',
+		function() {
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+			} else {
+				table3.$('tr.selected').removeClass(
+						'selected');
+				$(this).addClass('selected');
+			}
+		});
+   }
+   function modalParticipantesInternosDataTable()
+   {
+	   var table3 = $('#regAtividadeAgenda\\:modalParticipantesInternosDataTable').DataTable();
+
+		$('#regAtividadeAgenda\\:modalParticipantesInternosDataTable tbody').on('click','tr',
+		function() {
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+			} else {
+				table3.$('tr.selected').removeClass(
+						'selected');
+				$(this).addClass('selected');
+			}
+		});
+   }
+   function participantesExternosDataTable()
+   {
+	   var table3 = $('#regAtividadeAgenda\\:participantesExternosDataTable').DataTable();
+
+		$('#regAtividadeAgenda\\:participantesExternosDataTable tbody').on('click','tr',
+		function() {
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+			} else {
+				table3.$('tr.selected').removeClass(
+						'selected');
+				$(this).addClass('selected');
+			}
+		});
+   }
+   function participantesInternosDataTable()
+   {
+	   var table3 = $('#regAtividadeAgenda\\:participantesInternosDataTable').DataTable();
+
+		$('#regAtividadeAgenda\\:participantesInternosDataTable tbody').on('click','tr',
+		function() {
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+			} else {
+				table3.$('tr.selected').removeClass(
+						'selected');
+				$(this).addClass('selected');
+			}
+		});
+   }
+   function modalParticipantesExternos()
+   {
+	   $('#myModalParticipantesExternos').modal('show');
+   }
+   function selecionarParticipanteExterno()
+   {
+	   var table = $('#regAtividadeAgenda\\:modalParticipantesExternosDataTable').DataTable();
+		var id = table.row('.selected').data()[0];
+		var desc = table.row('.selected').data()[1];
+		$('#regAtividadeAgenda\\:participantesExternos').val(id);
+		$('#regAtividadeAgenda\\:participantesExternos_desc').val(desc);
+		$('#myModalParticipantesExternos').modal('hide');
+   }
+   function modalParticipantesInternos()
+   {
+	   $('#myModalParticipantesInternos').modal('show');
+   }
+   function selecionarParticipanteInterno()
+   {
+	   var table = $('#regAtividadeAgenda\\:modalParticipantesInternosDataTable').DataTable();
+		var id = table.row('.selected').data()[0];
+		var desc = table.row('.selected').data()[1];
+		$('#regAtividadeAgenda\\:participantesInternos').val(id);
+		$('#regAtividadeAgenda\\:participantesInternos_desc').val(desc);
+		$('#myModalParticipantesInternos').modal('hide');
+   }
+   function modalLead() {
+		$('#myModalLead').modal('show');
+	}
+	function selecionarLead() {
+		var table = $('#regAtividadeAgenda\\:leadsDataTable').DataTable();
+		var id = table.row('.selected').data()[0];
+		var desc = table.row('.selected').data()[1];
+		$('#regAtividadeAgenda\\:lead').val(id);
+		$('#regAtividadeAgenda\\:lead_desc').val(desc);
+		$('#myModalLead').modal('hide');
+	}
+	function leadsDataTable() {
+		var table = $('#regAtividadeAgenda\\:leadsDataTable').DataTable();
+
+		$('#regAtividadeAgenda\\:leadsDataTable tbody').on('click', 'tr',
+				function() {
+					if ($(this).hasClass('selected')) {
+						$(this).removeClass('selected');
+					} else {
+						table.$('tr.selected').removeClass('selected');
+						$(this).addClass('selected');
+					}
+				});
+	}
    </script>
-   	<br/>
-      <h:form id="regAtividadeAgenda">
-      <h:panelGroup rendered="#{empty leads}">
-         <em>Nenhum lead registrado.</em>
-      </h:panelGroup>
-      <h:dataTable id="leadsDataTable" var="_lead" value="#{leads}"
-		rendered="#{not empty leads}"
-		styleClass="table"
-		 headerClass="table-header"
-		 rowClasses="table-odd-row,table-even-row">
-         <h:column>
-            <f:facet name="header">Id</f:facet>
-                #{_lead.id}
-            </h:column>
-         <h:column>
-            <f:facet name="header">Nome</f:facet>
-                #{_lead.nome}
-            </h:column>
-         <h:column>
-            <f:facet name="header"></f:facet>
-                <h:form>
-                	<h:commandLink value="Selecionar" action="#{salvarAtividadeAgenda.setLead(_lead)}">
-                		<f:ajax render="regAtividadeAgenda:compromissosAgendadosPanelGrid regAtividadeAgenda:compromissosPanelGrid regAtividadeAgenda:pre-select-dates"/>
-                	</h:commandLink>
-                </h:form>
-            </h:column>
-      </h:dataTable>
-      
-      <h1>Novo compromisso</h1>
-      	<h:panelGrid id="compromissosPanelGrid">
-	      <h:outputLabel for="lembrete" value="Descrição:" />
-	      <h:inputText id="lembrete" value="#{newAtividadeAgenda.lembrete}"/>
-	      <h:outputLabel for="participantes" value="Participantes:" />
-	      <h:selectManyMenu id="participantes" value="#{newAtividadeAgenda.participantesSelecionados}" style="height:60px;">
-			<f:selectItems value="#{newAtividadeAgenda.lead.contatos}" var="participante" itemValue="#{participante.nome}" itemLabel="#{participante.nome}" />
-		  </h:selectManyMenu>
-	      <h:outputLabel for="dataEHora" value="Data:" />
-	      <p:calendar id="dataEHora" value="#{newAtividadeAgenda.dataEHora}" pattern="dd/MM/yyyy"/>
-	      <h:outputLabel for="hora" value="Hora:"/>
-	      <h:inputText id="hora" value="#{newAtividadeAgenda.hora}">
-	      	<f:convertDateTime type="time" pattern="HH:mm:ss"/>
-	      </h:inputText>
-	      <h:outputLabel for="antecedencia" value="Avisar com antecedencia de:" />
-	      <h:selectOneMenu id="antecedencia" value="#{newAtividadeAgenda.antecedencia}">
-	      	<f:selectItem itemLabel="10 minutos" itemValue="10"/>
-	      	<f:selectItem itemLabel="20 minutos" itemValue="20"/>
-	      	<f:selectItem itemLabel="30 minutos" itemValue="30"/>
-	      </h:selectOneMenu>
-	    </h:panelGrid>
-	      <br/>
-	      <h:commandButton id="adicionarAtividadeAgenda" action="#{salvarAtividadeAgenda.adicionarAtividadeAgenda()}" value="Adicionar">
-			<f:ajax execute="regAtividadeAgenda:lembrete regAtividadeAgenda:dataEHora regAtividadeAgenda:hora regAtividadeAgenda:participantes" render="regAtividadeAgenda:pre-select-dates regAtividadeAgenda:compromissosPanelGrid regAtividadeAgenda:compromissosAgendadosPanelGrid"/>
-		  </h:commandButton>
-	      
-	      <h1>Agenda</h1>
-	      <div id="pre-select-dates"></div>
-	      <br/>
-	      <h1>Compromissos</h1>
-	      <h:panelGrid id="compromissosAgendadosPanelGrid">
-			<h:panelGroup rendered="#{empty newAtividadeAgenda.lead.atividadesAgenda}">
-		         <em>Nenhum compromisso registrado.</em>
-		      </h:panelGroup>
-		      <h:dataTable id="atividadeAgendaDataTable" var="_atividadeAgenda" value="#{newAtividadeAgenda.lead.atividadesAgenda}"
-				rendered="#{not empty newAtividadeAgenda.lead.atividadesAgenda}"
-				styleClass="table"
-				width="100%"
-				style="display:inline-table;"
-				 headerClass="table-header"
-				 rowClasses="table-odd-row,table-even-row">
-		         <h:column>
-		            <f:facet name="header">Id</f:facet>
-		                #{_atividadeAgenda.id}
+		<br />
+		<h:form id="regAtividadeAgenda">
+			<h1>Novo compromisso</h1>
+			<h:panelGrid id="compromissosPanelGrid">
+				<h:outputLabel for="lead" value="Lead:" />
+				<h:panelGroup>
+					<h:inputText id="lead" value="#{newAtividadeAgenda.lead.id}" />
+					<h:graphicImage id="leadImg" library="images" name="magnifying.png"
+						onclick="javascript:modalLead()"/>
+					<h:inputText id="lead_desc" disabled="true" style="border:none;background:white;"/>						
+				</h:panelGroup>
+			
+				<h:outputLabel for="lembrete" value="Descrição:" />
+				<h:inputText id="lembrete" value="#{newAtividadeAgenda.lembrete}" />
+				
+				<h:outputLabel for="participantesExternos"
+					value="Participantes externos:" />
+				<h:panelGroup>
+					<h:inputText id="participantesExternos"
+						value="#{newAtividadeAgenda.participanteExternoSelecionado.id}" />
+					<h:graphicImage id="participantesExternosImg" library="images"
+						name="magnifying.png">
+						<f:ajax event="click" execute="regAtividadeAgenda:lead"
+						render="regAtividadeAgenda:modalParticipantesExternosPanelGrid regAtividadeAgenda:compromissosAgendadosPanelGrid"
+						listener="#{salvarAtividadeAgenda.setLead}" />
+					</h:graphicImage>
+					<h:inputText id="participantesExternos_desc" disabled="true" style="border:none;background:white;"/>
+				</h:panelGroup>
+				<br />
+				<h:commandButton id="adicionarParticipanteExterno"
+					action="#{salvarAtividadeAgenda.adicionarParticipanteExterno()}" value="Adicionar">
+					<f:ajax execute="regAtividadeAgenda:participantesExternos"
+						render="regAtividadeAgenda:participantesExternos regAtividadeAgenda:participantesExternosPanelGrid" />
+				</h:commandButton>
+				<br />
+				<h:panelGrid id="participantesExternosPanelGrid">
+					<h2>Participantes externos</h2>
+					<h:panelGroup rendered="#{empty newAtividadeAgenda.participantesExternos}">
+						<em>Nenhum participante externo adicionado.</em>
+					</h:panelGroup>
+					<h:dataTable id="participantesExternosDataTable"
+						var="_participanteExterno" value="#{newAtividadeAgenda.participantesExternos}"
+						rendered="#{not empty newAtividadeAgenda.participantesExternos}"
+						styleClass="table" width="100%" style="display:inline-table;"
+						headerClass="table-header"
+						rowClasses="table-odd-row,table-even-row">
+						<h:column>
+							<f:facet name="header">Id</f:facet>
+							<h:outputText value="#{_participanteExterno.participanteExterno.id}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">Nome</f:facet>
+							<h:outputText value="#{_participanteExterno.participanteExterno.nome}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">Email</f:facet>
+							<h:outputText value="#{_participanteExterno.participanteExterno.email}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">Telefone</f:facet>
+							<h:outputText value="#{_participanteExterno.participanteExterno.telefone}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">Cargo</f:facet>
+							<h:outputText
+								value="#{_participanteExterno.participanteExterno.cargo.descricao}" />
+						</h:column>
+					</h:dataTable>
+				</h:panelGrid>
+				<br />
+				<h:outputLabel for="participantesInternos"
+					value="Participantes internos:" />
+				<h:panelGroup>
+					<h:inputText id="participantesInternos"
+						value="#{newAtividadeAgenda.participanteInternoSelecionado.id}" />
+					<h:graphicImage id="participantesInternosImg" library="images"
+						name="magnifying.png" onclick="javascript:modalParticipantesInternos()"/>
+					<h:inputText id="participantesInternos_desc" disabled="true" style="border:none;background:white;"/>
+				</h:panelGroup>
+				<br />
+				<h:commandButton id="adicionarParticipanteInterno"
+					action="#{salvarAtividadeAgenda.adicionarParticipanteInterno()}" value="Adicionar">
+					<f:ajax execute="regAtividadeAgenda:participantesInternos"
+						render="regAtividadeAgenda:participantesInternos regAtividadeAgenda:participantesInternosPanelGrid" />
+				</h:commandButton>
+				<br />
+				<h:panelGrid id="participantesInternosPanelGrid">
+					<h2>Participantes internos</h2>
+					<h:panelGroup rendered="#{empty newAtividadeAgenda.participantesInternos}">
+						<em>Nenhum participante interno adicionado.</em>
+					</h:panelGroup>
+					<h:dataTable id="participantesInternosDataTable"
+						var="_participanteInterno" value="#{newAtividadeAgenda.participantesInternos}"
+						rendered="#{not empty newAtividadeAgenda.participantesInternos}"
+						styleClass="table" width="100%" style="display:inline-table;"
+						headerClass="table-header"
+						rowClasses="table-odd-row,table-even-row">
+						<h:column>
+						<f:facet name="header">Id</f:facet>
+			                <h:outputText value="#{_participanteInterno.participantesInternos.id}"/>
+			            </h:column>
+						<h:column>
+							<f:facet name="header">Nome</f:facet>
+			                <h:outputText value="#{_participanteInterno.participantesInternos.principalID}"/>
+			            </h:column>
+						<h:column>
+							<f:facet name="header">Nivel de acesso</f:facet>
+			                <h:outputText value="#{_participanteInterno.participantesInternos.role.role}"/>
+			            </h:column>
+					</h:dataTable>
+				</h:panelGrid>
+				<br />
+				<h:outputLabel for="dataEHora" value="Data:" />
+				<p:calendar id="dataEHora" value="#{newAtividadeAgenda.dataEHora}"
+					pattern="dd/MM/yyyy" />
+				<h:outputLabel for="hora" value="Hora:" />
+				<h:inputText id="hora" value="#{newAtividadeAgenda.hora}">
+					<f:convertDateTime type="time" pattern="HH:mm:ss" />
+				</h:inputText>
+				<h:outputLabel for="antecedencia"
+					value="Avisar com antecedencia de:" />
+				<h:selectOneMenu id="antecedencia"
+					value="#{newAtividadeAgenda.antecedencia}">
+					<f:selectItem itemLabel="10 minutos" itemValue="10" />
+					<f:selectItem itemLabel="20 minutos" itemValue="20" />
+					<f:selectItem itemLabel="30 minutos" itemValue="30" />
+				</h:selectOneMenu>
+			</h:panelGrid>
+			<br />
+			<h:commandButton id="adicionarAtividadeAgenda"
+				action="#{salvarAtividadeAgenda.adicionarAtividadeAgenda()}"
+				value="Adicionar">
+				<f:ajax
+					execute="regAtividadeAgenda:lembrete regAtividadeAgenda:dataEHora regAtividadeAgenda:hora regAtividadeAgenda:participantes"
+					render="regAtividadeAgenda:pre-select-dates regAtividadeAgenda:compromissosPanelGrid regAtividadeAgenda:compromissosAgendadosPanelGrid" />
+			</h:commandButton>
+
+			<h1>Agenda</h1>
+			<div id="pre-select-dates"></div>
+			<br />
+			<h1>Compromissos</h1>
+			<h:panelGrid id="compromissosAgendadosPanelGrid">
+				<h:panelGroup
+					rendered="#{empty newAtividadeAgenda.lead.atividadesAgenda}">
+					<em>Nenhum compromisso registrado.</em>
+				</h:panelGroup>
+				<h:dataTable id="atividadeAgendaDataTable" var="_atividadeAgenda"
+					value="#{newAtividadeAgenda.lead.atividadesAgenda}"
+					rendered="#{not empty newAtividadeAgenda.lead.atividadesAgenda}"
+					styleClass="table" width="100%" style="display:inline-table;"
+					headerClass="table-header"
+					rowClasses="table-odd-row,table-even-row">
+					<h:column>
+						<f:facet name="header">Id</f:facet>
+		                <h:outputText value="#{_atividadeAgenda.id}"/>
 		            </h:column>
-		         <h:column>
-		            <f:facet name="header">Lembrete</f:facet>
-		                #{_atividadeAgenda.lembrete}
+					<h:column>
+						<f:facet name="header">Lembrete</f:facet>
+		                <h:outputText value="#{_atividadeAgenda.lembrete}"/>
 		            </h:column>
-		         <h:column>
-		            <f:facet name="header">Vendedor</f:facet>
-		                #{_atividadeAgenda.usuario.nome}
+					<h:column>
+						<f:facet name="header">Criado por</f:facet>
+		                <h:outputText value="#{_atividadeAgenda.usuario.nome}"/>
 		            </h:column>
-		         <h:column>
-		            <f:facet name="header">Participantes</f:facet>
-		                #{_atividadeAgenda.participantes}
+					<h:column>
+						<f:facet name="header"></f:facet>
+						<h:commandLink id="participantesInternosCommandLink"
+							value="Participantes Internos"
+							action="#{salvarAtividadeAgenda.setAtividadeAgenda(_atividadeAgenda)}"
+							onclick="javascript:modalParticipantesInternosAtividadeAgenda()">
+							<f:ajax render="regAtividadeAgenda:participantesInternosAtividadeAgendaPanelGrid" />
+						</h:commandLink>
 		            </h:column>
-		         <h:column>
-		            <f:facet name="header">Data</f:facet>
-		                <h:outputText value="#{_atividadeAgenda.dataEHora}">
-  							<f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm:ss"/>
+		            <h:column>
+						<f:facet name="header"></f:facet>
+						<h:commandLink id="participantesExternosCommandLink"
+							value="Participantes Externos"
+							action="#{salvarAtividadeAgenda.setAtividadeAgenda(_atividadeAgenda)}"
+							onclick="javascript:modalParticipantesExternosAtividadeAgenda()">
+							<f:ajax render="regAtividadeAgenda:participantesExternosAtividadeAgendaPanelGrid" />
+						</h:commandLink>
+		            </h:column>
+					<h:column>
+						<f:facet name="header">Data</f:facet>
+						<h:outputText value="#{_atividadeAgenda.dataEHora}">
+							<f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm:ss" />
 						</h:outputText>
-		            </h:column>                
-		      </h:dataTable>
-	      </h:panelGrid>
-      </h:form>
-   </ui:define>
+					</h:column>
+				</h:dataTable>
+			</h:panelGrid>
+			<!-- Modal -->
+			<div id="myModalParticipantesExternos" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content" style="display: inline-block;">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Contatos</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGrid id="modalParticipantesExternosPanelGrid">
+								<h:panelGroup
+									rendered="#{empty newAtividadeAgenda.lead.contatos}">
+									<em>Nenhum contato registrado.</em>
+								</h:panelGroup>
+								<h:dataTable id="modalParticipantesExternosDataTable"
+									var="_participanteExterno"
+									value="#{newAtividadeAgenda.lead.contatos}"
+									rendered="#{not empty newAtividadeAgenda.lead.contatos}"
+									styleClass="table" headerClass="table-header"
+									rowClasses="table-odd-row,table-even-row">
+									<h:column>
+							          <f:facet name="header">Id</f:facet>
+							              <h:outputText value="#{_participanteExterno.id}"/>
+							         </h:column>
+							         <h:column>
+							          <f:facet name="header">Nome</f:facet>
+							              <h:outputText value="#{_participanteExterno.nome}"/>
+							          </h:column>
+							          <h:column>
+							          <f:facet name="header">Email</f:facet>
+							              <h:outputText value="#{_participanteExterno.email}"/>
+							          </h:column>
+							          <h:column>
+							          <f:facet name="header">Telefone</f:facet>
+							              <h:outputText value="#{_participanteExterno.telefone}"/>
+							          </h:column>
+							          <h:column>
+							          <f:facet name="header">Cargo</f:facet>
+							              <h:outputText value="#{_participanteExterno.cargo.descricao}"/>
+							          </h:column>
+								</h:dataTable>
+							</h:panelGrid>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								onclick="javascript:selecionarParticipanteExterno()">Selecionar</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal -->
+			<div id="myModalParticipantesInternos" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content" style="display: inline-block;">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Contatos</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGrid id="modalParticipantesInternosPanelGrid">
+								<h:panelGroup
+									rendered="#{empty participantesInternos}">
+									<em>Nenhum contato registrado.</em>
+								</h:panelGroup>
+								<h:dataTable id="modalParticipantesInternosDataTable"
+									var="_participanteInterno"
+									value="#{participantesInternos}"
+									rendered="#{not empty participantesInternos}"
+									styleClass="table" headerClass="table-header"
+									rowClasses="table-odd-row,table-even-row">
+									<h:column>
+									<f:facet name="header">Id</f:facet>
+						                <h:outputText value="#{_participanteInterno.id}"/>
+						            </h:column>
+									<h:column>
+										<f:facet name="header">Nome</f:facet>
+						                <h:outputText value="#{_participanteInterno.principalID}"/>
+						            </h:column>
+									<h:column>
+										<f:facet name="header">Nivel de acesso</f:facet>
+						                <h:outputText value="#{_participanteInterno.role.role}"/>
+						            </h:column>
+									<h:column>
+										<f:facet name="header"></f:facet>
+										<h:outputLink value="Excluir" />
+									</h:column>
+									<h:column>
+										<f:facet name="header"></f:facet>
+										<h:form>
+											<h:commandLink value="Editar"
+												action="#{salvarPrincipals.editar(_participanteInterno)}">
+											</h:commandLink>
+										</h:form>
+									</h:column>
+								</h:dataTable>
+							</h:panelGrid>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								onclick="javascript:selecionarParticipanteInterno()">Selecionar</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal -->
+			<div id="myModalLead" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Selecione a Lead</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGroup rendered="#{empty leads}">
+								<em>Nenhum lead registrado.</em>
+							</h:panelGroup>
+							<h:dataTable id="leadsDataTable" var="_lead" value="#{leads}"
+								rendered="#{not empty leads}" styleClass="table"
+								headerClass="table-header"
+								rowClasses="table-odd-row,table-even-row">
+								<h:column>
+									<f:facet name="header">Id</f:facet>
+									<h:outputText value="#{_lead.id}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">Nome</f:facet>
+									<h:outputText value="#{_lead.nome}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header"></f:facet>
+									<h:form>
+										<h:commandLink value="Editar"
+											action="#{salvarLead.editar(_lead)}" />
+									</h:form>
+								</h:column>
+								<h:column>
+									<f:facet name="header"></f:facet>
+									<h:outputLink
+										value="/crm/pages/protected/user/emailleads.xhtml">
+										<h:outputText value="Email" />
+									</h:outputLink>
+								</h:column>
+							</h:dataTable>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								onclick="javascript:selecionarLead()">Selecionar</button>
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
 </ui:composition>

@@ -34,21 +34,21 @@
    
       <h1>Inclusão de anexos</h1>
 
-      <h:form id="regAnexos" enctype="multipart/form-data">
-		<h:panelGrid>
-			<h:outputLabel for="nome" value="Nome:" />
-            <h:inputText id="nome" value="#{newAnexo.descricao}" />
-            <h:message for="nome" errorClass="invalid" />
-            <h:outputLabel for="anexo" value="Anexo:" />
-            <h:inputFile id="anexo" value="#{newAnexo.part}"/>
-         <p>
-            <h:commandButton id="salvar"
-               action="#{salvarAnexo.adicionar(email)}" value="Adicionar" >
-               <f:ajax execute="regAnexos:nome regAnexos:anexo" render="regEnvioEmails:anexosPanelGrid"/>
-            </h:commandButton>
-         </p>
-         </h:panelGrid>
-      </h:form>
+	<h:panelGrid>
+		<h:outputLabel for="nomeAnexo" value="Nome:" />
+           <h:inputText id="nomeAnexo" value="#{newAnexo.descricao}" />
+           <h:message for="nomeAnexo" errorClass="invalid" />
+           <h:outputLabel for="anexo" value="Anexo:" />
+           <h:inputFile id="anexo" value="#{newAnexo.part}">
+<!--            	<f:validator binding="#{fileUploadValidator}"/> -->
+           </h:inputFile>
+        <p>
+           <h:commandButton id="salvar"
+              action="#{salvarAnexo.adicionar(email)}" value="Adicionar Anexo" >
+              <f:ajax execute="regEnvioEmails:nomeAnexo regEnvioEmails:anexo" render="regEnvioEmails:nomeAnexo regEnvioEmails:anexosPanelGrid"/>
+           </h:commandButton>
+        </p>
+        </h:panelGrid>
       <h2>Anexos</h2>
       <h:panelGrid id="anexosPanelGrid">
       <h:panelGroup rendered="#{empty email.anexos}">
@@ -63,15 +63,15 @@
 		 rowClasses="table-odd-row,table-even-row">
          <h:column>
             <f:facet name="header">Id</f:facet>
-                #{_anexo.id}
+                <h:outputText value="#{_anexo.id}"/>
             </h:column>
          <h:column>
             <f:facet name="header">Descrição</f:facet>
-                #{_anexo.descricao}
+                <h:outputText value="#{_anexo.descricao}"/>
             </h:column>                
          <h:column>
             <f:facet name="header">Arquivo</f:facet>
-                #{_anexo.part.getSubmittedFileName()}
+                <h:outputText value="#{_anexo.part.getSubmittedFileName()}"/>
             </h:column>
       </h:dataTable>
       </h:panelGrid>

@@ -24,6 +24,7 @@ import br.com.questor.crm.data.ContatoListProducer;
 import br.com.questor.crm.data.EmailListProducer;
 import br.com.questor.crm.data.GrupoUsuariosLeadListProducer;
 import br.com.questor.crm.data.GrupoUsuariosPrincipalsListProducer;
+import br.com.questor.crm.data.NotaListProducer;
 import br.com.questor.crm.model.Anexo;
 import br.com.questor.crm.model.AtividadeAgenda;
 import br.com.questor.crm.model.Cidade;
@@ -34,6 +35,7 @@ import br.com.questor.crm.model.GrupoUsuariosLead;
 import br.com.questor.crm.model.GrupoUsuariosPrincipals;
 import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
+import br.com.questor.crm.model.Nota;
 import br.com.questor.crm.model.Principals;
 import br.com.questor.crm.model.UF;
 
@@ -64,6 +66,9 @@ public class SalvarLead extends BaseController implements Serializable {
 
 	@Inject
 	private AnexoListProducer anexoListProducer;
+	
+	@Inject
+	private NotaListProducer notaListProducer;
 
 	@Inject
 	private GrupoUsuariosPrincipalsListProducer grupoUsuariosPrincipalsListProducer;
@@ -101,7 +106,7 @@ public class SalvarLead extends BaseController implements Serializable {
 	{
 		return newLead != null && newLead.getImagem() != null;
 	}
-	public String salvar() throws Exception {
+	public void salvar() throws Exception {
 		log.info("Salvando Lead" + newLead.getNome());
 			if (newLead.getImagemPart() != null) {
 				Imagem imagem = new Imagem();
@@ -120,6 +125,14 @@ public class SalvarLead extends BaseController implements Serializable {
 				em.persist(newLead);
 			} else {
 				em.merge(newLead);
+			}
+			for(Nota nota:newLead.getNotas())
+			{
+				if(nota.getId() == null)
+				{
+					nota.setLead(newLead);
+					em.persist(nota);
+				}
 			}
 			for (Anexo anexo : newLead.getAnexos()) {
 				if(anexo.getId() == null)
@@ -150,8 +163,6 @@ public class SalvarLead extends BaseController implements Serializable {
 			}
 			leadEventSrc.fire(newLead);
 			initNewLead();
-			return "/pages/protected/user/leads?faces-redirect=true";
-
 	}
 
 	public void adicionarContato(String id) {
@@ -207,6 +218,10 @@ public class SalvarLead extends BaseController implements Serializable {
 			if (!Persistence.getPersistenceUtil().isLoaded(newLead, "anexos")) {
 				List<Anexo> anexos = anexoListProducer.retrieveAllAnexosByLeadOrderedByDescricao(newLead);
 				newLead.setAnexos(anexos);
+			}
+			if(!Persistence.getPersistenceUtil().isLoaded(newLead, "notas")) {
+				List<Nota> notas = notaListProducer.retrieveAllNotasByLeadOrderedByDescricao(newLead);
+				newLead.setNotas(notas);
 			}
 			if(newLead.getUf() == null)
 			{

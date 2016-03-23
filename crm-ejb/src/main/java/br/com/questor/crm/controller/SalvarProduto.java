@@ -59,11 +59,21 @@ public class SalvarProduto {
 	
 	public void salvar() throws Exception {
 		log.info("Salvando " + newProduto.getDescricao());
-		em.persist(newProduto);
-		for(Modulo modulo:newProduto.getModulos())
+		if(newProduto.getId() == null)
 		{
-			modulo.setProduto(newProduto);
-			em.merge(modulo);
+			em.persist(newProduto);
+			for(Modulo modulo:newProduto.getModulos())
+			{
+				if(modulo.getId() == null)
+				{
+					modulo.setProduto(newProduto);
+					em.persist(modulo);
+				}
+			}
+		}
+		else
+		{
+			em.merge(newProduto);
 		}
 		produtoEventSrc.fire(newProduto);
 		initNewProduto();

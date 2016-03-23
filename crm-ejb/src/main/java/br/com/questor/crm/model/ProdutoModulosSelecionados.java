@@ -13,12 +13,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
+@NamedQueries(value = {@NamedQuery(name = "ProdutoModulosSelecionados.findByCotacao",query = "SELECT p FROM ProdutoModulosSelecionados p WHERE p.cotacao.id = :cotacao")})
 @SequenceGenerator(name="PRODUTO_MODULOS_SELECIONADOS_SEQUENCE", sequenceName="PRODUTO_MODULOS_SELECIONADOS_SEQUENCE", allocationSize=1, initialValue=1)
 public class ProdutoModulosSelecionados implements Serializable{
 	public ProdutoModulosSelecionados()
@@ -30,7 +33,7 @@ public class ProdutoModulosSelecionados implements Serializable{
 		this.quantidade = BigDecimal.ZERO;
 		this.valorUnitario = BigDecimal.ZERO;
 		this.valorTotal = BigDecimal.ZERO;
-		this.proposta = new Proposta();
+		this.cotacao = new Cotacao();
 	}
 	/**
 	 * 
@@ -41,8 +44,8 @@ public class ProdutoModulosSelecionados implements Serializable{
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="PRODUTO_MODULOS_SELECIONADOS_SEQUENCE")
 	private Long id;
 	@ManyToOne
-	  @JoinColumn(name = "proposta_id")
-	private Proposta proposta;
+	  @JoinColumn(name = "cotacao_id")
+	private Cotacao cotacao;
 	@ManyToOne
 	  @JoinColumn(name = "produto_id")
 	private Produto produto;
@@ -108,12 +111,12 @@ public class ProdutoModulosSelecionados implements Serializable{
 		this.tipoContratacao = tipoContratacao;
 	}
 
-	public Proposta getProposta() {
-		return proposta;
+	public Cotacao getCotacao() {
+		return cotacao;
 	}
 
-	public void setProposta(Proposta proposta) {
-		this.proposta = proposta;
+	public void setProposta(Cotacao cotacao) {
+		this.cotacao = cotacao;
 	}
 
 	public BigDecimal getValorUnitario() {

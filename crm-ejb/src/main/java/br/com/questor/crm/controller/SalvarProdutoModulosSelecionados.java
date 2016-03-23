@@ -14,11 +14,12 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 
 import br.com.questor.crm.data.ModuloListProducer;
+import br.com.questor.crm.data.ModuloSelecionadoListProducer;
 import br.com.questor.crm.model.Modulo;
 import br.com.questor.crm.model.ModuloSelecionado;
 import br.com.questor.crm.model.Produto;
 import br.com.questor.crm.model.ProdutoModulosSelecionados;
-import br.com.questor.crm.model.Proposta;
+import br.com.questor.crm.model.Cotacao;
 import br.com.questor.crm.model.TipoContratacao;
 
 @Stateful
@@ -35,8 +36,8 @@ public class SalvarProdutoModulosSelecionados {
 	@Inject
 	private ModuloListProducer moduloListProducer;
 	
-//	@Inject
-//	private ModuloSelecionadoListProducer moduloSelecionadoListProducer;
+	@Inject
+	private ModuloSelecionadoListProducer moduloSelecionadoListProducer;
 	
 	@Inject
 	private Event<ProdutoModulosSelecionados> produtoModulosSelecionadosEventSrc;
@@ -51,10 +52,13 @@ public class SalvarProdutoModulosSelecionados {
 	public void setProdutoModulosSelecionados(ProdutoModulosSelecionados produto)
 	{
 		newProdutoModulosSelecionados = produto;
-//		List<ModuloSelecionado> modulosSelecionados = moduloSelecionadoListProducer.retrieveAllModuloSelecionadoByProdutoModulosSelecionados(newProdutoModulosSelecionados);
-//		List<Modulo> modulos = moduloListProducer.retrieveAllModulosByProdutoOrderedByNome(newProdutoModulosSelecionados.getProduto());
-//		newProdutoModulosSelecionados.getProduto().setModulos(modulos);
-//		newProdutoModulosSelecionados.setModulosSelecionados(modulosSelecionados);
+		if(newProdutoModulosSelecionados.getId() != null)
+		{
+			List<ModuloSelecionado> modulosSelecionados = moduloSelecionadoListProducer.retrieveAllModuloSelecionadoByProdutoModulosSelecionados(newProdutoModulosSelecionados);
+			List<Modulo> modulos = moduloListProducer.retrieveAllModulosByProdutoOrderedByNome(newProdutoModulosSelecionados.getProduto());
+			newProdutoModulosSelecionados.getProduto().setModulos(modulos);
+			newProdutoModulosSelecionados.setModulosSelecionados(modulosSelecionados);
+		}
 	}
 	public void calculaValorTotal()
 	{
@@ -65,34 +69,33 @@ public class SalvarProdutoModulosSelecionados {
 		}
 	}
 	public void setProduto() {
-        Long id = newProdutoModulosSelecionados.getProduto().getId();
-        Produto p = em.find(Produto.class, id);
-        List<Modulo> modulos = moduloListProducer.retrieveAllModulosByProdutoOrderedByNome(p);
-        p.setModulos(modulos);
-        newProdutoModulosSelecionados.setProduto(p);
+		if(newProdutoModulosSelecionados.getProduto().getId() != null)
+		{
+			Long id = newProdutoModulosSelecionados.getProduto().getId();
+			Produto p = em.find(Produto.class, id);
+			List<Modulo> modulos = moduloListProducer.retrieveAllModulosByProdutoOrderedByNome(p);
+			p.setModulos(modulos);
+			newProdutoModulosSelecionados.setProduto(p);
+		}
     }
 	public void adicionarModulo(Long id)
 	{
 		Modulo modulo = em.find(Modulo.class, id);
 		ModuloSelecionado moduloSelecionado = new ModuloSelecionado();
 		moduloSelecionado.setModulo(modulo);
-//		moduloSelecionado.setProdutosModulosSelecionados(newProdutoModulosSelecionados);
 		newProdutoModulosSelecionados.getModulosSelecionados().add(moduloSelecionado);
 	}
-	public void adicionar(Proposta proposta) throws Exception
+	public void adicionar(Cotacao cotacao) throws Exception
 	{
 		log.info("Salvando " + newProdutoModulosSelecionados.getId());
 		
 		TipoContratacao tipoContratacao = em.find(TipoContratacao.class, newProdutoModulosSelecionados.getTipoContratacao().getId());
 		newProdutoModulosSelecionados.setTipoContratacao(tipoContratacao);
-		
-//		em.persist(newProdutoModulosSelecionados);
 		for(ModuloSelecionado moduloSelecionado:newProdutoModulosSelecionados.getModulosSelecionados())
 		{
 			moduloSelecionado.setProdutosModulosSelecionados(newProdutoModulosSelecionados);
-//			em.persist(moduloSelecionado);
 		}
-		proposta.getProdutosModulosSelecionados().add(newProdutoModulosSelecionados);
+		cotacao.getProdutosModulosSelecionados().add(newProdutoModulosSelecionados);
 		initNewProdutoModulosSelecionados();
 	}
 	public void salvar() throws Exception {

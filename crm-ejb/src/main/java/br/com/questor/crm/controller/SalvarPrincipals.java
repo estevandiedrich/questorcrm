@@ -147,14 +147,19 @@ public class SalvarPrincipals extends BaseController implements Serializable {
 					em.persist(grupoUsuarios);
 				}
 			}
-			if(!"".equalsIgnoreCase(newPrincipal.getPassword()))
-			{
-				newPrincipal.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, newPrincipal.getPassword()));
-			}
+			newPrincipal.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, newPrincipal.getPassword()));
 			em.merge(newPrincipal);
 		}
 		principalsEventSrc.fire(newPrincipal);
 		initNewPrincipal();
+	}
+	public boolean imagemCarregada()
+	{
+		return newPrincipal != null && newPrincipal.getImagem() != null && newPrincipal.getImagem().getId() != null;
+	}
+	public boolean assinaturaCarregada()
+	{
+		return newPrincipal != null && newPrincipal.getAssinaturaEmail() != null && newPrincipal.getAssinaturaEmail().getId() != null;
 	}
 	public String primeiroAcesso(Principals principals)
 	{

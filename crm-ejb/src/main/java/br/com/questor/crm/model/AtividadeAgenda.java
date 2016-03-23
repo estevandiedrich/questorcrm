@@ -1,14 +1,19 @@
 package br.com.questor.crm.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -22,6 +27,10 @@ public class AtividadeAgenda implements Serializable{
 	{
 		this.dataEHora = new Date();
 		this.hora = new Date();
+		participanteExternoSelecionado = new Contato();
+		participanteInternoSelecionado = new Principals();
+		participantesInternos = new ArrayList<>();
+		participantesExternos = new ArrayList<>();
 	}
 	/**
 	 * 
@@ -47,10 +56,14 @@ public class AtividadeAgenda implements Serializable{
 	  @JoinColumn(name = "contato_id")
 	private Contato contato;
 	
-	private String participantes;
+	@OneToMany(mappedBy = "atividadeAgenda", targetEntity = AtividadeAgendaParticipantesInternos.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<AtividadeAgendaParticipantesInternos> participantesInternos;
+	@OneToMany(mappedBy = "atividadeAgenda", targetEntity = AtividadeAgendaParticipantesExternos.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private List<AtividadeAgendaParticipantesExternos> participantesExternos;
 	@Transient
-	private String[] participantesSelecionados;
-
+	private Contato participanteExternoSelecionado;
+	@Transient
+	private Principals participanteInternoSelecionado;
 	private String antecedencia;
 	
 	public Long getId() {
@@ -109,22 +122,6 @@ public class AtividadeAgenda implements Serializable{
 		this.contato = contato;
 	}
 
-	public String getParticipantes() {
-		return participantes;
-	}
-
-	public void setParticipantes(String participantes) {
-		this.participantes = participantes;
-	}
-
-	public String[] getParticipantesSelecionados() {
-		return participantesSelecionados;
-	}
-
-	public void setParticipantesSelecionados(String[] participantesSelecionados) {
-		this.participantesSelecionados = participantesSelecionados;
-	}
-
 	public String getAntecedencia() {
 		return antecedencia;
 	}
@@ -132,5 +129,36 @@ public class AtividadeAgenda implements Serializable{
 	public void setAntecedencia(String antecedencia) {
 		this.antecedencia = antecedencia;
 	}
-	
+
+	public List<AtividadeAgendaParticipantesInternos> getParticipantesInternos() {
+		return participantesInternos;
+	}
+
+	public void setParticipantesInternos(List<AtividadeAgendaParticipantesInternos> participantesInternos) {
+		this.participantesInternos = participantesInternos;
+	}
+
+	public List<AtividadeAgendaParticipantesExternos> getParticipantesExternos() {
+		return participantesExternos;
+	}
+
+	public void setParticipantesExternos(List<AtividadeAgendaParticipantesExternos> participantesExternos) {
+		this.participantesExternos = participantesExternos;
+	}
+
+	public Contato getParticipanteExternoSelecionado() {
+		return participanteExternoSelecionado;
+	}
+
+	public void setParticipanteExternoSelecionado(Contato participanteExternoSelecionado) {
+		this.participanteExternoSelecionado = participanteExternoSelecionado;
+	}
+
+	public Principals getParticipanteInternoSelecionado() {
+		return participanteInternoSelecionado;
+	}
+
+	public void setParticipanteInternoSelecionado(Principals participanteInternoSelecionado) {
+		this.participanteInternoSelecionado = participanteInternoSelecionado;
+	}
 }

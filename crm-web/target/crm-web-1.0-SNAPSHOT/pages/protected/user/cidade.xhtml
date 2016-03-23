@@ -23,7 +23,9 @@
 	function selecionarUF() {
 		var table = $('#ufsDataTable').DataTable();
 		var id = table.row('.selected').data()[0];
+		var desc = table.row('.selected').data()[1];
 		$('#regCidades\\:uf').val(id);
+		$('#regCidades\\:uf_desc').val(desc);
 		$('#myModal').modal('hide');
 	}
 	function dataTable()
@@ -65,6 +67,7 @@
 				<h:inputText id="uf" value="#{newCidade.uf.id}" />
 				<h:graphicImage library="images" name="magnifying.png"
 					onclick="javascript:modalUF()" />
+				<h:inputText id="uf_desc" disabled="true" style="border:none;background:white;"/>
 			</h:panelGroup>
             <h:message for="uf" errorClass="invalid" />
          <p>

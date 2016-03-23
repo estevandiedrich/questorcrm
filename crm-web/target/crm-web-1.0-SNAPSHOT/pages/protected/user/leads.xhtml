@@ -14,15 +14,34 @@
 				$('#myModal2').modal('show');
 			}
 			function selecionarGrupoUsuarios() {
-				var table = $('#grupoUsuariosDataTable').DataTable();
+				var table = $('#regLeads\\:grupoUsuariosDataTable').DataTable();
 				var id = table.row('.selected').data()[0];
+				var desc = table.row('.selected').data()[1];
 				$('#regLeads\\:grupoUsuarios').val(id);
+				$('#regLeads\\:grupoUsuarios_desc').val(desc);
 				$('#myModal').modal('hide');
 			}
+			function leadsPaiDataTable() {
+				var table = $('#regLeads\\:leadsPaiDataTable').DataTable();
+				$('#regLeads\\:leadsPaiDataTable tbody').on(
+						'click',
+						'tr',
+						function() {
+							if ($(this).hasClass('selected')) {
+								$(this).removeClass('selected');
+							} else {
+								table.$('tr.selected').removeClass(
+										'selected');
+								$(this).addClass('selected');
+							}
+						});
+			}
 			function selecionarLeadPai() {
-				var table = $('#leadsPaiDataTable').DataTable();
+				var table = $('#regLeads\\:leadsPaiDataTable').DataTable();
 				var id = table.row('.selected').data()[0];
+				var desc = table.row('.selected').data()[1];
 				$('#regLeads\\:membro').val(id);
+				$('#regLeads\\:membro_desc').val(desc);
 				$('#myModal2').modal('hide');
 			}
 			function modalUF()
@@ -30,9 +49,11 @@
 				$('#myModalUF').modal('show');
 			}
 			function selecionarUF() {
-				var table = $('#ufsDataTable').DataTable();
+				var table = $('#regLeads\\:ufsDataTable').DataTable();
 				var id = table.row('.selected').data()[0];
+				var desc = table.row('.selected').data()[1];
 				$('#regLeads\\:uf').val(id);
+				$('#regLeads\\:uf_desc').val(desc);
 				$('#myModalUF').modal('hide');
 			}
 			function modalCidade()
@@ -40,15 +61,17 @@
 				$('#myModalCidade').modal('show');
 			}
 			function selecionarCidade() {
-				var table = $('#cidadesDataTable').DataTable();
+				var table = $('#regLeads\\:cidadesDataTable').DataTable();
 				var id = table.row('.selected').data()[0];
+				var desc = table.row('.selected').data()[1];
 				$('#regLeads\\:cidade').val(id);
+				$('#regLeads\\:cidade_desc').val(desc);
 				$('#myModalCidade').modal('hide');
 			}
 			function leadsDataTable()
 			{
-				var table = $('#leadsDataTable').DataTable();
-				$('#leadsDataTable tbody').on(
+				var table = $('#regLeads\\:leadsDataTable').DataTable();
+				$('#regLeads\\:leadsDataTable tbody').on(
 						'click',
 						'tr',
 						function() {
@@ -64,8 +87,8 @@
 			}
 			$(document).ready(
 					function() {
-						var table3 = $('#grupoUsuariosDataTable').DataTable();
-						$('#grupoUsuariosDataTable tbody').on(
+						var table3 = $('#regLeads\\:grupoUsuariosDataTable').DataTable();
+						$('#regLeads\\:grupoUsuariosDataTable tbody').on(
 								'click',
 								'tr',
 								function() {
@@ -81,6 +104,7 @@
 						ufsDataTable();
 						cidadesDataTable();
 						leadsDataTable();
+						leadsPaiDataTable();
 					});
 			$(window).load(function() {
 				jsf.ajax.addOnEvent(function(data) {
@@ -91,12 +115,16 @@
 						leadsDataTable();
 					}
 				})
+				jsf.ajax.addOnError(function(data)
+						{
+							debugger;
+						});
 			});
 			function cidadesDataTable()
 			{
-				var table2 = $('#cidadesDataTable').DataTable();
+				var table2 = $('#regLeads\\:cidadesDataTable').DataTable();
 				 
-			    $('#cidadesDataTable tbody').on( 'click', 'tr', function () {
+			    $('#regLeads\\:cidadesDataTable tbody').on( 'click', 'tr', function () {
 			        if ( $(this).hasClass('selected') ) {
 			            $(this).removeClass('selected');
 			        }
@@ -108,9 +136,9 @@
 			}
 			function ufsDataTable()
 			{
-			    var table2 = $('#ufsDataTable').DataTable();
+			    var table2 = $('#regLeads\\:ufsDataTable').DataTable();
 				 
-			    $('#ufsDataTable tbody').on( 'click', 'tr', function () {
+			    $('#regLeads\\:ufsDataTable tbody').on( 'click', 'tr', function () {
 			        if ( $(this).hasClass('selected') ) {
 			            $(this).removeClass('selected');
 			        }
@@ -144,7 +172,7 @@
 						<h:message for="nome" errorClass="invalid" />
 						<h:outputLabel for="foto" value="Foto:" />
 						<h:inputFile id="foto" value="#{newLead.imagemPart}">
-							<!-- 			<f:validator binding="#{fileUploadValidator}"/> -->
+<!-- 							<f:validator binding="#{fileUploadValidator}"/> -->
 						</h:inputFile>
 						<h:outputLabel for="statusLead" value="Status:" />
 						<h:selectOneMenu id="statusLead" value="#{newLead.statusLead}">
@@ -155,6 +183,7 @@
 							<h:inputText id="uf" value="#{newLead.uf.id}" />
 							<h:graphicImage library="images" name="magnifying.png"
 								onclick="javascript:modalUF()" />
+							<h:inputText id="uf_desc" disabled="true" style="border:none;background:white;"/>
 						</h:panelGroup>
 						<h:message for="uf" errorClass="invalid" />
 						
@@ -165,15 +194,16 @@
 								onclick="javascript:modalCidade()">
 								<f:ajax event="click"
 									execute="regLeads:uf"
-									render="cidadesPanelGrid"
-									listener="#{salvarLead.setUF}" />
+									render="regLeads:cidadesPanelGrid"
+									listener="#{salvarLead.setUF}"/>
 							</h:graphicImage>
+							<h:inputText id="cidade_desc" disabled="true" style="border:none;background:white;"/>
 						</h:panelGroup>
 						<h:message for="cidade" errorClass="invalid" />
 						<h:outputLabel for="bairro" value="Bairro:" />
 						<h:inputText id="bairro" value="#{newLead.bairro}" />
 						<h:message for="bairro" errorClass="invalid" />
-						<h:outputLabel for="rua" value="Rua:" />
+						<h:outputLabel for="rua" value="Logradouro:" />
 						<h:inputText id="rua" value="#{newLead.rua}" />
 						<h:message for="rua" errorClass="invalid" />
 						<h:outputLabel for="numero" value="Número:" />
@@ -187,6 +217,7 @@
 							<h:inputText id="membro" value="#{newLead.leadPai.id}" />
 							<h:graphicImage library="images" name="magnifying.png"
 								onclick="javascript:modalLeadPai()" />
+							<h:inputText id="membro_desc" disabled="true" style="border:none;background:white;"/>
 						</h:panelGroup>
 						<h:outputLabel for="grupoUsuarios" value="Grupos de Usuários:" />
 						<h:panelGroup>
@@ -194,6 +225,7 @@
 								value="#{newLead.grupoUsuariosSelecionado.id}" />
 							<h:graphicImage library="images" name="magnifying.png"
 								onclick="javascript:modalGrupoUsuarios()" />
+							<h:inputText id="grupoUsuarios_desc" disabled="true" style="border:none;background:white;"/>
 						</h:panelGroup>
 					</h:panelGrid>
 					<h:panelGrid>
@@ -205,7 +237,7 @@
 				<br />
 				<h:commandButton id="adicionarGrupoUsuarios"
 					action="#{salvarLead.adicionarGrupoUsuarios(newLead.grupoUsuariosSelecionado.id)}"
-					value="Adicionar">
+					value="Adicionar Grupo de Usuários">
 					<f:ajax execute="regLeads:grupoUsuarios"
 						render="regLeads:gruposUsuariosPanelGrid" />
 				</h:commandButton>
@@ -233,212 +265,221 @@
 				<ui:include src="/pages/protected/user/contato.xhtml">
 					<ui:param name="lead" value="#{newLead}" />
 				</ui:include>
+				<ui:include src="/pages/protected/user/notas.xhtml">
+					<ui:param name="lead" value="#{newLead}" />
+				</ui:include>
 				<ui:include src="/pages/protected/user/anexo.xhtml">
 					<ui:param name="lead" value="#{newLead}" />
 				</ui:include>
-				<h:commandButton value="Salvar" action="#{salvarLead.salvar}" >
-					<f:ajax execute="@form" render="@form"/>
+				<h:commandButton id="salvarLead" value="Salvar" action="#{salvarLead.salvar}">
+					<f:ajax render="@form" execute="@form"/>
 				</h:commandButton>
 			</h:panelGrid>
-		</h:form>
-		<h2>Leads</h2>
-		<h:panelGroup rendered="#{empty leads}">
-			<em>Nenhum lead registrado.</em>
-		</h:panelGroup>
-		<h:dataTable id="leadsDataTable" var="_lead" value="#{leads}"
-			rendered="#{not empty leads}" 
-			styleClass="table"
-			width="100%"
-			style="display:inline-table;"
-			headerClass="table-header" rowClasses="table-odd-row,table-even-row">
-			<h:column>
-				<f:facet name="header">Id</f:facet>
-                <h:outputText value="#{_lead.id}"/>
-            </h:column>
-			<h:column>
-				<f:facet name="header">Nome</f:facet>
-                <h:outputText value="#{_lead.nome}"/>
-            </h:column>
-			<h:column>
-				<f:facet name="header"></f:facet>
-				<h:form>
+			<h2>Leads</h2>
+			<h:panelGroup rendered="#{empty leads}">
+				<em>Nenhum lead registrado.</em>
+			</h:panelGroup>
+			<h:dataTable id="leadsDataTable" var="_lead" value="#{leads}"
+				rendered="#{not empty leads}" 
+				styleClass="table"
+				width="100%"
+				style="display:inline-table;"
+				headerClass="table-header" rowClasses="table-odd-row,table-even-row">
+				<h:column>
+					<f:facet name="header">Id</f:facet>
+	                <h:outputText value="#{_lead.id}"/>
+	            </h:column>
+				<h:column>
+					<f:facet name="header">Nome</f:facet>
+	                <h:outputText value="#{_lead.nome}"/>
+	            </h:column>
+	            <h:column>
+					<f:facet name="header">UF</f:facet>
+	                <h:outputText value="#{_lead.uf.sigla}"/>
+	            </h:column>
+	            <h:column>
+					<f:facet name="header">Cidade</f:facet>
+	                <h:outputText value="#{_lead.cidade.nome}"/>
+	            </h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
 					<h:commandLink value="Editar" action="#{salvarLead.editar(_lead)}" />
-				</h:form>
-			</h:column>
-			<h:column>
-				<f:facet name="header"></f:facet>
-				<h:outputLink value="/crm/pages/protected/user/emailleads.xhtml">
-					<h:outputText value="Email" />
-				</h:outputLink>
-			</h:column>
-			<h:column>
-				<f:facet name="header"></f:facet>
-				<h:outputLink
-					value="/crm/pages/protected/user/atividadeagenda.xhtml">
-					<h:outputText value="Agenda" />
-				</h:outputLink>
-			</h:column>
-		</h:dataTable>
-		<!-- Modal -->
-		<div id="myModal" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<!-- Modal content-->
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">X</button>
-						<h4 class="modal-title">Selecione o Grupo de usuários</h4>
-					</div>
-					<div class="modal-body">
-						<h2>Grupos de usuários</h2>
-						<h:panelGroup rendered="#{empty gruposUsuarios}">
-							<em>Nenhum Grupo registrado.</em>
-						</h:panelGroup>
-						<h:dataTable id="grupoUsuariosDataTable" var="_grupoUsuarios"
-							value="#{gruposUsuarios}" rendered="#{not empty gruposUsuarios}"
-							styleClass="table" headerClass="table-header"
-							rowClasses="table-odd-row,table-even-row">
-							<h:column>
-								<f:facet name="header">Id</f:facet>
-					                <h:outputText value="#{_grupoUsuarios.id}"/>
-					            </h:column>
-							<h:column>
-								<f:facet name="header">Descrição</f:facet>
-					                <h:outputText value="#{_grupoUsuarios.descricao}"/>
-					            </h:column>
-						</h:dataTable>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary"
-							onclick="javascript:selecionarGrupoUsuarios()">Selecionar</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- Modal -->
-		<div id="myModal2" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<!-- Modal content-->
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">X</button>
-						<h4 class="modal-title">Selecione o Lead pai</h4>
-					</div>
-					<div class="modal-body">
-						<h:panelGroup rendered="#{empty leads}">
-							<em>Nenhum lead registrado.</em>
-						</h:panelGroup>
-						<h:dataTable id="leadsPaiDataTable" var="_lead" value="#{leads}"
-							rendered="#{not empty leads}" styleClass="table"
-							headerClass="table-header"
-							rowClasses="table-odd-row,table-even-row">
-							<h:column>
-								<f:facet name="header">Id</f:facet>
-					                <h:outputText value="#{_lead.id}"/>
-					            </h:column>
-							<h:column>
-								<f:facet name="header">Nome</f:facet>
-					                <h:outputText value="#{_lead.nome}"/>
-					            </h:column>
-						</h:dataTable>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary"
-							onclick="javascript:selecionarLeadPai()">Selecionar</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+				</h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
+					<h:outputLink value="/crm/pages/protected/user/emailleads.xhtml">
+						<h:outputText value="Email" />
+					</h:outputLink>
+				</h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
+					<h:outputLink
+						value="/crm/pages/protected/user/atividadeagenda.xhtml">
+						<h:outputText value="Agenda" />
+					</h:outputLink>
+				</h:column>
+			</h:dataTable>
+			<!-- Modal -->
+			<div id="myModalUF" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Selecione a UF</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGroup rendered="#{empty ufs}">
+						         <em>Nenhuma uf registrada.</em>
+						      </h:panelGroup>
+						      <h:dataTable id="ufsDataTable" var="_uf" value="#{ufs}"
+								rendered="#{not empty ufs}"
+								styleClass="table"
+								width="100%"
+								style="display:inline-table;"
+								 headerClass="table-header"
+								 rowClasses="table-odd-row,table-even-row">
+						         <h:column>
+						          <f:facet name="header">Id</f:facet>
+						              <h:outputText value="#{_uf.id}"/>
+						         </h:column>
+						         <h:column>
+						          <f:facet name="header">Nome</f:facet>
+						              <h:outputText value="#{_uf.nome}"/>
+						          </h:column>
+						         <h:column>
+						          <f:facet name="header">Sigla</f:facet>
+						              <h:outputText value="#{_uf.sigla}"/>
+						          </h:column>
+						          <h:column>
+						          <f:facet name="header">Prazo</f:facet>
+						              <h:outputText value="#{_uf.prazo}"/>
+						          </h:column>
+						      </h:dataTable>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								onclick="javascript:selecionarUF()">Selecionar</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-  		<!-- Modal -->
-		<div id="myModalUF" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<!-- Modal content-->
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">X</button>
-						<h4 class="modal-title">Selecione a UF</h4>
-					</div>
-					<div class="modal-body">
-						<h:panelGroup rendered="#{empty ufs}">
-					         <em>Nenhuma uf registrada.</em>
-					      </h:panelGroup>
-					      <h:dataTable id="ufsDataTable" var="_uf" value="#{ufs}"
-							rendered="#{not empty ufs}"
-							styleClass="table"
-							width="100%"
-							style="display:inline-table;"
-							 headerClass="table-header"
-							 rowClasses="table-odd-row,table-even-row">
-					         <h:column>
-					          <f:facet name="header">Id</f:facet>
-					              <h:outputText value="#{_uf.id}"/>
-					         </h:column>
-					         <h:column>
-					          <f:facet name="header">Nome</f:facet>
-					              <h:outputText value="#{_uf.nome}"/>
-					          </h:column>
-					         <h:column>
-					          <f:facet name="header">Sigla</f:facet>
-					              <h:outputText value="#{_uf.sigla}"/>
-					          </h:column>
-					          <h:column>
-					          <f:facet name="header">Prazo</f:facet>
-					              <h:outputText value="#{_uf.prazo}"/>
-					          </h:column>
-					      </h:dataTable>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary"
-							onclick="javascript:selecionarUF()">Selecionar</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+			<!-- Modal -->
+			<div id="myModalCidade" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Selecione a Cidade</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGrid id="cidadesPanelGrid">
+						      <h:panelGroup rendered="#{empty newLead.cidadesPorUf}">
+						         <em>Nenhuma cidade registrada.</em>
+						      </h:panelGroup>
+						      <h:dataTable id="cidadesDataTable" var="_cidade" value="#{newLead.cidadesPorUf}"
+								rendered="#{not empty newLead.cidadesPorUf}"
+								styleClass="table"
+								width="100%"
+								style="display:inline-table;"
+								 headerClass="table-header"
+								 rowClasses="table-odd-row,table-even-row">
+						         <h:column>
+						          <f:facet name="header">Id</f:facet>
+						              <h:outputText value="#{_cidade.id}"/>
+						         </h:column>
+						         <h:column>
+						          <f:facet name="header">Nome</f:facet>
+						              <h:outputText value="#{_cidade.nome}"/>
+						          </h:column>
+						          <h:column>
+						          <f:facet name="header">UF</f:facet>
+						              <h:outputText value="#{_cidade.uf.nome}"/>
+						          </h:column>
+						      </h:dataTable>
+					      </h:panelGrid>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								onclick="javascript:selecionarCidade()">Selecionar</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<!-- Modal -->
-		<div id="myModalCidade" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<!-- Modal content-->
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">X</button>
-						<h4 class="modal-title">Selecione a Cidade</h4>
-					</div>
-					<div class="modal-body">
-						<h:panelGrid id="cidadesPanelGrid">
-					      <h:panelGroup rendered="#{empty newLead.cidadesPorUf}">
-					         <em>Nenhuma cidade registrada.</em>
-					      </h:panelGroup>
-					      <h:dataTable id="cidadesDataTable" var="_cidade" value="#{newLead.cidadesPorUf}"
-							rendered="#{not empty newLead.cidadesPorUf}"
-							styleClass="table"
-							width="100%"
-							style="display:inline-table;"
-							 headerClass="table-header"
-							 rowClasses="table-odd-row,table-even-row">
-					         <h:column>
-					          <f:facet name="header">Id</f:facet>
-					              <h:outputText value="#{_cidade.id}"/>
-					         </h:column>
-					         <h:column>
-					          <f:facet name="header">Nome</f:facet>
-					              <h:outputText value="#{_cidade.nome}"/>
-					          </h:column>
-					          <h:column>
-					          <f:facet name="header">UF</f:facet>
-					              <h:outputText value="#{_cidade.uf.nome}"/>
-					          </h:column>
-					      </h:dataTable>
-				      </h:panelGrid>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary"
-							onclick="javascript:selecionarCidade()">Selecionar</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+			<!-- Modal -->
+			<div id="myModal" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Selecione o Grupo de usuários</h4>
+						</div>
+						<div class="modal-body">
+							<h2>Grupos de usuários</h2>
+							<h:panelGroup rendered="#{empty gruposUsuarios}">
+								<em>Nenhum Grupo registrado.</em>
+							</h:panelGroup>
+							<h:dataTable id="grupoUsuariosDataTable" var="_grupoUsuarios"
+								value="#{gruposUsuarios}" rendered="#{not empty gruposUsuarios}"
+								styleClass="table" headerClass="table-header"
+								rowClasses="table-odd-row,table-even-row">
+								<h:column>
+									<f:facet name="header">Id</f:facet>
+						                <h:outputText value="#{_grupoUsuarios.id}"/>
+						            </h:column>
+								<h:column>
+									<f:facet name="header">Descrição</f:facet>
+						                <h:outputText value="#{_grupoUsuarios.descricao}"/>
+						            </h:column>
+							</h:dataTable>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								onclick="javascript:selecionarGrupoUsuarios()">Selecionar</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+			<!-- Modal -->
+			<div id="myModal2" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Selecione o Lead pai</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGroup rendered="#{empty leads}">
+								<em>Nenhum lead registrado.</em>
+							</h:panelGroup>
+							<h:dataTable id="leadsPaiDataTable" var="_lead" value="#{leads}"
+								rendered="#{not empty leads}" styleClass="table"
+								headerClass="table-header"
+								rowClasses="table-odd-row,table-even-row">
+								<h:column>
+									<f:facet name="header">Id</f:facet>
+						                <h:outputText value="#{_lead.id}"/>
+						            </h:column>
+								<h:column>
+									<f:facet name="header">Nome</f:facet>
+						                <h:outputText value="#{_lead.nome}"/>
+						            </h:column>
+							</h:dataTable>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								onclick="javascript:selecionarLeadPai()">Selecionar</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
 	</ui:define>
 </ui:composition>

@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+		<script type="text/javascript">
+			$(window).load(function() {
+				jsf.ajax.addOnEvent(function(data) {
+					if (data.status == "success") {
+						debugger
+						if (data.source.id == "regOportunidade:contatoImg") {
+							modalContatoOportunidade();
+							contatosDataTable();
+						} else if (data.source.id == "regOportunidade:adicionarCotato") {
+							contatosOportunidadeDataTable();
+						} else if (data.source.id
+								.indexOf("cotacoesOportunidadeCommandLink") > -1) {
+							cotacoesOportunidadeDataTable();
+						}
+
+					}
+				})
+			});
+			$(document).ready(function() {
+				var table = $('#regOportunidade\\:oportunidadesDataTable').DataTable();
+				$('#regOportunidade\\:oportunidadesDataTable tbody').on('click','tr',
+				function() {
+					if ($(this).hasClass('selected')) {
+						$(this).removeClass('selected');
+					} else {
+						table.$('tr.selected').removeClass('selected');
+						$(this).addClass('selected');
+					}
+				});
+				leadsDataTable();
+			});
+			function contatosDataTable() {
+				var table = $('#regOportunidade\\:contatosDataTable').DataTable();
+
+				$('#regOportunidade\\:contatosDataTable tbody').on('click',
+						'tr', function() {
+							if ($(this).hasClass('selected')) {
+								$(this).removeClass('selected');
+							} else {
+								table.$('tr.selected').removeClass('selected');
+								$(this).addClass('selected');
+							}
+						});
+			}
+			function contatosOportunidadeDataTable() {
+				var table = $(
+						'#regOportunidade\\:contatosOportunidadeDataTable')
+						.DataTable();
+
+				$('#regOportunidade\\:contatosOportunidadeDataTable tbody').on(
+						'click', 'tr', function() {
+							if ($(this).hasClass('selected')) {
+								$(this).removeClass('selected');
+							} else {
+								table.$('tr.selected').removeClass('selected');
+								$(this).addClass('selected');
+							}
+						});
+			}
+			function leadsDataTable() {
+				var table = $('#regOportunidade\\:leadsDataTable').DataTable();
+
+				$('#regOportunidade\\:leadsDataTable tbody').on('click', 'tr',
+						function() {
+							if ($(this).hasClass('selected')) {
+								$(this).removeClass('selected');
+							} else {
+								table.$('tr.selected').removeClass('selected');
+								$(this).addClass('selected');
+							}
+						});
+			}
+			function modalLead() {
+				$('#myModalLeadOportunidade').modal('show');
+			}
+			function selecionarLead() {
+				var table = $('#regOportunidade\\:leadsDataTable').DataTable();
+				var id = table.row('.selected').data()[0];
+				var desc = table.row('.selected').data()[1];
+				$('#regOportunidade\\:conta').val(id);
+				$('#regOportunidade\\:conta_desc').val(desc);
+				$('#myModalLeadOportunidade').modal('hide');
+			}
+			function modalContatoOportunidade() {
+				$('#myModalContatoOportunidade').modal('show');
+			}
+			function selecionarContatoOportunidade() {
+				var table = $('#regOportunidade\\:contatosDataTable')
+						.DataTable();
+				var id = table.row('.selected').data()[0];
+				var desc = table.row('.selected').data()[1];
+				$('#regOportunidade\\:contato').val(id);
+				$('#regOportunidade\\:contato_desc').val(desc);
+				$('#myModalContatoOportunidade').modal('hide');
+			}
+			function modalCotacoesOportunidade() {
+				$('#myModalCotacoesOportunidade').modal('show');
+			}
+			function cotacoesOportunidadeDataTable() {
+				var table = $(
+						'#regOportunidade\\:cotacoesOportunidadeDataTable')
+						.DataTable();
+
+				$('#regOportunidade\\:cotacoesOportunidadeDataTable tbody').on(
+						'click', 'tr', function() {
+							if ($(this).hasClass('selected')) {
+								$(this).removeClass('selected');
+							} else {
+								table.$('tr.selected').removeClass('selected');
+								$(this).addClass('selected');
+							}
+						});
+			}
+		</script>
+
+		<h1>Cadastro de Oportunidades</h1>
+
+		<h:form id="regOportunidade">
+			<h:panelGrid>
+				<h:outputLabel for="titulo" value="Titulo:" />
+				<h:inputText id="titulo" value="#{newOportunidade.titulo}" />
+				<h:message for="titulo" errorClass="invalid" />
+				<h:outputLabel for="descricao" value="Obervação:" />
+				<h:inputTextarea id="descricao" value="#{newOportunidade.descricao}" />
+				<h:message for="descricao" errorClass="invalid" />
+				<h:outputLabel for="fase" value="Fase:" />
+				<h:selectOneMenu id="fase" value="#{newOportunidade.fase}">
+					<f:selectItems value="#{newOportunidade.faseValues}"/>
+				</h:selectOneMenu>
+				<h:outputLabel for="dataAbertura" value="Data de Abertura" />
+				<h:inputText id="dataAbertura"
+					value="#{newOportunidade.dataAbertura}" disabled="true">
+					<f:convertDateTime type="both" pattern="dd/MM/yyyy" />
+				</h:inputText>
+				<h:message for="dataAbertura" errorClass="invalid" />
+				<h:outputLabel for="dataValidade" value="Data de Validade:" />
+				<p:calendar id="dataValidade"
+					value="#{newOportunidade.dataValidade}" pattern="dd/MM/yyyy" />
+				<h:outputLabel for="dataPrevistaFechamento"
+					value="Data prevista para Fechamento:" />
+				<p:calendar id="dataPrevistaFechamento"
+					value="#{newOportunidade.dataPrevistaFechamento}"
+					pattern="dd/MM/yyyy" />
+				<h:outputLabel for="conta" value="Conta:" />
+				<h:panelGroup>
+					<h:inputText id="conta" value="#{newOportunidade.conta.id}" />
+					<h:graphicImage library="images" name="magnifying.png"
+						onclick="javascript:modalLead()" />
+					<h:inputText id="conta_desc" disabled="true" style="border:none;background:white;"/>
+				</h:panelGroup>
+				<h:outputLabel for="contato" value="Contato:" />
+				<h:panelGroup>
+					<h:inputText id="contato"
+						value="#{newOportunidade.contatoSelecionado.id}" />
+					<h:graphicImage id="contatoImg" library="images"
+						name="magnifying.png">
+						<f:ajax event="click" execute="regOportunidade:conta"
+							render="regOportunidade:contatosPanelGrid"
+							listener="#{salvarOportunidade.setConta}" />
+					</h:graphicImage>
+					<h:inputText id="contato_desc" disabled="true" style="border:none;background:white;"/>
+				</h:panelGroup>
+				<br />
+				<h:commandButton id="adicionarCotato"
+					action="#{salvarOportunidade.adicionarContato()}" value="Adicionar Contato">
+					<f:ajax execute="regOportunidade:contato"
+						render="regOportunidade:contato regOportunidade:contatosOportunidade" />
+				</h:commandButton>
+				<br />
+				<h:panelGrid id="contatosOportunidade">
+					<h2>Contatos</h2>
+					<h:panelGroup rendered="#{empty newOportunidade.contatos}">
+						<em>Nenhum contato adicionado.</em>
+					</h:panelGroup>
+					<h:dataTable id="contatosOportunidadeDataTable"
+						var="_contatoOportunidade" value="#{newOportunidade.contatos}"
+						rendered="#{not empty newOportunidade.contatos}"
+						styleClass="table" width="100%" style="display:inline-table;"
+						headerClass="table-header"
+						rowClasses="table-odd-row,table-even-row">
+						<h:column>
+							<f:facet name="header">Id</f:facet>
+							<h:outputText value="#{_contatoOportunidade.contato.id}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">Nome</f:facet>
+							<h:outputText value="#{_contatoOportunidade.contato.nome}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">Email</f:facet>
+							<h:outputText value="#{_contatoOportunidade.contato.email}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">Telefone</f:facet>
+							<h:outputText value="#{_contatoOportunidade.contato.telefone}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">Cargo</f:facet>
+							<h:outputText
+								value="#{_contatoOportunidade.contato.cargo.descricao}" />
+						</h:column>
+					</h:dataTable>
+				</h:panelGrid>
+				<br />
+				<ui:include src="/pages/protected/user/_cotacao.xhtml">
+					<ui:param name="oportunidade" value="#{newOportunidade}" />
+				</ui:include>
+				<br />
+				<h:outputLabel for="valorTotalServicos"
+					value="Valor total Serviços:" />
+				<h:inputText id="valorTotalServicos"
+					value="#{newOportunidade.valorTotalServicos}" disabled="true" />
+				<h:message for="valorTotalServicos" errorClass="invalid" />
+				<h:outputLabel for="valorTotalProdutos"
+					value="Valor total da Manutenção:" />
+				<h:inputText id="valorTotalProdutos"
+					value="#{newOportunidade.valorTotalProdutos}" disabled="true" />
+				<h:message for="valorTotalProdutos" errorClass="invalid" />
+				<br />
+				<h:commandButton id="salvar" action="#{salvarOportunidade.salvar}"
+					value="Salvar" />
+			</h:panelGrid>
+			<h2>Oportunidades</h2>
+			<h:panelGroup rendered="#{empty oportunidades}">
+				<em>Nenhuma oportunidade registrada.</em>
+			</h:panelGroup>
+			<h:dataTable id="oportunidadesDataTable" var="_oportunidade"
+				value="#{oportunidades}" rendered="#{not empty oportunidades}"
+				styleClass="table" headerClass="table-header"
+				rowClasses="table-odd-row,table-even-row">
+				<h:column>
+					<f:facet name="header">Id</f:facet>
+					<h:outputText value="#{_oportunidade.id}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">Descrição</f:facet>
+					<h:outputText value="#{_oportunidade.descricao}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">Conta</f:facet>
+					<h:outputText value="#{_oportunidade.conta.nome}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
+					<h:commandLink id="cotacoesOportunidadeCommandLink"
+						value="Cotações"
+						action="#{salvarOportunidade.setOportunidade(_oportunidade)}"
+						onclick="javascript:modalCotacoesOportunidade()">
+						<f:ajax render="regOportunidade:cotacoesOportunidadePanelGrid" />
+					</h:commandLink>
+				</h:column>
+			</h:dataTable>
+
+			<!-- Modal -->
+			<div id="myModalLeadOportunidade" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Selecione a Lead</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGroup rendered="#{empty leads}">
+								<em>Nenhum lead registrado.</em>
+							</h:panelGroup>
+							<h:dataTable id="leadsDataTable" var="_lead" value="#{leads}"
+								rendered="#{not empty leads}" styleClass="table"
+								headerClass="table-header"
+								rowClasses="table-odd-row,table-even-row">
+								<h:column>
+									<f:facet name="header">Id</f:facet>
+									<h:outputText value="#{_lead.id}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">Nome</f:facet>
+									<h:outputText value="#{_lead.nome}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header"></f:facet>
+									<h:form>
+										<h:commandLink value="Editar"
+											action="#{salvarLead.editar(_lead)}" />
+									</h:form>
+								</h:column>
+								<h:column>
+									<f:facet name="header"></f:facet>
+									<h:outputLink
+										value="/crm/pages/protected/user/emailleads.xhtml">
+										<h:outputText value="Email" />
+									</h:outputLink>
+								</h:column>
+								<h:column>
+									<f:facet name="header"></f:facet>
+									<h:outputLink
+										value="/crm/pages/protected/user/atividadeagenda.xhtml">
+										<h:outputText value="Agenda" />
+									</h:outputLink>
+								</h:column>
+							</h:dataTable>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								onclick="javascript:selecionarLead()">Selecionar</button>
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal -->
+			<div id="myModalContatoOportunidade" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Selecione o contato</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGrid id="contatosPanelGrid">
+								<h:panelGroup rendered="#{empty newOportunidade.conta.contatos}">
+									<em>Nenhum contato registrado.</em>
+								</h:panelGroup>
+								<h:dataTable id="contatosDataTable" var="_contato"
+									value="#{newOportunidade.conta.contatos}"
+									rendered="#{not empty newOportunidade.conta.contatos}"
+									styleClass="table" width="100%" style="display:inline-table;"
+									headerClass="table-header"
+									rowClasses="table-odd-row,table-even-row">
+									<h:column>
+										<f:facet name="header">Id</f:facet>
+										<h:outputText value="#{_contato.id}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Nome</f:facet>
+										<h:outputText value="#{_contato.nome}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Email</f:facet>
+										<h:outputText value="#{_contato.email}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Telefone</f:facet>
+										<h:outputText value="#{_contato.telefone}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Cargo</f:facet>
+										<h:outputText value="#{_contato.cargo.descricao}" />
+									</h:column>
+								</h:dataTable>
+							</h:panelGrid>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								onclick="javascript:selecionarContatoOportunidade()">Selecionar</button>
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal -->
+			<div id="myModalCotacoesOportunidade" class="modal fade"
+				role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Cotações oportunidade</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGrid id="cotacoesOportunidadePanelGrid">
+								<h:panelGroup rendered="#{empty newOportunidade.cotacoes}">
+									<em>Nenhuma cotação.</em>
+								</h:panelGroup>
+								<h:dataTable id="cotacoesOportunidadeDataTable" var="_cotacao"
+									value="#{newOportunidade.cotacoes}"
+									rendered="#{not empty newOportunidade.cotacoes}"
+									styleClass="table" width="100%" style="display:inline-table;"
+									headerClass="table-header"
+									rowClasses="table-odd-row,table-even-row">
+									<h:column>
+										<f:facet name="header">Id</f:facet>
+										<h:outputText value="#{_cotacao.id}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Descricao</f:facet>
+										<h:outputText value="#{_cotacao.descricao}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header"></f:facet>
+										<h:commandLink id="produtosCotacaoCommandLink"
+											value="Produtos"
+											action="#{salvarCotacao.setProdutoModulosSelecionados(_cotacao.produtosModulosSelecionados)}"
+											onclick="javascript:modalProdutosCotacao()">
+											<f:ajax render="regOportunidade:produtosPanelGrid" />
+										</h:commandLink>
+									</h:column>
+								</h:dataTable>
+							</h:panelGrid>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

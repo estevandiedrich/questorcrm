@@ -14,8 +14,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import br.com.questor.crm.model.Cotacao;
 import br.com.questor.crm.model.ProdutoModulosSelecionados;
-import br.com.questor.crm.model.Proposta;
 
 @RequestScoped
 public class ProdutoModulosSelecionadosListProducer {
@@ -34,7 +34,7 @@ public class ProdutoModulosSelecionadosListProducer {
 	public void onProdutoModulosSelecionadosListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final ProdutoModulosSelecionados produtoModuloSelecionado) {
 		retrieveAllProdutoModulosSelecionadossOrderedByDescricao();
 	}
-	@PostConstruct
+//	@PostConstruct
 	public void retrieveAllProdutoModulosSelecionadossOrderedByDescricao() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<ProdutoModulosSelecionados> criteria = cb.createQuery(ProdutoModulosSelecionados.class);
@@ -43,12 +43,14 @@ public class ProdutoModulosSelecionadosListProducer {
 		produtoModulosSelecionados = em.createQuery(criteria).getResultList();
 	}
 	
-	public List<ProdutoModulosSelecionados> retrieveAllProdutoModulosSelecionadosByPropostaOrderedByDescricao(Proposta proposta)
+	public List<ProdutoModulosSelecionados> retrieveAllProdutoModulosSelecionadosByPropostaOrderedByDescricao(Cotacao cotacao)
 	{
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<ProdutoModulosSelecionados> criteria = cb.createQuery(ProdutoModulosSelecionados.class);
-		Root<ProdutoModulosSelecionados> produtoModuloSelecionado = criteria.from(ProdutoModulosSelecionados.class);
-		criteria.select(produtoModuloSelecionado).where(cb.equal(produtoModuloSelecionado.get("proposta"), proposta));
-		return em.createQuery(criteria).getResultList();
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<ProdutoModulosSelecionados> criteria = cb.createQuery(ProdutoModulosSelecionados.class);
+//		Root<ProdutoModulosSelecionados> produtoModuloSelecionado = criteria.from(ProdutoModulosSelecionados.class);
+//		criteria.select(produtoModuloSelecionado).where(cb.equal(produtoModuloSelecionado.get("cotacao"), cotacao));
+//		return em.createQuery(criteria).getResultList();
+		List<ProdutoModulosSelecionados> produtoModulosSelecionados = em.createNamedQuery("ProdutoModulosSelecionados.findByCotacao").setParameter("cotacao", cotacao.getId()).getResultList();
+		return produtoModulosSelecionados;
 	}
 }

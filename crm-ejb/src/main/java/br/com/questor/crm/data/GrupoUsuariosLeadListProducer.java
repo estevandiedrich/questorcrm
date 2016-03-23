@@ -51,10 +51,11 @@ public class GrupoUsuariosLeadListProducer {
 		return em.createQuery(criteria).getResultList();
 	}
 	public List<GrupoUsuariosLead> retrieveAllGrupoUsuariosLeadByGrupoUsuarios(GrupoUsuarios grupoUsuarios) {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<GrupoUsuariosLead> criteria = cb.createQuery(GrupoUsuariosLead.class);
-		Root<GrupoUsuariosLead> grupoUsuariosLeadRoot = criteria.from(GrupoUsuariosLead.class);
-		criteria.select(grupoUsuariosLeadRoot).where(cb.equal(grupoUsuariosLeadRoot.get("grupoUsuarios"), grupoUsuarios));
-		return em.createQuery(criteria).getResultList();
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<GrupoUsuariosLead> criteria = cb.createQuery(GrupoUsuariosLead.class);
+//		Root<GrupoUsuariosLead> grupoUsuariosLeadRoot = criteria.from(GrupoUsuariosLead.class);
+//		criteria.select(grupoUsuariosLeadRoot).where(cb.equal(grupoUsuariosLeadRoot.get("grupoUsuarios"), grupoUsuarios));
+//		return em.createQuery(criteria).getResultList();
+		return em.createNamedQuery("GrupoUsuariosLead.findByGrupoUsuarios").setParameter("grupoUsuarios", grupoUsuarios).getResultList();
 	}
 }

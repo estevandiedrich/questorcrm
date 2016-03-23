@@ -17,7 +17,9 @@
 				debugger
 				var table = $('#modulosDataTable').DataTable();
 				var id = table.row('.selected').data()[0];
+				var desc = table.row('.selected').data()[1];
 				$('#regProdutos\\:modulo').val(id);
+				$('#regProdutos\\:modulo_desc').val(desc);
 				$('#myModal').modal('hide');
 			}
 			$(document).ready(
@@ -111,10 +113,15 @@
 				<h:outputLabel for="descricao" value="Descrição:" />
 				<h:inputText id="descricao" value="#{newProduto.descricao}" />
 				<h:message for="descricao" errorClass="invalid" />
+				<h:outputLabel for="tipoProduto" value="Tipo de Produto:" />
+				<h:selectOneMenu id="tipoProduto" value="#{newProduto.tipoProduto}">
+					<f:selectItems value="#{newProduto.tipoProdutoValues}"/>
+				</h:selectOneMenu>
 				<h:outputLabel for="modulo" value="Módulo:" />
 				<h:panelGroup>
 					<h:inputText id="modulo" value="#{newProduto.modulo.id}" />
-					<h:graphicImage library="images" name="magnifying.png" onclick="javascript:modalModulo()"/> 
+					<h:graphicImage library="images" name="magnifying.png" onclick="javascript:modalModulo()"/>
+					<h:inputText id="modulo_desc" disabled="true" style="border:none;background:white;"/> 
 				</h:panelGroup>
 				<h:message for="modulo" errorClass="invalid" />
 				<br/>

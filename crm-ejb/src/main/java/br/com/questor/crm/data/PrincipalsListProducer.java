@@ -1,5 +1,6 @@
 package br.com.questor.crm.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +18,8 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import br.com.questor.crm.controller.LoginBean;
+import br.com.questor.crm.model.GrupoUsuarios;
+import br.com.questor.crm.model.GrupoUsuariosPrincipals;
 import br.com.questor.crm.model.Principals;
 import br.com.questor.crm.model.Roles;
 
@@ -27,17 +30,23 @@ public class PrincipalsListProducer {
 	
 	private List<Principals> principals;
 	
-	@Inject
-	private RolesListProducer rolesListProducer;
+	private List<Principals> participantesInternos;
 	
 	@Inject
-	private GrupoUsuariosListProducer grupoUsuariosListProducer;
+	private RolesListProducer rolesListProducer;
 	
 	@Produces
 	@Named
 	public List<Principals> getPrincipals()
 	{
 		return principals;
+	}
+	
+	@Produces
+	@Named
+	public List<Principals> getParticipantesInternos()
+	{
+		return participantesInternos;
 	}
 	
 	@Inject
@@ -50,7 +59,6 @@ public class PrincipalsListProducer {
 	public void retrieveAllPrincipalsOrderedByNome() {
 		Metamodel metamodel = em.getMetamodel();
 	    EntityType<Principals> entityPrincipals_ = metamodel.entity(Principals.class);
-		Principals p = this.loginBean.getPrincipalsFromDB();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Principals> criteria = cb.createQuery(Principals.class);
 		Root<Principals> principal = criteria.from(entityPrincipals_);
@@ -64,6 +72,17 @@ public class PrincipalsListProducer {
 				Roles role = rolesListProducer.retrieveAllRolesByPrincipalOrderedByNome(pr);
 				pr.setRole(role);
 			}
+		}
+		Principals p = loginBean.getPrincipalsFromDB();
+		List<Long> gruposUsuariosId = new ArrayList<>();
+		List<GrupoUsuarios> gruposUsuarios = em.createNamedQuery("GrupoUsuariosPrincipals.findGrupoUsuariosByPrincipal").setParameter("principal", p.getId()).getResultList();
+		for(GrupoUsuarios grupoUsuarios:gruposUsuarios)
+		{
+			gruposUsuariosId.add(grupoUsuarios.getId());
+		}
+		if(gruposUsuariosId != null && gruposUsuariosId.size() > 0)
+		{
+			participantesInternos = em.createNamedQuery("GrupoUsuariosPrincipals.findByGrupoUsuarios").setParameter("gruposUsuarios", gruposUsuariosId).getResultList();
 		}
 //		else
 //		{

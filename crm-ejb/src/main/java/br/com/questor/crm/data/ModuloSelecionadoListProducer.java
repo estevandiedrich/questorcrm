@@ -34,7 +34,7 @@ public class ModuloSelecionadoListProducer {
 	public void onModuloSelecionadoListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final ModuloSelecionado moduloSelecionado) {
 		retrieveAllModuloSelecionados();
 	}
-	@PostConstruct
+//	@PostConstruct
 	public void retrieveAllModuloSelecionados() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<ModuloSelecionado> criteria = cb.createQuery(ModuloSelecionado.class);
@@ -45,10 +45,13 @@ public class ModuloSelecionadoListProducer {
 	
 	public List<ModuloSelecionado> retrieveAllModuloSelecionadoByProdutoModulosSelecionados(ProdutoModulosSelecionados produtoModulosSelecionados)
 	{
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<ModuloSelecionado> criteria = cb.createQuery(ModuloSelecionado.class);
-		Root<ModuloSelecionado> moduloSelecionado = criteria.from(ModuloSelecionado.class);
-		criteria.select(moduloSelecionado).where(cb.equal(moduloSelecionado.get("produtoModulosSelecionados"), produtoModulosSelecionados));
-		return em.createQuery(criteria).getResultList();
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<ModuloSelecionado> criteria = cb.createQuery(ModuloSelecionado.class);
+//		Root<ModuloSelecionado> moduloSelecionado = criteria.from(ModuloSelecionado.class);
+//		criteria.select(moduloSelecionado).where(cb.equal(moduloSelecionado.get("produtoModulosSelecionados"), produtoModulosSelecionados));
+//		return em.createQuery(criteria).getResultList();
+		@SuppressWarnings(value = "unchecked")
+		List<ModuloSelecionado> mosulosSelecionados = em.createNamedQuery("ModuloSelecionado.findByProdutoModuloSelecionado").setParameter("produtoModulosSelecionados", produtoModulosSelecionados.getId()).getResultList();
+		return mosulosSelecionados;
 	}
 }

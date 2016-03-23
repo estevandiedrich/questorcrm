@@ -42,6 +42,7 @@ public class SalvarAnexo {
 		imagem.setSize(newAnexo.getPart().getSize());
 		newAnexo.setImagem(imagem);
 		lead.getAnexos().add(newAnexo);
+		initNewAnexo();
 	}
 	
 	public void adicionar(Email email) throws IOException
@@ -53,6 +54,7 @@ public class SalvarAnexo {
 		imagem.setSize(newAnexo.getPart().getSize());
 		newAnexo.setImagem(imagem);
 		email.getAnexos().add(newAnexo);
+		initNewAnexo();
 	}
 	
 	@Produces

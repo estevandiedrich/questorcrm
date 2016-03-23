@@ -45,10 +45,13 @@ public class CidadeListProducer {
 	
 	public List<Cidade> retrieveAllCidadesByUfOrderedByNome(UF uf)
 	{
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Cidade> criteria = cb.createQuery(Cidade.class);
-		Root<Cidade> cidade = criteria.from(Cidade.class);
-		criteria.select(cidade).where(cb.equal(cidade.get("uf"), uf)).orderBy(cb.asc(cidade.get("nome")));
-		return em.createQuery(criteria).getResultList();
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Cidade> criteria = cb.createQuery(Cidade.class);
+//		Root<Cidade> cidade = criteria.from(Cidade.class);
+//		criteria.select(cidade).where(cb.equal(cidade.get("uf"), uf)).orderBy(cb.asc(cidade.get("nome")));
+//		return em.createQuery(criteria).getResultList();
+		@SuppressWarnings(value = "unchecked")
+		List<Cidade> cidades = em.createNamedQuery("Cidade.findByUF").setParameter("uf", uf.getId()).getResultList();
+		return cidades;
 	}
 }

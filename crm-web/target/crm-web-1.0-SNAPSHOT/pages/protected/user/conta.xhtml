@@ -74,7 +74,7 @@
          <h:inputText id="email" value="#{newLead.email}" />
          <h:outputLabel for="foto" value="Foto:" />
 		 <h:inputFile id="foto" value="#{newLead.imagemPart}">
-<!-- 			<f:validator binding="#{fileUploadValidator}"/> -->
+			<f:validator binding="#{fileUploadValidator}"/>
 		 </h:inputFile>
          <h:outputLabel for="grupo" value="Grupo:"/>
 		 <h:panelGroup>

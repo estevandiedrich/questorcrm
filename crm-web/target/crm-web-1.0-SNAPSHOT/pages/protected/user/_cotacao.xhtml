@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	template="/WEB-INF/templates/default2.xhtml">
+	<ui:define name="content2">
+		<script type="text/javascript">
+			$(window).load(function() {	
+				jsf.ajax.addOnEvent(function(data) {
+					if (data.status == "success") {
+						debugger
+						if (data.source.id
+								.indexOf("produtosCotacaoCommandLink") > -1) {
+							myModalProdutosCotacao();
+						} else if (data.source.id == "regOportunidade:adicionarCotacao") {
+							propostaDataTable();
+						}
+					}
+				})
+			});
+			function propostaDataTable() {
+				var table = $('#regOportunidade\\:propostaDataTable')
+						.DataTable();
+
+				$('#regOportunidade\\:propostaDataTable tbody').on('click',
+						'tr', function() {
+							if ($(this).hasClass('selected')) {
+								$(this).removeClass('selected');
+							} else {
+								table.$('tr.selected').removeClass('selected');
+								$(this).addClass('selected');
+							}
+						});
+			}
+			$(document).ready(function() {
+
+				var table2 = $('#leadsDataTable').DataTable();
+
+				$('#leadsDataTable tbody').on('click', 'tr', function() {
+					if ($(this).hasClass('selected')) {
+						$(this).removeClass('selected');
+					} else {
+						table2.$('tr.selected').removeClass('selected');
+						$(this).addClass('selected');
+					}
+				});
+				myModalProdutosCotacao();
+				propostaDataTable();
+			});
+			function myModalProdutosCotacao() {
+				var table3 = $('#regOportunidade\\:produtoCotacaoDataTable')
+						.DataTable();
+
+				$('#regOportunidade\\:produtoCotacaoDataTable tbody')
+						.on(
+								'click',
+								'tr',
+								function() {
+									if ($(this).hasClass('selected')) {
+										$(this).removeClass('selected');
+									} else {
+										table3.$('tr.selected').removeClass(
+												'selected');
+										$(this).addClass('selected');
+									}
+								});
+			}
+			function modalModulosDoProdutoCotacao() {
+				$('#myModalModulosDoProdutoCotacao').modal('show');
+			}
+			function modalProdutosCotacao() {
+				$('#myModalProdutosCotacao').modal('show');
+			}
+		</script>
+
+		<h1>Nova Cotação</h1>
+
+		<h:panelGrid>
+			<h:outputLabel for="descricaoCotacao" value="Descrição:" />
+			<h:inputText id="descricaoCotacao" value="#{newCotacao.descricao}" />
+			<h:message for="descricaoCotacao" errorClass="invalid" />
+			<br />
+			<ui:include
+				src="/pages/protected/user/_produtomodulosselecionados.xhtml">
+				<ui:param name="cotacao" value="#{newCotacao}" />
+			</ui:include>
+			<br />
+			<h:commandButton id="adicionarCotacao"
+				action="#{salvarCotacao.adicionarCotacao(oportunidade)}"
+				value="Adicionar Cotação">
+				<f:ajax execute="regOportunidade:descricaoCotacao"
+					render="regOportunidade:propostaPanelGrid" />
+			</h:commandButton>
+		</h:panelGrid>
+
+		<br />
+		<h2>Cotações</h2>
+		<h:panelGrid id="propostaPanelGrid">
+			<h:panelGroup rendered="#{empty oportunidade.cotacoes}">
+				<em>Nenhuma Cotação registrada.</em>
+			</h:panelGroup>
+			<h:dataTable id="propostaDataTable" var="_cotacao"
+				value="#{oportunidade.cotacoes}"
+				rendered="#{not empty oportunidade.cotacoes}" styleClass="table"
+				width="100%" style="display:inline-table;"
+				headerClass="table-header" rowClasses="table-odd-row,table-even-row">
+				<h:column>
+					<f:facet name="header">Id</f:facet>
+					<h:outputText value="#{_cotacao.id}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">Descrição</f:facet>
+					<h:outputText value="#{_cotacao.descricao}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
+					<h:commandLink id="produtosCotacaoCommandLink" value="Produtos"
+						action="#{salvarCotacao.setProdutoModulosSelecionados(_cotacao.produtosModulosSelecionados)}"
+						onclick="javascript:modalProdutosCotacao()">
+						<f:ajax render="regOportunidade:produtosPanelGrid" />
+					</h:commandLink>
+				</h:column>
+			</h:dataTable>
+		</h:panelGrid>
+		<!-- Modal -->
+		<div id="myModalProdutosCotacao" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content" style="display: inline-block;">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">X</button>
+						<h4 class="modal-title">Produtos</h4>
+					</div>
+					<div class="modal-body">
+						<h:panelGrid id="produtosPanelGrid">
+							<h:panelGroup
+								rendered="#{empty newCotacao.produtosModulosSelecionados}">
+								<em>Nenhum produto registrado.</em>
+							</h:panelGroup>
+							<h:dataTable id="produtoCotacaoDataTable"
+								var="_produtoModulosSelecionados"
+								value="#{newCotacao.produtosModulosSelecionados}"
+								rendered="#{not empty newCotacao.produtosModulosSelecionados}"
+								styleClass="table" headerClass="table-header"
+								rowClasses="table-odd-row,table-even-row">
+								<h:column>
+									<f:facet name="header">Id</f:facet>
+									<h:outputText value="#{_produtoModulosSelecionados.produto.id}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">Descrição</f:facet>
+									<h:outputText
+										value="#{_produtoModulosSelecionados.produto.descricao}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">Tipo contratação</f:facet>
+									<h:outputText
+										value="#{_produtoModulosSelecionados.tipoContratacao.descricao}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">Quantidade</f:facet>
+									<h:outputText value="#{_produtoModulosSelecionados.quantidade}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">Valor unitatio</f:facet>
+									<h:outputText
+										value="#{_produtoModulosSelecionados.valorUnitario}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">Valor total</f:facet>
+									<h:outputText value="#{_produtoModulosSelecionados.valorTotal}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header"></f:facet>
+									<h:commandLink id="modulosDoProdutoCommandLink" value="Modulos"
+										action="#{salvarProdutoModulosSelecionados.setProdutoModulosSelecionados(_produtoModulosSelecionados)}"
+										onclick="javascript:modalModulosDoProduto()">
+										<f:ajax render="regOportunidade:modulosDoProdutoPanelGrid" />
+									</h:commandLink>
+								</h:column>
+							</h:dataTable>
+						</h:panelGrid>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>
