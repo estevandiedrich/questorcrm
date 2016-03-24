@@ -9,10 +9,14 @@
    $(window).load(function() {
 	    jsf.ajax.addOnEvent(function (data) {
 	        if (data.status == "success") {debugger
-	        	emailsEnviados();
-	        	leadsDataTable();
-	        	contatosDataTable();
-	        	modalContatosDataTable();
+	        	if(data.source.id == "regEnvioEmails:contatoImg"){
+		        	modalContatosDataTable();	        		
+		        	emailsEnviados();
+	        	} else if(data.source.id == "regEnvioEmails:leadImg") {
+		        	leadsDataTable();
+	        	} else if(data.source.id == "regEnvioEmails:adicionarContato") {
+		        	contatosDataTable();
+	        	}
 	        }
 	    })
    });
@@ -36,7 +40,7 @@
 		$('#myModalLead').modal('show');
 	}
 	function selecionarLead() {
-		var table = $('#regEnvioEmails\\:leadsDataTable').DataTable();
+		var table = $('#contatosLead\\:leadsDataTable').DataTable();
 		var id = table.row('.selected').data()[0];
 		var desc = table.row('.selected').data()[1];
 		$('#regEnvioEmails\\:lead').val(id);
@@ -44,9 +48,9 @@
 		$('#myModalLead').modal('hide');
 	}
 	function leadsDataTable() {
-		var table = $('#regEnvioEmails\\:leadsDataTable').DataTable();
+		var table = $('#contatosLead\\:leadsDataTable').DataTable();
 
-		$('#regEnvioEmails\\:leadsDataTable tbody').on('click', 'tr',
+		$('#contatosLead\\:leadsDataTable tbody').on('click', 'tr',
 				function() {
 					if ($(this).hasClass('selected')) {
 						$(this).removeClass('selected');
@@ -60,7 +64,7 @@
 		$('#myModalContato').modal('show');
 	}
 	function selecionarContato() {
-		var table = $('#regEnvioEmails\\:modalContatosDataTable').DataTable();
+		var table = $('#contatosLead\\:modalContatosDataTable').DataTable();
 		var id = table.row('.selected').data()[0];
 		var desc = table.row('.selected').data()[1];
 		$('#regEnvioEmails\\:contato').val(id);
@@ -81,9 +85,9 @@
 				});
 	}
 	function modalContatosDataTable() {
-		var table = $('#regEnvioEmails\\:modalContatosDataTable').DataTable();
+		var table = $('#contatosLead\\:modalContatosDataTable').DataTable();
 
-		$('#regEnvioEmails\\:modalContatosDataTable tbody').on('click', 'tr',
+		$('#contatosLead\\:modalContatosDataTable tbody').on('click', 'tr',
 				function() {
 					if ($(this).hasClass('selected')) {
 						$(this).removeClass('selected');
@@ -94,8 +98,8 @@
 				});
 	}
    $(document).ready(function() {
-	    var table = $('#regEnvioEmails\\:leadsDataTable').DataTable();
-	    $('#regEnvioEmails\\:leadsDataTable tbody').on( 'click', 'tr', function () {
+	    var table = $('#contatosLead\\:leadsDataTable').DataTable();
+	    $('#contatosLead\\:leadsDataTable tbody').on( 'click', 'tr', function () {
 	        if ( $(this).hasClass('selected') ) {
 	            $(this).removeClass('selected');
 	        }
@@ -129,10 +133,10 @@
 			<h:panelGroup>
 				<h:inputText id="contato"
 					value="#{newEmail.contatoSelecionado.id}" />
-				<h:graphicImage id="contatoImg" library="images"
-					name="magnifying.png" onclick="javascript:modalContato()">
-					<f:ajax event="click" execute="regEnvioEmails:lead" render="regEnvioEmails:modalContatosPanelGrid regEnvioEmails:emailsEnviadosPanelGrid" listener="#{salvarEmail.setLead}"/>
-				</h:graphicImage>
+					<h:graphicImage id="contatoImg" library="images"
+						name="magnifying.png" onclick="javascript:modalContato()">
+						<f:ajax event="click" execute="regEnvioEmails:lead" render="contatosLead:modalContatosPanelGrid regEnvioEmails:emailsEnviadosPanelGrid" listener="#{salvarEmail.setLead}"/>
+					</h:graphicImage>
 				<h:inputText id="contato_desc" disabled="true" style="border:none;background:white;"/>
 			</h:panelGroup>
 			<br />
@@ -229,7 +233,9 @@
 	          </h:column>
 	      </h:dataTable>
       </h:panelGrid>
-      <!-- Modal -->
+		</h:form>
+		<h:form id="contatosLead">
+      	<!-- Modal -->
 			<div id="myModalLead" class="modal fade" role="dialog">
 				<div class="modal-dialog">
 					<!-- Modal content-->
@@ -256,10 +262,8 @@
 								</h:column>
 								<h:column>
 									<f:facet name="header"></f:facet>
-									<h:form>
 										<h:commandLink value="Editar"
 											action="#{salvarLead.editar(_lead)}" />
-									</h:form>
 								</h:column>
 								<h:column>
 									<f:facet name="header"></f:facet>

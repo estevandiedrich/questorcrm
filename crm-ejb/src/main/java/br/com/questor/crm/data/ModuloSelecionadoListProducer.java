@@ -10,9 +10,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import br.com.questor.crm.model.ModuloSelecionado;
 import br.com.questor.crm.model.ProdutoModulosSelecionados;
@@ -34,13 +31,14 @@ public class ModuloSelecionadoListProducer {
 	public void onModuloSelecionadoListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final ModuloSelecionado moduloSelecionado) {
 		retrieveAllModuloSelecionados();
 	}
-//	@PostConstruct
+	@PostConstruct
 	public void retrieveAllModuloSelecionados() {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<ModuloSelecionado> criteria = cb.createQuery(ModuloSelecionado.class);
-		Root<ModuloSelecionado> moduloSelecionado = criteria.from(ModuloSelecionado.class);
-		criteria.select(moduloSelecionado);
-		modulosSelecionados = em.createQuery(criteria).getResultList();
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<ModuloSelecionado> criteria = cb.createQuery(ModuloSelecionado.class);
+//		Root<ModuloSelecionado> moduloSelecionado = criteria.from(ModuloSelecionado.class);
+//		criteria.select(moduloSelecionado);
+//		modulosSelecionados = em.createQuery(criteria).getResultList();
+		modulosSelecionados = em.createNamedQuery("ModuloSelecionado.findAll").getResultList();
 	}
 	
 	public List<ModuloSelecionado> retrieveAllModuloSelecionadoByProdutoModulosSelecionados(ProdutoModulosSelecionados produtoModulosSelecionados)

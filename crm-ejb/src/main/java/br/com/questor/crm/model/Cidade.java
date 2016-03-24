@@ -22,9 +22,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name = "cidade",indexes = {
-		@Index(columnList = "id", name = "id_idx"),
-		@Index(columnList = "uf_id", name = "uf_id_idx"),
-		@Index(columnList = "nome", name = "nome_idx")
+		@Index(columnList = "id", name = "cidade_id_idx"),
+		@Index(columnList = "uf_id", name = "cidade_uf_id_idx"),
+		@Index(columnList = "nome", name = "cidade_nome_idx")
 		}
 )
 @NamedQueries(value = {@NamedQuery(name = "Cidade.findByUF",query = "SELECT c FROM Cidade c WHERE c.uf.id = :uf")})

@@ -6,14 +6,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
+@Table(name = "contato",indexes = {
+		@Index(columnList = "id", name = "contato_id_idx"),
+		@Index(columnList = "lead_id", name = "contato_lead_id_idx")
+		}
+)
 @XmlRootElement
+@NamedQueries(value={@NamedQuery(name = "Contato.findByLead",query="SELECT c FROM Contato c WHERE c.lead.id = :lead")})
 @SequenceGenerator(name="CONTATO_SEQUENCE", sequenceName="CONTATO_SEQUENCE", allocationSize=1, initialValue=1)
 public class Contato implements Serializable{
 	public Contato()

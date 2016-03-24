@@ -12,17 +12,23 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import br.com.questor.crm.enums.FaseOportunidadeEnum;
 @Entity
+@Table(name = "oportunidade",indexes = {
+		@Index(columnList = "id", name = "oportunidade_id_idx")
+		}
+)
 @XmlRootElement
 @NamedQueries(value = {@NamedQuery(name = "Oportunidade.findAll",query = "SELECT o FROM Oportunidade o ORDER BY o.dataAbertura")})
 @SequenceGenerator(name="OPORTUNIDADE_SEQUENCE", sequenceName="OPORTUNIDADE_SEQUENCE", allocationSize=1, initialValue=1)

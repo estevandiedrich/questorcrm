@@ -11,10 +11,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.servlet.http.Part;
 import javax.validation.constraints.NotNull;
@@ -23,6 +27,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import br.com.questor.crm.enums.LeadEnum;
 
 @Entity
+@Table(name = "lead",indexes = {
+		@Index(columnList = "id", name = "lead_id_idx"),
+		@Index(columnList = "nome", name = "lead_nome_idx")
+		}
+)
+@NamedQueries(value = {
+		@NamedQuery(name = "Lead.findByIds",query = "SELECT l FROM Lead l WHERE l.id IN (:leads) ORDER BY l.nome"),
+		@NamedQuery(name = "Lead.findAll",query = "SELECT l FROM Lead l ORDER BY l.nome")})
 @XmlRootElement
 @SequenceGenerator(name="LEAD_SEQUENCE", sequenceName="LEAD_SEQUENCE", allocationSize=1, initialValue=1)
 public class Lead implements Serializable {

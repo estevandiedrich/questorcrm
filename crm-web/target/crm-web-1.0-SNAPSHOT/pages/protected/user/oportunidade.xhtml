@@ -7,6 +7,14 @@
 	template="/WEB-INF/templates/default.xhtml">
 	<ui:define name="content">
 		<script type="text/javascript">
+			var loading = $("#loading");
+	        $(document).ajaxStart(function () {
+	            loading.show();
+	        });
+	
+	        $(document).ajaxStop(function () {
+	            loading.hide();
+	        });
 			$(window).load(function() {
 				jsf.ajax.addOnEvent(function(data) {
 					if (data.status == "success") {
@@ -122,7 +130,7 @@
 		</script>
 
 		<h1>Cadastro de Oportunidades</h1>
-
+		<h:graphicImage id="loading" library="images" name="loading.gif" style="display:none;"/>
 		<h:form id="regOportunidade">
 			<h:panelGrid>
 				<h:outputLabel for="titulo" value="Titulo:" />
@@ -133,7 +141,7 @@
 				<h:message for="descricao" errorClass="invalid" />
 				<h:outputLabel for="fase" value="Fase:" />
 				<h:selectOneMenu id="fase" value="#{newOportunidade.fase}">
-					<f:selectItems value="#{newOportunidade.faseValues}"/>
+					<f:selectItems value="#{newOportunidade.faseValues()}"/>
 				</h:selectOneMenu>
 				<h:outputLabel for="dataAbertura" value="Data de Abertura" />
 				<h:inputText id="dataAbertura"

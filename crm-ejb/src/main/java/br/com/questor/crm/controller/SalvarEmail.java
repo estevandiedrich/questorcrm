@@ -157,25 +157,28 @@ public class SalvarEmail {
 	
 	public void setLead()
 	{
-		Lead lead = em.find(Lead.class, newEmail.getLead().getId());
-		List<Contato> contatos = contatoListProducer.retrieveAllContatosByLeadOrderedByNome(lead);
-		if(contatos == null)
-			contatos = new ArrayList<Contato>();
-		lead.setContatos(contatos);
-		List<Email> emails = emailListProducer.retrieveAllEmailsByLeadOrderedBySentDate(lead);
-		if(emails == null)
+		if(newEmail.getLead().getId() != null)
 		{
-			emails = new ArrayList<Email>();
-		}
-		else
-		{
-			for(Email email:emails)
+			Lead lead = em.find(Lead.class, newEmail.getLead().getId());
+			List<Contato> contatos = contatoListProducer.retrieveAllContatosByLeadOrderedByNome(lead);
+			if(contatos == null)
+				contatos = new ArrayList<Contato>();
+			lead.setContatos(contatos);
+			List<Email> emails = emailListProducer.retrieveAllEmailsByLeadOrderedBySentDate(lead);
+			if(emails == null)
 			{
-				email.setEmailTo(contatoEmailListProducer.retrieveAllContatoEmailsByEmailOrderedByNome(email));
+				emails = new ArrayList<Email>();
 			}
+			else
+			{
+				for(Email email:emails)
+				{
+					email.setEmailTo(contatoEmailListProducer.retrieveAllContatoEmailsByEmailOrderedByNome(email));
+				}
+			}
+			lead.setEmails(emails);
+			newEmail.setLead(lead);
 		}
-		lead.setEmails(emails);
-		newEmail.setLead(lead);
 	}
 
 	@PostConstruct

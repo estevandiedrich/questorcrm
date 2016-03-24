@@ -11,16 +11,24 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
+@Table(name = "cotacao",indexes = {
+		@Index(columnList = "id", name = "cotacao_id_idx"),
+		@Index(columnList = "oportunidade_id", name = "cotacao_oportunidade_idx"),
+		@Index(columnList = "dataehoracriacao", name = "cotacao_dataehoracriacao_idx")
+		}
+)
 @XmlRootElement
 @NamedQueries(value = {@NamedQuery(name = "Cotacao.findByOportunidade", query = "SELECT c FROM Cotacao c WHERE c.oportunidade.id = :oportunidade"),
 						@NamedQuery(name = "Cotacao.findAll", query = "SELECT c FROM Cotacao c ")})

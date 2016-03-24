@@ -19,11 +19,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name="moduloselecionado",
 	indexes = 
 		{
-				@Index(columnList = "produtomodulosselecionados_id",name = "produtomodulosselecionados_idx"),
-				@Index(columnList = "modulo_id",name = "modulo_idx")
+				@Index(columnList = "id",name = "moduloselecionado_idx"),
+				@Index(columnList = "produtomodulosselecionados_id",name = "moduloselecionado_produtomodulosselecionados_idx"),
+				@Index(columnList = "modulo_id",name = "moduloselecionado_modulo_idx")
 		}
 )
-@NamedQueries(value = {@NamedQuery(name = "ModuloSelecionado.findByProdutoModuloSelecionado",query = "SELECT ms FROM ModuloSelecionado ms WHERE ms.produtoModulosSelecionados.id = :produtoModulosSelecionados")})
+@NamedQueries(value = {
+		@NamedQuery(name = "ModuloSelecionado.findByProdutoModuloSelecionado",query = "SELECT ms FROM ModuloSelecionado ms WHERE ms.produtoModulosSelecionados.id = :produtoModulosSelecionados"),
+		@NamedQuery(name = "ModuloSelecionado.findAll",query = "SELECT ms FROM ModuloSelecionado ms")})
 @XmlRootElement
 @SequenceGenerator(name="MODULO_SELECIONADO_SEQUENCE", sequenceName="MODULO_SELECIONADO_SEQUENCE", allocationSize=1, initialValue=1)
 public class ModuloSelecionado implements Serializable{

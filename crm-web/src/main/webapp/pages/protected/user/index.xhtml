@@ -5,24 +5,31 @@
    xmlns:h="http://xmlns.jcp.org/jsf/html"
    template="/WEB-INF/templates/default.xhtml">
    <ui:define name="content">
-		<h:form>
-	         <h:panelGrid>			
-				<h:commandLink value="Usuários" action="#{salvarPrincipals.novo}" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
+	         <h:panelGrid>		
+	         	<h:form>	
+					<h:commandLink value="Usuários" action="#{salvarPrincipals.novo}" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
+				</h:form>
 				<h:outputLink value="/crm/pages/protected/admin/grupousuarios.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
 					<h:outputText value="Grupos de usuários" />
 				</h:outputLink>
 				<h:outputLink value="/crm/pages/protected/admin/cargo.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
 					<h:outputText value="Cargo" />
 				</h:outputLink>
-					<h:commandLink value="Nova Lead" action="#{salvarLead.novo}" />
-					<h:commandLink value="Nova Oportunidade" action="#{salvarOportunidade.novo}" />
+				<h:form>
+					<h:panelGrid>
+						<h:commandLink value="Nova Lead" action="#{salvarLead.novo}" />
+						<h:commandLink value="Nova Oportunidade" action="#{salvarOportunidade.novo}" />
+					</h:panelGrid>
+				</h:form>
 				<h:outputLink value="/crm/pages/protected/user/emailleads.xhtml">
 					<h:outputText value="Emails lead" />
 				</h:outputLink>
 				<h:outputLink value="/crm/pages/protected/user/atividadeagenda.xhtml">
 					<h:outputText value="Agenda" />
 				</h:outputLink>
+				<h:form>
 					<h:commandLink value="Produtos" action="#{salvarProduto.novo}" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
+				</h:form>
 				<h:outputLink value="/crm/pages/protected/admin/modulo.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
 					<h:outputText value="Módulos" />
 				</h:outputLink>
@@ -36,6 +43,5 @@
 					<h:outputText value="Cidades" />
 				</h:outputLink>
 			</h:panelGrid>
-		</h:form>
    </ui:define>
 </ui:composition>

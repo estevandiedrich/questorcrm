@@ -44,11 +44,12 @@ public class ContatoListProducer {
 	}
 	
 	public List<Contato> retrieveAllContatosByLeadOrderedByNome(Lead lead) {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Contato> criteria = cb.createQuery(Contato.class);
-		Root<Contato> contato = criteria.from(Contato.class);
-		criteria.select(contato).where(cb.equal(contato.get("lead"), lead)).orderBy(cb.asc(contato.get("nome")));
-//		contatos = em.createQuery(criteria).getResultList();
-		return em.createQuery(criteria).getResultList();
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Contato> criteria = cb.createQuery(Contato.class);
+//		Root<Contato> contato = criteria.from(Contato.class);
+//		criteria.select(contato).where(cb.equal(contato.get("lead"), lead)).orderBy(cb.asc(contato.get("nome")));
+////		contatos = em.createQuery(criteria).getResultList();
+//		return em.createQuery(criteria).getResultList();
+		return em.createNamedQuery("Contato.findByLead").setParameter("lead", lead.getId()).getResultList();
 	}
 }

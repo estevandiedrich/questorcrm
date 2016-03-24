@@ -36,11 +36,12 @@ public class EmailListProducer {
 	}
 	public List<Email> retrieveAllEmailsByLeadOrderedBySentDate(Lead lead) 
 	{
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Email> criteria = cb.createQuery(Email.class);
-		Root<Email> email = criteria.from(Email.class);
-		criteria.select(email).where(cb.equal(email.get("lead"), lead)).orderBy(cb.asc(email.get("sentDate")));
-		return em.createQuery(criteria).getResultList();
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Email> criteria = cb.createQuery(Email.class);
+//		Root<Email> email = criteria.from(Email.class);
+//		criteria.select(email).where(cb.equal(email.get("lead"), lead)).orderBy(cb.asc(email.get("sentDate")));
+//		return em.createQuery(criteria).getResultList();
+		return em.createNamedQuery("Email.findByLead").setParameter("lead", lead.getId()).getResultList();
 	}
 	@PostConstruct
 	public void retrieveAllEmailsOrderedBySentDate() {

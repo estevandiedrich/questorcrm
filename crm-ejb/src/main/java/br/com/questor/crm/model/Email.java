@@ -11,16 +11,26 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
+@Table(name = "email",indexes = {
+		@Index(columnList = "id", name = "email_id_idx"),
+		@Index(columnList = "lead_id", name = "email_lead_id_idx")
+		}
+)
 @XmlRootElement
+@NamedQueries(value = {@NamedQuery(name = "Email.findByLead", query = "SELECT e FROM Email e WHERE e.lead.id = :lead")})
 @SequenceGenerator(name="EMAIL_SEQUENCE", sequenceName="EMAIL_SEQUENCE", allocationSize=1, initialValue=1)
 public class Email implements Serializable{
 	public Email()
