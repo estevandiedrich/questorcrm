@@ -46,13 +46,13 @@ public class AtividadeAgenda implements Serializable{
 	private Date hora;
 	@NotNull
 	private Date dataEHora;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "principals_id")
 	private Principals usuario;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "lead_id")
 	private Lead lead;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "contato_id")
 	private Contato contato;
 	

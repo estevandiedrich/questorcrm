@@ -3,6 +3,7 @@ package br.com.questor.crm.model;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,7 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "contato",indexes = {
 		@Index(columnList = "id", name = "contato_id_idx"),
-		@Index(columnList = "lead_id", name = "contato_lead_id_idx")
+		@Index(columnList = "lead_id", name = "contato_lead_id_idx"),
+		@Index(columnList = "cargo_id", name = "contato_cargo_id_idx")
 		}
 )
 @XmlRootElement
@@ -45,10 +47,10 @@ public class Contato implements Serializable{
 	
 	private String telefone;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "cargo_id")
 	private Cargo cargo;	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "lead_id")
 	private Lead lead;
 

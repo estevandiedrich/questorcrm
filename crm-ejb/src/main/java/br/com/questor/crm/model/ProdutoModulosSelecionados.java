@@ -52,17 +52,17 @@ public class ProdutoModulosSelecionados implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="PRODUTO_MODULOS_SELECIONADOS_SEQUENCE")
 	private Long id;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "cotacao_id")
 	private Cotacao cotacao;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "produto_id")
 	private Produto produto;
 	@OneToMany(mappedBy = "produtoModulosSelecionados", targetEntity = ModuloSelecionado.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	private List<ModuloSelecionado> modulosSelecionados;
 	@Transient
 	private Modulo moduloSelecionado;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "tipocontratacao_id")
 	private TipoContratacao tipoContratacao;
 	

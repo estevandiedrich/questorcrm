@@ -55,7 +55,7 @@ public class Email implements Serializable{
 	private String subject;
 	@NotNull
 	private String text;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 		@JoinColumn(name = "lead_id")
     private Lead lead;   
 	

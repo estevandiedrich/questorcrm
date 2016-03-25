@@ -7,20 +7,19 @@
 	template="/WEB-INF/templates/default.xhtml">
 	<ui:define name="content">
 		<script type="text/javascript">
-			var loading = $("#loading");
-	        $(document).ajaxStart(function () {
-	            loading.show();
-	        });
+// 			var loading = $("#loading");
+// 	        $(document).ajaxStart(function () {
+// 	            loading.show();
+// 	        });
 	
-	        $(document).ajaxStop(function () {
-	            loading.hide();
-	        });
+// 	        $(document).ajaxStop(function () {
+// 	            loading.hide();
+// 	        });
 			$(window).load(function() {
 				jsf.ajax.addOnEvent(function(data) {
 					if (data.status == "success") {
 						debugger
 						if (data.source.id == "regOportunidade:contatoImg") {
-							modalContatoOportunidade();
 							contatosDataTable();
 						} else if (data.source.id == "regOportunidade:adicionarCotato") {
 							contatosOportunidadeDataTable();
@@ -130,7 +129,6 @@
 		</script>
 
 		<h1>Cadastro de Oportunidades</h1>
-		<h:graphicImage id="loading" library="images" name="loading.gif" style="display:none;"/>
 		<h:form id="regOportunidade">
 			<h:panelGrid>
 				<h:outputLabel for="titulo" value="Titulo:" />
@@ -169,10 +167,10 @@
 					<h:inputText id="contato"
 						value="#{newOportunidade.contatoSelecionado.id}" />
 					<h:graphicImage id="contatoImg" library="images"
-						name="magnifying.png">
+						name="magnifying.png" onclick="javascript:modalContatoOportunidade()">
 						<f:ajax event="click" execute="regOportunidade:conta"
 							render="regOportunidade:contatosPanelGrid"
-							listener="#{salvarOportunidade.setConta}" />
+							listener="#{salvarOportunidade.setConta(e)}" />
 					</h:graphicImage>
 					<h:inputText id="contato_desc" disabled="true" style="border:none;background:white;"/>
 				</h:panelGroup>
@@ -336,7 +334,8 @@
 						<div class="modal-body">
 							<h:panelGrid id="contatosPanelGrid">
 								<h:panelGroup rendered="#{empty newOportunidade.conta.contatos}">
-									<em>Nenhum contato registrado.</em>
+									<h:graphicImage id="loading" library="images" name="loading.gif" width="64" height="64"/>
+									<em>Carregando...</em>
 								</h:panelGroup>
 								<h:dataTable id="contatosDataTable" var="_contato"
 									value="#{newOportunidade.conta.contatos}"

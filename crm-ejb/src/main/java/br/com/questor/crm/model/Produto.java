@@ -5,13 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -20,6 +23,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import br.com.questor.crm.enums.TipoProdutoEnum;
 
 @Entity
+@Table(name = "produto",indexes = {
+		@Index(columnList = "id", name = "produto_id_idx")
+		}
+)
 @XmlRootElement
 @SequenceGenerator(name="PRODUTO_SEQUENCE", sequenceName="PRODUTO_SEQUENCE", allocationSize=1, initialValue=1)
 public class Produto implements Serializable {
@@ -45,7 +52,7 @@ public class Produto implements Serializable {
 	private Modulo modulo;
 	
 //	@OneToMany(mappedBy = "produto", targetEntity = Modulo.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="produto_modulo", joinColumns={@JoinColumn(name="produto_id")}, inverseJoinColumns={@JoinColumn(name="modulo_id")})
 	private List<Modulo> modulos;
 	

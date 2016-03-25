@@ -3,6 +3,7 @@ package br.com.questor.crm.model;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,7 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "grupousuarioslead",indexes = {
 		@Index(columnList = "id", name = "grupousuarioslead_id_idx"),
-		@Index(columnList = "grupousuarios_id", name = "grupousuarioslead_grupousuarios_id_idx")
+		@Index(columnList = "grupousuarios_id", name = "grupousuarioslead_grupousuarios_id_idx"),
+		@Index(columnList = "lead_id", name = "grupousuarioslead_lead_id_idx")
 		}
 )
 @XmlRootElement

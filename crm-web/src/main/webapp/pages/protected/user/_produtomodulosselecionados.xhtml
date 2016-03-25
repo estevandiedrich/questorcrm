@@ -235,7 +235,7 @@
 			<br />
 			<h:commandButton id="adicionarModulo"
 				action="#{salvarProdutoModulosSelecionados.adicionarModulo(newProdutoModulosSelecionados.moduloSelecionado.id)}"
-				value="Adicionar Módulo" onclick="javascript:limpaCampos()">
+				value="Adicionar Módulo">
 				<f:ajax execute="regOportunidade:modulo"
 					render="regOportunidade:modulosSelecionadosPanelGrid" />
 			</h:commandButton>
@@ -266,7 +266,7 @@
 			<br />
 			<h:commandButton id="salvarProdutoModulosSelecionados"
 				action="#{salvarProdutoModulosSelecionados.adicionar(cotacao)}"
-				value="Adicionar Cotação do Produto">
+				value="Adicionar Cotação do Produto" onclick="javascript:limpaCampos()">
 				<f:ajax
 					execute="regOportunidade:tipoContratacao regOportunidade:quantidade"
 					render="regOportunidade:modulo regOportunidade:produto regOportunidade:valorTotal regOportunidade:valorUnitario regOportunidade:tipoContratacao regOportunidade:quantidade regOportunidade:produtosModulosSelecionadosPanelGrid regOportunidade:modulosSelecionadosPanelGrid" />

@@ -3,6 +3,7 @@ package br.com.questor.crm.model;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -26,11 +27,11 @@ public class ProdutoVenda implements Serializable {
 	
 	private int quantidade;
 //	@OneToOne(cascade = CascadeType.DETACH, optional = false, fetch = FetchType.EAGER, orphanRemoval = false)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "produto_id")
 	private Produto produto;
 //	@OneToOne(cascade = CascadeType.DETACH, optional = false, fetch = FetchType.EAGER, orphanRemoval = false)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "venda_id")
 	private Venda venda;
 	public Long getId() {

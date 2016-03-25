@@ -4,16 +4,24 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 @Entity
+@Table(name = "nota",indexes = {
+		@Index(columnList = "id", name = "nota_id_idx"),
+		@Index(columnList = "lead_id", name = "nota_lead_id_idx")
+		}
+)
 @XmlRootElement
 @NamedQueries(value = {
 		@NamedQuery(name = "Nota.findByLead",query = "SELECT n FROM Nota n WHERE n.lead.id = :lead ORDER BY n.dataEHora DESC"),
@@ -36,7 +44,7 @@ public class Nota implements Serializable{
 	private String texto;
 	private String descricao;
 	private Date dataEHora;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "lead_id")
 	private Lead lead;
 	public Long getId() {

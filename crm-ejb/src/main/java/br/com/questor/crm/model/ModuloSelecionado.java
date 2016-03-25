@@ -3,6 +3,7 @@ package br.com.questor.crm.model;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,10 +39,10 @@ public class ModuloSelecionado implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="MODULO_SELECIONADO_SEQUENCE")
 	private Long id;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "modulo_id")
 	private Modulo modulo;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "produtomodulosselecionados_id")
 	private ProdutoModulosSelecionados produtoModulosSelecionados;
 	

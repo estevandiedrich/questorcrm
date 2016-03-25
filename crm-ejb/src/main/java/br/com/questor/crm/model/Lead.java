@@ -33,8 +33,8 @@ import br.com.questor.crm.enums.LeadEnum;
 		}
 )
 @NamedQueries(value = {
-		@NamedQuery(name = "Lead.findByIds",query = "SELECT l FROM Lead l WHERE l.id IN (:leads) ORDER BY l.nome"),
-		@NamedQuery(name = "Lead.findAll",query = "SELECT l FROM Lead l ORDER BY l.nome")})
+		@NamedQuery(name = "Lead.findByIds",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade WHERE l.id IN (:leads) ORDER BY l.nome"),
+		@NamedQuery(name = "Lead.findAll",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade ORDER BY l.nome")})
 @XmlRootElement
 @SequenceGenerator(name="LEAD_SEQUENCE", sequenceName="LEAD_SEQUENCE", allocationSize=1, initialValue=1)
 public class Lead implements Serializable {
@@ -83,10 +83,10 @@ public class Lead implements Serializable {
 	private String bairro;
 	
 	private String cep;
-	@ManyToOne(cascade=CascadeType.DETACH)
+	@ManyToOne(cascade=CascadeType.DETACH,fetch = FetchType.LAZY)
 	  @JoinColumn(name = "cidade_id")
 	private Cidade cidade;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "uf_id")
 	private UF uf;
 	
@@ -104,7 +104,7 @@ public class Lead implements Serializable {
 	
 	private Date dataCadastro;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "leadpai_id",referencedColumnName = "id", nullable=true)
 	private Lead leadPai;
 	
@@ -116,7 +116,7 @@ public class Lead implements Serializable {
 	@OneToMany(mappedBy = "lead", targetEntity = Email.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	private List<Email> emails; 
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "imagem_id")
 	private Imagem imagem;
 	
@@ -129,7 +129,7 @@ public class Lead implements Serializable {
 	@OneToMany(mappedBy = "lead", targetEntity = Anexo.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	private List<Anexo> anexos;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "principals_id")
 	private Principals usuarioQueCadastrou;
 	

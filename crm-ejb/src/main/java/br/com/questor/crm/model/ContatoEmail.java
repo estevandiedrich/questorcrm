@@ -3,6 +3,7 @@ package br.com.questor.crm.model;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,10 +34,10 @@ public class ContatoEmail implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="CONTATO_EMAIL_SEQUENCE")
 	private Long id;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 		@JoinColumn(name = "contato_id")
 	private Contato contato;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 		@JoinColumn(name = "email_id")
 	private Email email;
 	

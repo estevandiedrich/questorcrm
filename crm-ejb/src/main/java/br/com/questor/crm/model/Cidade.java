@@ -3,6 +3,7 @@ package br.com.questor.crm.model;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,10 +16,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-
-
-
-//import org.hibernate.annotations.Index;
 
 @Entity
 @Table(name = "cidade",indexes = {
@@ -45,7 +42,7 @@ public class Cidade implements Serializable{
 	private Long id;
 	@NotNull
 	private String nome;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "uf_id")
 	private UF uf;
 	public Long getId() {

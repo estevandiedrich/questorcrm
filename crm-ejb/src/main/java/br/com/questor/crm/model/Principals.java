@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -22,8 +23,15 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
+@Table(name = "principals",indexes = {
+		@Index(columnList = "id", name = "principals_id_idx"),
+		@Index(columnList = "role_id", name = "principals_role_id_idx"),
+		@Index(columnList = "principalid", name = "principalid_idx")
+		},
+	uniqueConstraints = @UniqueConstraint(columnNames = "principalid")
+)
 @XmlRootElement
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "principalid"))
+//@Table()
 @SequenceGenerator(name="PRINCIPALS_SEQUENCE", sequenceName="PRINCIPALS_SEQUENCE", allocationSize=1, initialValue=1)
 public class Principals implements Serializable {
    /**
@@ -55,7 +63,7 @@ public class Principals implements Serializable {
 	@NotNull
 	private String email;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "role_id")
 	private Roles Role;
 	

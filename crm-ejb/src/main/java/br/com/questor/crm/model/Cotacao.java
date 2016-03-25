@@ -49,7 +49,7 @@ public class Cotacao implements Serializable{
 	private Long id;
 	
 	private String descricao;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "oportunidade_id")
 	private Oportunidade oportunidade;
 	

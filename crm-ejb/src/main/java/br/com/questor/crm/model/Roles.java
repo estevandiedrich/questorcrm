@@ -6,11 +6,21 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
+@Table(name = "roles",indexes = {
+		@Index(columnList = "id", name = "roles_id_idx"),
+		@Index(columnList = "role", name = "role_idx"),
+		@Index(columnList = "principalid", name = "roles_principalid_idx")
+		},
+	uniqueConstraints = @UniqueConstraint(columnNames = "principalid")
+)
 @XmlRootElement
 @SequenceGenerator(name="ROLES_SEQUENCE", sequenceName="ROLES_SEQUENCE", allocationSize=1, initialValue=1)
 public class Roles implements Serializable {

@@ -8,6 +8,7 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -103,7 +104,7 @@ public class SalvarOportunidade {
 		newOportunidade.setContatos(oportunidadeContatos);
 		newOportunidade.setCotacoes(cotacoes);
 	}
-	public void setConta()
+	public void setConta(AjaxBehaviorEvent e)
 	{
 		if(newOportunidade.getConta() != null && newOportunidade.getConta().getId() != null)
 		{
