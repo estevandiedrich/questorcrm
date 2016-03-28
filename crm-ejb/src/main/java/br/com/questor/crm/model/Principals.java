@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -31,7 +33,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 	uniqueConstraints = @UniqueConstraint(columnNames = "principalid")
 )
 @XmlRootElement
-//@Table()
+@NamedQueries(value={
+		@NamedQuery(name = "Principals.findById",query = "SELECT p FROM Principals p JOIN FETCH p.Role WHERE p.id = :id"),
+		@NamedQuery(name = "Principals.findImagemById",query = "SELECT p.imagem FROM Principals p WHERE p.id = :id"),
+		@NamedQuery(name = "Principals.findAssinaturaById",query = "SELECT p.assinaturaEmail FROM Principals p WHERE p.id = :id")
+		}
+)
 @SequenceGenerator(name="PRINCIPALS_SEQUENCE", sequenceName="PRINCIPALS_SEQUENCE", allocationSize=1, initialValue=1)
 public class Principals implements Serializable {
    /**
@@ -80,11 +87,11 @@ public class Principals implements Serializable {
 	
 	private boolean primeiroLogin;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "assinturaemail_id")
 	private Imagem assinaturaEmail;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "imagem_id")
 	private Imagem imagem;
 	

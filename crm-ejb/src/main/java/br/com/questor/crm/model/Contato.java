@@ -25,7 +25,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 		}
 )
 @XmlRootElement
-@NamedQueries(value={@NamedQuery(name = "Contato.findByLead",query="SELECT c FROM Contato c WHERE c.lead.id = :lead")})
+@NamedQueries(value={
+		@NamedQuery(name = "Contato.findByLead",query="SELECT c FROM Contato c JOIN FETCH c.cargo WHERE c.lead.id = :lead"),
+		@NamedQuery(name = "Contato.findById",query="SELECT c FROM Contato c JOIN FETCH c.cargo WHERE c.id = :id")
+		})
 @SequenceGenerator(name="CONTATO_SEQUENCE", sequenceName="CONTATO_SEQUENCE", allocationSize=1, initialValue=1)
 public class Contato implements Serializable{
 	public Contato()

@@ -30,7 +30,11 @@ import br.com.questor.crm.enums.FaseOportunidadeEnum;
 		}
 )
 @XmlRootElement
-@NamedQueries(value = {@NamedQuery(name = "Oportunidade.findAll",query = "SELECT o FROM Oportunidade o JOIN FETCH o.conta ORDER BY o.dataAbertura")})
+@NamedQueries(value = {
+		@NamedQuery(name = "Oportunidade.findAll",query = "SELECT o FROM Oportunidade o JOIN FETCH o.conta ORDER BY o.dataAbertura"),
+		@NamedQuery(name = "Oportunidade.findByContaIds",query = "SELECT o FROM Oportunidade o JOIN FETCH o.conta WHERE o.conta.id IN (:contas) ORDER BY o.dataAbertura")
+		}
+)
 @SequenceGenerator(name="OPORTUNIDADE_SEQUENCE", sequenceName="OPORTUNIDADE_SEQUENCE", allocationSize=1, initialValue=1)
 public class Oportunidade implements Serializable{
 	public Oportunidade()

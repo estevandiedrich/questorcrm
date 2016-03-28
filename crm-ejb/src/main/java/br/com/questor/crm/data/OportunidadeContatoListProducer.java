@@ -2,6 +2,7 @@ package br.com.questor.crm.data;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
@@ -9,9 +10,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import br.com.questor.crm.model.Oportunidade;
 import br.com.questor.crm.model.OportunidadeContato;
@@ -33,13 +31,14 @@ public class OportunidadeContatoListProducer {
 	public void onOportunidadeContatoListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final OportunidadeContato oportunidade) {
 		retrieveAllOportunidadeContatosOrderedByNome();
 	}
-//	@PostConstruct
+	@PostConstruct
 	public void retrieveAllOportunidadeContatosOrderedByNome() {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<OportunidadeContato> criteria = cb.createQuery(OportunidadeContato.class);
-		Root<OportunidadeContato> cliente = criteria.from(OportunidadeContato.class);
-		criteria.select(cliente).orderBy(cb.asc(cliente.get("nome")));
-		oportunidadeContatos = em.createQuery(criteria).getResultList();
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<OportunidadeContato> criteria = cb.createQuery(OportunidadeContato.class);
+//		Root<OportunidadeContato> cliente = criteria.from(OportunidadeContato.class);
+//		criteria.select(cliente).orderBy(cb.asc(cliente.get("nome")));
+//		oportunidadeContatos = em.createQuery(criteria).getResultList();
+		oportunidadeContatos = em.createNamedQuery("OportunidadeContato.findAll").getResultList();
 	}
 	
 	public List<OportunidadeContato> retrieveAllOportunidadeContatosByOportunidade(Oportunidade oportunidade)

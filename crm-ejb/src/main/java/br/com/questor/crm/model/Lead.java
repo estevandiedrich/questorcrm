@@ -34,7 +34,16 @@ import br.com.questor.crm.enums.LeadEnum;
 )
 @NamedQueries(value = {
 		@NamedQuery(name = "Lead.findByIds",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade WHERE l.id IN (:leads) ORDER BY l.nome"),
-		@NamedQuery(name = "Lead.findAll",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade ORDER BY l.nome")})
+		@NamedQuery(name = "Conta.findByIds",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.CONTA AND l.id IN (:leads) ORDER BY l.nome"),
+		@NamedQuery(name = "Lead.findByIdsSemUFCidade",query = "SELECT l FROM Lead l WHERE l.id IN (:leads) ORDER BY l.nome"),
+		@NamedQuery(name = "Conta.findByIdsSemUFCidade",query = "SELECT l FROM Lead l WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.CONTA AND l.id IN (:leads) ORDER BY l.nome"),
+		@NamedQuery(name = "Lead.findAll",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade ORDER BY l.nome"),
+		@NamedQuery(name = "Conta.findAll",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.CONTA ORDER BY l.nome"),
+		@NamedQuery(name = "Lead.findAllSemUFCidade",query = "SELECT l FROM Lead l ORDER BY l.nome"),
+		@NamedQuery(name = "Conta.findAllSemUFCidade",query = "SELECT l FROM Lead l WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.CONTA ORDER BY l.nome"),
+		@NamedQuery(name = "Lead.findImagemById",query = "SELECT l.imagem FROM Lead l WHERE l.id = :id")
+		}
+)
 @XmlRootElement
 @SequenceGenerator(name="LEAD_SEQUENCE", sequenceName="LEAD_SEQUENCE", allocationSize=1, initialValue=1)
 public class Lead implements Serializable {

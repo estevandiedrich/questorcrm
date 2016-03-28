@@ -13,6 +13,8 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -28,6 +30,11 @@ import br.com.questor.crm.enums.TipoProdutoEnum;
 		}
 )
 @XmlRootElement
+@NamedQueries(value = {
+		@NamedQuery(name = "Produto.findAll",query = "SELECT p FROM Produto p ORDER BY p.descricao"),
+		@NamedQuery(name = "Produto.findAllComModulo",query = "SELECT p FROM Produto p JOIN FETCH p.modulos ORDER BY p.descricao")
+		}
+)
 @SequenceGenerator(name="PRODUTO_SEQUENCE", sequenceName="PRODUTO_SEQUENCE", allocationSize=1, initialValue=1)
 public class Produto implements Serializable {
 	public Produto()

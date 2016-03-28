@@ -24,7 +24,6 @@
 	</repositories>
 
 	<dependencies>
-
 		<!-- Declare the APIs we depend on and need for compilation. All of them 
 			are provided by JBoss AS 7 -->
 		<dependency>
@@ -66,19 +65,18 @@
 		
 		<!-- Import the EJB API, we use provided scope as the API is included in 
 			JBoss AS 7 -->
-		<dependency>
-			<groupId>org.wildfly</groupId>
-			<artifactId>wildfly-ejb3</artifactId>
-			<version>8.0.0.Alpha1</version>
-			<scope>provided</scope>
-			<exclusions>
-		        <exclusion>
-		          <groupId>org.hibernate.javax.persistence</groupId>
-		          <artifactId>hibernate-jpa-2.0-api</artifactId>
-		        </exclusion>
-		      </exclusions> 
-		</dependency>
 
+		<dependency>
+			<groupId>org.jboss.spec.javax.ejb</groupId>
+			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.picketbox</groupId>
+			<artifactId>picketbox</artifactId>
+			<version>4.9.4.Final</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- Import the CDI API, we use provided scope as the API is included in 
 			JBoss AS 7 -->

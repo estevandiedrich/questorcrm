@@ -3,7 +3,6 @@ package br.com.questor.crm.model;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries(value = 
 	{
-			@NamedQuery(name = "GrupoUsuariosPrincipals.findByGrupoUsuarios",query = "SELECT gup.principals FROM GrupoUsuariosPrincipals gup WHERE gup.grupoUsuarios.id IN (:gruposUsuarios) "),
+			@NamedQuery(name = "GrupoUsuariosPrincipals.findByGrupoUsuarios",query = "SELECT DISTINCT gup.principals FROM GrupoUsuariosPrincipals gup JOIN FETCH gup.principals.Role WHERE gup.grupoUsuarios.id IN (:gruposUsuarios) "),
 			@NamedQuery(name = "GrupoUsuariosPrincipals.findGrupoUsuariosByPrincipal",query = "SELECT gup.grupoUsuarios FROM GrupoUsuariosPrincipals gup WHERE gup.principals.id = :principal"),
 			@NamedQuery(name = "GrupoUsuariosPrincipals.findByPrincipal",query = "SELECT gup FROM GrupoUsuariosPrincipals gup WHERE gup.principals.id = :principal")
 	}

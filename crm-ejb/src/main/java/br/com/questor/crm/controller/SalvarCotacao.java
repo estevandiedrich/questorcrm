@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 
 import br.com.questor.crm.data.ModuloListProducer;
 import br.com.questor.crm.data.ModuloSelecionadoListProducer;
+import br.com.questor.crm.data.ProdutoModulosSelecionadosListProducer;
 import br.com.questor.crm.model.Cotacao;
 import br.com.questor.crm.model.Modulo;
 import br.com.questor.crm.model.ModuloSelecionado;
@@ -38,6 +39,9 @@ public class SalvarCotacao {
 	private ModuloSelecionadoListProducer moduloSelecionadoListProducer;
 	
 	@Inject
+	private ProdutoModulosSelecionadosListProducer produtoModulosSelecionadosListProducer;
+	
+	@Inject
 	private ModuloListProducer moduloListProducer;
 	
 	private Cotacao newCotacao;
@@ -51,8 +55,9 @@ public class SalvarCotacao {
 	{
 		newCotacao = cotacao;
 	}
-	public void setProdutoModulosSelecionados(List<ProdutoModulosSelecionados> produtosModulosSelecionados)
+	public void setProdutoModulosSelecionados(Cotacao cotacao)
 	{
+		List<ProdutoModulosSelecionados> produtosModulosSelecionados = produtoModulosSelecionadosListProducer.retrieveAllProdutoModulosSelecionadosByPropostaOrderedByDescricao(cotacao);
 		newCotacao.setProdutosModulosSelecionados(produtosModulosSelecionados);
 	}
 	public void setProdutoModulosSelecionados(ProdutoModulosSelecionados produto)

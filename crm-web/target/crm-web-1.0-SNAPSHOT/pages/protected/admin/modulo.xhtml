@@ -46,11 +46,11 @@
          </p>
       </h:form>
       <h2>Modulos</h2>
-      <h:panelGroup rendered="#{empty modulos}">
+      <h:panelGroup rendered="#{empty modulosComProduto}">
          <em>Nenhum modulo registrado.</em>
       </h:panelGroup>
-      <h:dataTable id="modulosDataTable" var="_modulo" value="#{modulos}"
-		rendered="#{not empty modulos}"
+      <h:dataTable id="modulosDataTable" var="_modulo" value="#{modulosComProduto}"
+		rendered="#{not empty modulosComProduto}"
 		styleClass="table"
 		 headerClass="table-header"
 		 rowClasses="table-odd-row,table-even-row">

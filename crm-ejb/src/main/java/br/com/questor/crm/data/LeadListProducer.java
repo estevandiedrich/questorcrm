@@ -11,9 +11,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import br.com.questor.crm.controller.LoginBean;
 import br.com.questor.crm.model.GrupoUsuariosLead;
@@ -46,13 +43,9 @@ public class LeadListProducer {
 	}
 	@PostConstruct
 	public void retrieveAllLeadsOrderedByNome() {
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Lead> criteria = cb.createQuery(Lead.class);
-//		Root<Lead> leadRoot = criteria.from(Lead.class);
 		Principals l = this.loginBean.getPrincipalsFromDB();
 		if(loginBean.isCallerInRole("ADMIN"))
 		{
-//			criteria.select(leadRoot).orderBy(cb.asc(leadRoot.get("nome")));
 			leads = em.createNamedQuery("Lead.findAll").getResultList();
 		}
 		else
@@ -72,15 +65,12 @@ public class LeadListProducer {
 			}
 			if(leadsId.size() > 0)
 			{
-//				criteria.select(leadRoot).where(leadRoot.get("id").in(leadsId)).orderBy(cb.asc(leadRoot.get("nome")));
 				leads = em.createNamedQuery("Lead.findByIds").setParameter("leads", leadsId).getResultList();
 			}
 			else
 			{
-//				criteria.select(leadRoot).where(cb.equal(leadRoot.get("id"), -1l)).orderBy(cb.asc(leadRoot.get("nome")));
 				leads = new ArrayList<>();
 			}
 		}
-//		leads = em.createQuery(criteria).getResultList();
 	}
 }

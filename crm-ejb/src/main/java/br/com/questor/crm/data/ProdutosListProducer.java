@@ -10,9 +10,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import br.com.questor.crm.model.Produto;
 
@@ -30,23 +27,21 @@ public class ProdutosListProducer {
 		return produtos;
 	}
 	
-//	@Inject
-//	private ModuloListProducer moduloListProducer;
-	
 	public void onProdutoListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Produto produto) {
 		retrieveAllProdutosOrderedByDescricao();
 	}
 	@PostConstruct
 	public void retrieveAllProdutosOrderedByDescricao() {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Produto> criteria = cb.createQuery(Produto.class);
-		Root<Produto> produto = criteria.from(Produto.class);
-		criteria.select(produto).orderBy(cb.asc(produto.get("descricao")));
-		produtos = em.createQuery(criteria).getResultList();
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Produto> criteria = cb.createQuery(Produto.class);
+//		Root<Produto> produto = criteria.from(Produto.class);
+//		criteria.select(produto).orderBy(cb.asc(produto.get("descricao")));
+//		produtos = em.createQuery(criteria).getResultList();
 //		for(Produto p:produtos)
 //		{
 //			List<Modulo> m = moduloListProducer.retrieveAllModulosByProdutoOrderedByNome(p);
 //			p.setModulos(m);
 //		}
+		produtos = em.createNamedQuery("Produto.findAll").getResultList();
 	}
 }

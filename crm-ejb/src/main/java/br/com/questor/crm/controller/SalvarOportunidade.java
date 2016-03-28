@@ -62,7 +62,8 @@ public class SalvarOportunidade {
 	{
 		if(newOportunidade.getContatoSelecionado() != null && newOportunidade.getContatoSelecionado().getId() != null)
 		{
-			Contato contato = em.find(Contato.class, newOportunidade.getContatoSelecionado().getId());
+//			Contato contato = em.find(Contato.class, newOportunidade.getContatoSelecionado().getId());
+			Contato contato = contatoListProducer.findById(newOportunidade.getContatoSelecionado().getId());
 			OportunidadeContato oportunidadeContato = new OportunidadeContato();
 			oportunidadeContato.setContato(contato);
 			newOportunidade.getContatos().add(oportunidadeContato);

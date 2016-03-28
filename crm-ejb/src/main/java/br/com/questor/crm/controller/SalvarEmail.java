@@ -129,7 +129,7 @@ public class SalvarEmail {
 	}
 	public void adicionarContato(){
 		ContatoEmail contatoEmail = new ContatoEmail();
-		Contato contato = em.find(Contato.class, newEmail.getContatoSelecionado().getId());
+		Contato contato = contatoListProducer.findById(newEmail.getContatoSelecionado().getId());
 		contatoEmail.setContato(contato);
 		newEmail.getEmailTo().add(contatoEmail);
 	}

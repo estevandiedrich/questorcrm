@@ -10,9 +10,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import br.com.questor.crm.model.Cidade;
 import br.com.questor.crm.model.UF;
@@ -36,11 +33,12 @@ public class CidadeListProducer {
 	}
 	@PostConstruct
 	public void retrieveAllCidadesOrderedByNome() {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Cidade> criteria = cb.createQuery(Cidade.class);
-		Root<Cidade> cliente = criteria.from(Cidade.class);
-		criteria.select(cliente).orderBy(cb.asc(cliente.get("nome")));
-		cidades = em.createQuery(criteria).getResultList();
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Cidade> criteria = cb.createQuery(Cidade.class);
+//		Root<Cidade> cliente = criteria.from(Cidade.class);
+//		criteria.select(cliente).orderBy(cb.asc(cliente.get("nome")));
+//		cidades = em.createQuery(criteria).getResultList();
+		cidades = em.createNamedQuery("Cidade.findAll").getResultList();
 	}
 	
 	public List<Cidade> retrieveAllCidadesByUfOrderedByNome(UF uf)

@@ -1,5 +1,7 @@
 package br.com.questor.crm.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
 import org.apache.commons.io.IOUtils;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 import br.com.questor.crm.data.AnexoListProducer;
 import br.com.questor.crm.data.AtividadeAgendaListProducer;
@@ -43,7 +47,7 @@ import br.com.questor.crm.model.UF;
 // @Model
 @Named
 @SessionScoped
-public class SalvarLead extends BaseController implements Serializable {
+public class SalvarLead implements Serializable {
 	/**
 	 * 
 	 */
@@ -57,7 +61,7 @@ public class SalvarLead extends BaseController implements Serializable {
 
 	@Inject
 	private EmailListProducer emailListProducer;
-
+	
 	@Inject
 	private LoginBean loginBean;
 
@@ -194,9 +198,9 @@ public class SalvarLead extends BaseController implements Serializable {
 	public void editNewLead()
 	{
 		if (newLead != null && newLead.getId() != null) {
-//			if (newLead.getLeadPai() == null) {
-//				newLead.setLeadPai(new Lead());
-//			}
+			if (newLead.getLeadPai() == null) {
+				newLead.setLeadPai(new Lead());
+			}
 			if (!Persistence.getPersistenceUtil().isLoaded(newLead, "emails")) {
 				List<Email> emails = emailListProducer.retrieveAllEmailsByLeadOrderedBySentDate(newLead);
 				newLead.setEmails(emails);
@@ -251,5 +255,18 @@ public class SalvarLead extends BaseController implements Serializable {
 				newLead.getGruposUsuarios().add(grupoUsuariosLead);
 			}
 			newLead.setLeadPai(new Lead());
+	}
+	public StreamedContent carregaImagem(Lead lead) throws IOException
+	{
+		Imagem imagem = (Imagem)em.createNamedQuery("Lead.findImagemById").setParameter("id", lead.getId()).getSingleResult();
+		if(imagem != null && imagem.getImagem() != null)
+		{
+	        StreamedContent streamedContent = new DefaultStreamedContent(new ByteArrayInputStream(imagem.getImagem()),imagem.getContentType());
+	        return streamedContent;
+		}
+		else
+		{
+			return new DefaultStreamedContent();
+		}
 	}
 }

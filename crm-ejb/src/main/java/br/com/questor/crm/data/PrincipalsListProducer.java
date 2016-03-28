@@ -96,4 +96,9 @@ public class PrincipalsListProducer {
 //			principals.add(pr);
 //		}
 	}
+	public Principals findById(Long id)
+	{
+		Principals participanteInterno = (Principals)em.createNamedQuery("Principals.findById").setParameter("id", id).getSingleResult();
+		return participanteInterno;
+	}
 }

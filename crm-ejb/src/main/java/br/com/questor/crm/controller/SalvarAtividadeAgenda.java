@@ -17,6 +17,7 @@ import javax.persistence.EntityManager;
 
 import br.com.questor.crm.data.AtividadeAgendaListProducer;
 import br.com.questor.crm.data.ContatoListProducer;
+import br.com.questor.crm.data.PrincipalsListProducer;
 import br.com.questor.crm.model.AtividadeAgenda;
 import br.com.questor.crm.model.AtividadeAgendaParticipantesExternos;
 import br.com.questor.crm.model.AtividadeAgendaParticipantesInternos;
@@ -46,6 +47,9 @@ public class SalvarAtividadeAgenda {
 	
 	@Inject
 	private ContatoListProducer contatoListProducer;
+	
+	@Inject
+	private PrincipalsListProducer principalsListProducer;
 	
 	private AtividadeAgenda newAtividadeAgenda;
 	
@@ -134,7 +138,8 @@ public class SalvarAtividadeAgenda {
 	{
 		if(newAtividadeAgenda.getParticipanteExternoSelecionado().getId() != null)
 		{
-			Contato participanteExterno = em.find(Contato.class, newAtividadeAgenda.getParticipanteExternoSelecionado().getId());
+//			Contato participanteExterno = em.find(Contato.class, newAtividadeAgenda.getParticipanteExternoSelecionado().getId());
+			Contato participanteExterno = contatoListProducer.findById(newAtividadeAgenda.getParticipanteExternoSelecionado().getId());
 			AtividadeAgendaParticipantesExternos atividadeAgendaParticipantesExternos = new AtividadeAgendaParticipantesExternos();
 			atividadeAgendaParticipantesExternos.setParticipanteExterno(participanteExterno);
 			newAtividadeAgenda.getParticipantesExternos().add(atividadeAgendaParticipantesExternos);
@@ -144,7 +149,7 @@ public class SalvarAtividadeAgenda {
 	{
 		if(newAtividadeAgenda.getParticipanteInternoSelecionado().getId() != null)
 		{
-			Principals participanteInterno = em.find(Principals.class, newAtividadeAgenda.getParticipanteInternoSelecionado().getId());
+			Principals participanteInterno = principalsListProducer.findById(newAtividadeAgenda.getParticipanteInternoSelecionado().getId());
 			AtividadeAgendaParticipantesInternos atividadeAgendaParticipantesInternos = new AtividadeAgendaParticipantesInternos();
 			atividadeAgendaParticipantesInternos.setParticipantesInternos(participanteInterno);
 			newAtividadeAgenda.getParticipantesInternos().add(atividadeAgendaParticipantesInternos);

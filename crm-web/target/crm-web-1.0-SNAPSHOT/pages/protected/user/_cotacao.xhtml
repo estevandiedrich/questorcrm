@@ -113,7 +113,7 @@
 				<h:column>
 					<f:facet name="header"></f:facet>
 					<h:commandLink id="produtosCotacaoCommandLink" value="Produtos"
-						action="#{salvarCotacao.setProdutoModulosSelecionados(_cotacao.produtosModulosSelecionados)}"
+						action="#{salvarCotacao.setProdutoModulosSelecionados(_cotacao)}"
 						onclick="javascript:modalProdutosCotacao()">
 						<f:ajax render="regOportunidade:produtosPanelGrid" />
 					</h:commandLink>

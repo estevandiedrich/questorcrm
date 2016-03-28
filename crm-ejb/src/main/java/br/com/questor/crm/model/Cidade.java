@@ -24,7 +24,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 		@Index(columnList = "nome", name = "cidade_nome_idx")
 		}
 )
-@NamedQueries(value = {@NamedQuery(name = "Cidade.findByUF",query = "SELECT c FROM Cidade c WHERE c.uf.id = :uf")})
+@NamedQueries(value = {
+		@NamedQuery(name = "Cidade.findByUF",query = "SELECT c FROM Cidade c WHERE c.uf.id = :uf"),
+		@NamedQuery(name = "Cidade.findAll",query = "SELECT c FROM Cidade c "),
+		@NamedQuery(name = "Cidade.findAllComUF",query = "SELECT c FROM Cidade c JOIN FETCH c.uf")
+		}
+)
 @XmlRootElement
 @SequenceGenerator(name="CIDADE_SEQUENCE", sequenceName="CIDADE_SEQUENCE", allocationSize=1, initialValue=1)
 public class Cidade implements Serializable{

@@ -24,7 +24,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 		}
 )
 @XmlRootElement
-@NamedQueries(value = {@NamedQuery(name = "OportunidadeContato.findByOportunidade",query = "SELECT oc FROM OportunidadeContato oc WHERE oc.oportunidade.id = :oportunidade")})
+@NamedQueries(value = {
+		@NamedQuery(name = "OportunidadeContato.findByOportunidade",query = "SELECT oc FROM OportunidadeContato oc WHERE oc.oportunidade.id = :oportunidade"),
+		@NamedQuery(name = "OportunidadeContato.findAll",query = "SELECT oc FROM OportunidadeContato oc ")
+		})
 @SequenceGenerator(name="OPORTUNIDADE_CONTATO_SEQUENCE", sequenceName="OPORTUNIDADE_CONTATO_SEQUENCE", allocationSize=1, initialValue=1)
 public class OportunidadeContato implements Serializable{
 	/**

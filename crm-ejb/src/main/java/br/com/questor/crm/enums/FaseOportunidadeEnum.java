@@ -1,11 +1,21 @@
 package br.com.questor.crm.enums;
 
 public enum FaseOportunidadeEnum {
-	CONTATO_INICIAL,
-	PROSPECT,
-	PROSPECT_QUALIFICADO,
-	CLIENTE_EM_NEGOCIACAO,
-	NEGOCIO_FECHADO,
-	NEGOCIO_PERDIDO,
-	NEGOCIO_TRANSFERIDO
+	CONTATO_INICIAL("Contato inicial"),
+	PROSPECT("Prospect"),
+	PROSPECT_QUALIFICADO("Prospect qualificado"),
+	CLIENTE_EM_NEGOCIACAO("Cliente em negociação"),
+	NEGOCIO_FECHADO("Negócio fechado"),
+	NEGOCIO_PERDIDO("Negócio pergido"),
+	NEGOCIO_TRANSFERIDO("Negócio transferido");
+	private final String descricao;
+	FaseOportunidadeEnum(String descricao)
+	{
+		this.descricao = descricao;
+	}
+	@Override
+	public String toString()
+	{
+		return this.descricao;
+	}
 }

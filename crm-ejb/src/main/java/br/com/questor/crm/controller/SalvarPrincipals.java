@@ -1,5 +1,7 @@
 package br.com.questor.crm.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
@@ -15,6 +17,8 @@ import javax.persistence.EntityManager;
 
 import org.apache.commons.io.IOUtils;
 import org.jboss.security.auth.spi.Util;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 import br.com.questor.crm.data.GrupoUsuariosPrincipalsListProducer;
 import br.com.questor.crm.data.RolesListProducer;
@@ -29,7 +33,7 @@ import br.com.questor.crm.model.Roles;
 //@Model
 @Named("salvarPrincipals")
 @SessionScoped
-public class SalvarPrincipals extends BaseController implements Serializable {
+public class SalvarPrincipals implements Serializable {
 	/**
 	 * 
 	 */
@@ -174,17 +178,30 @@ public class SalvarPrincipals extends BaseController implements Serializable {
 		return "/pages/protected/admin/principals";
 	}
 	private void lazyInicializationPrincipals()
-	{
+	{		
 		if(newPrincipal != null && newPrincipal.getId() != null)
 		{
 			if(newPrincipal.getImagem() != null)
 			{
+				Imagem imagem = (Imagem)em.createNamedQuery("Principals.findImagemById").setParameter("id", newPrincipal.getId()).getSingleResult();
+				newPrincipal.setImagem(imagem);
 				ImagePart imagemPart = new ImagePart();
 				imagemPart.setSize(newPrincipal.getImagem().getSize());
 				imagemPart.setName(newPrincipal.getImagem().getNome());
 				imagemPart.setInputStream(IOUtils.toInputStream(new String(newPrincipal.getImagem().getImagem())));
 				imagemPart.setContentType(newPrincipal.getImagem().getContentType());
 				newPrincipal.setImagemPart(imagemPart);
+			}
+			if(newPrincipal.getAssinaturaEmail() != null)
+			{
+				Imagem assinatura = (Imagem)em.createNamedQuery("Principals.findAssinaturaById").setParameter("id", newPrincipal.getId()).getSingleResult();
+				newPrincipal.setAssinaturaEmail(assinatura);
+				ImagePart imagemPart = new ImagePart();
+				imagemPart.setSize(newPrincipal.getAssinaturaEmail().getSize());
+				imagemPart.setName(newPrincipal.getAssinaturaEmail().getNome());
+				imagemPart.setInputStream(IOUtils.toInputStream(new String(newPrincipal.getAssinaturaEmail().getImagem())));
+				imagemPart.setContentType(newPrincipal.getAssinaturaEmail().getContentType());
+				newPrincipal.setAssinaturaPart(imagemPart);
 			}
 			List<GrupoUsuariosPrincipals> gruposUsuariosPrincipals = grupoUsuariosPrincipalsListProducer.retrieveAllGrupoUsuariosPrincipalsByPrincipal(newPrincipal);
 			newPrincipal.setGruposUsuarios(gruposUsuariosPrincipals);
@@ -195,5 +212,27 @@ public class SalvarPrincipals extends BaseController implements Serializable {
 	@PostConstruct
 	public void initNewPrincipal() {
 		newPrincipal = new Principals();
+	}
+	public StreamedContent carregaAssinatura(Principals principals) throws IOException
+	{
+		Imagem imagem = (Imagem)em.createNamedQuery("Principals.findAssinaturaById").setParameter("id", principals.getId()).getSingleResult();
+		return carregaImagem(imagem);
+	}
+	public StreamedContent carregaImagem(Principals principals) throws IOException
+	{
+		Imagem imagem = (Imagem)em.createNamedQuery("Principals.findImagemById").setParameter("id", principals.getId()).getSingleResult();
+		return carregaImagem(imagem);
+	}
+	public StreamedContent carregaImagem(Imagem imagem)
+	{
+		if(imagem != null && imagem.getImagem() != null)
+		{
+	        StreamedContent streamedContent = new DefaultStreamedContent(new ByteArrayInputStream(imagem.getImagem()),imagem.getContentType());
+	        return streamedContent;
+		}
+		else
+		{
+			return new DefaultStreamedContent();
+		}
 	}
 }

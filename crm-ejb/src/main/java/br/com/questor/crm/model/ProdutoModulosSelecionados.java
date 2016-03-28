@@ -30,7 +30,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 		}
 )
 @XmlRootElement
-@NamedQueries(value = {@NamedQuery(name = "ProdutoModulosSelecionados.findByCotacao",query = "SELECT p FROM ProdutoModulosSelecionados p WHERE p.cotacao.id = :cotacao")})
+@NamedQueries(value = {
+		@NamedQuery(name = "ProdutoModulosSelecionados.findByCotacao",query = "SELECT DISTINCT p FROM ProdutoModulosSelecionados p JOIN FETCH p.produto JOIN FETCH p.modulosSelecionados JOIN FETCH p.tipoContratacao WHERE p.cotacao.id = :cotacao")
+		}
+)
 @SequenceGenerator(name="PRODUTO_MODULOS_SELECIONADOS_SEQUENCE", sequenceName="PRODUTO_MODULOS_SELECIONADOS_SEQUENCE", allocationSize=1, initialValue=1)
 public class ProdutoModulosSelecionados implements Serializable{
 	public ProdutoModulosSelecionados()

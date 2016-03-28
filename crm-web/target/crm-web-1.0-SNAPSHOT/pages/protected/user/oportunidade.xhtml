@@ -275,11 +275,11 @@
 							<h4 class="modal-title">Selecione a Lead</h4>
 						</div>
 						<div class="modal-body">
-							<h:panelGroup rendered="#{empty leads}">
+							<h:panelGroup rendered="#{empty contasSemUFCidade}">
 								<em>Nenhum lead registrado.</em>
 							</h:panelGroup>
-							<h:dataTable id="leadsDataTable" var="_lead" value="#{leads}"
-								rendered="#{not empty leads}" styleClass="table"
+							<h:dataTable id="leadsDataTable" var="_lead" value="#{contasSemUFCidade}"
+								rendered="#{not empty contasSemUFCidade}" styleClass="table"
 								headerClass="table-header"
 								rowClasses="table-odd-row,table-even-row">
 								<h:column>
@@ -408,7 +408,7 @@
 										<f:facet name="header"></f:facet>
 										<h:commandLink id="produtosCotacaoCommandLink"
 											value="Produtos"
-											action="#{salvarCotacao.setProdutoModulosSelecionados(_cotacao.produtosModulosSelecionados)}"
+											action="#{salvarCotacao.setProdutoModulosSelecionados(_cotacao)}"
 											onclick="javascript:modalProdutosCotacao()">
 											<f:ajax render="regOportunidade:produtosPanelGrid" />
 										</h:commandLink>

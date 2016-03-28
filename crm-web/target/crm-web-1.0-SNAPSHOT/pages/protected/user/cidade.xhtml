@@ -78,11 +78,11 @@
       </h:form>
       <h2>Cidades</h2>
       <h:panelGrid id="cidadesDataGrid">
-	      <h:panelGroup rendered="#{empty cidades}">
+	      <h:panelGroup rendered="#{empty cidadesComUF}">
 	         <em>Nenhuma cidade registrada.</em>
 	      </h:panelGroup>
-	      <h:dataTable id="cidadesDataTable" var="_cidade" value="#{cidades}"
-			rendered="#{not empty cidades}"
+	      <h:dataTable id="cidadesDataTable" var="_cidade" value="#{cidadesComUF}"
+			rendered="#{not empty cidadesComUF}"
 			styleClass="table"
 			width="100%"
 			style="display:inline-table;"

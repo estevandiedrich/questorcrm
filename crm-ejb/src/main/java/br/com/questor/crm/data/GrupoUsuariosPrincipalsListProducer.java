@@ -27,7 +27,7 @@ public class GrupoUsuariosPrincipalsListProducer {
 	
 	@Produces
 	@Named
-	public List<GrupoUsuariosPrincipals> getGrupoUsuariosPrincipalss()
+	public List<GrupoUsuariosPrincipals> getGrupoUsuariosPrincipals()
 	{
 		return grupoUsuariosPrincipals;
 	}

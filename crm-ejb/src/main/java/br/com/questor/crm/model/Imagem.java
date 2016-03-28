@@ -6,13 +6,22 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
+@Table(name = "imagem",indexes = {
+		@Index(columnList = "id", name = "imagem_id_idx")
+		}
+)
 @XmlRootElement
+@NamedQueries(value={@NamedQuery(name="Imagem.findById",query="SELECT i FROM Imagem i WHERE i.id = :id")})
 @SequenceGenerator(name="IMAGEM_SEQUENCE", sequenceName="IMAGEM_SEQUENCE", allocationSize=1, initialValue=1)
 public class Imagem implements Serializable{
 	public Imagem()

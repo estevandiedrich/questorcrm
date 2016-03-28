@@ -92,11 +92,11 @@
 			<h:panelGrid columns="2" columnClasses="rightColumn,leftColumn">
 				<h:panelGrid>
 					<p:graphicImage
-						value="#{salvarPrincipals.carregaImagem(newPrincipal.imagem)}"
+						value="#{salvarPrincipals.carregaImagem(newPrincipal)}"
 						cache="false" width="150px" height="200px" rendered="#{salvarPrincipals.imagemCarregada()}"/>
 					<br/>
 					<p:graphicImage
-						value="#{salvarPrincipals.carregaImagem(newPrincipal.assinaturaEmail)}"
+						value="#{salvarPrincipals.carregaAssinatura(newPrincipal)}"
 						cache="false" width="300px" height="200px" rendered="#{salvarPrincipals.assinaturaCarregada()}"/>
 				</h:panelGrid>
 				<h:panelGrid>

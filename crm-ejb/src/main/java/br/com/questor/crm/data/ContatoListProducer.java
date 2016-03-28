@@ -52,4 +52,8 @@ public class ContatoListProducer {
 //		return em.createQuery(criteria).getResultList();
 		return em.createNamedQuery("Contato.findByLead").setParameter("lead", lead.getId()).getResultList();
 	}
+	public Contato findById(Long id)
+	{
+		return (Contato)em.createNamedQuery("Contato.findById").setParameter("id", id).getSingleResult();
+	}
 }

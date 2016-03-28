@@ -15,6 +15,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import br.com.questor.crm.model.Cotacao;
+import br.com.questor.crm.model.ModuloSelecionado;
+import br.com.questor.crm.model.Produto;
 import br.com.questor.crm.model.ProdutoModulosSelecionados;
 
 @RequestScoped

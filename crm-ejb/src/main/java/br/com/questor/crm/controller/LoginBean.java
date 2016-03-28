@@ -2,6 +2,7 @@ package br.com.questor.crm.controller;
 
 import java.util.logging.Logger;
 
+import javax.ejb.Schedule;
 import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -15,6 +16,8 @@ import javax.persistence.criteria.Root;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.primefaces.context.RequestContext;
+
 import br.com.questor.crm.model.Principals;
 
 @Stateful
@@ -22,12 +25,14 @@ import br.com.questor.crm.model.Principals;
 @SessionScoped
 @Named
 public class LoginBean {
+	
 	@Inject
     private Logger log;
 	@Inject
 	private EntityManager em;
 	@Inject
 	private SalvarPrincipals salvarPrincipals;
+	
 	private String username;
 	private String password;
 	public String getUsername() {
@@ -94,5 +99,16 @@ public class LoginBean {
 			
 		}
 		return "/pages/public/login?faces-redirect=true";
+	}
+	
+	@Schedule(second = "*",minute="*/1",hour="*")
+	public void buscaAtividadesAgenda2()
+	{
+		log.info("teste3");
+		if(RequestContext.getCurrentInstance()!=null)
+		{
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message Title", "Message body");
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+		}
 	}
 }
