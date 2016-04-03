@@ -14,6 +14,8 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.mail.BodyPart;
@@ -27,6 +29,9 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+
+import org.jboss.security.auth.spi.Util;
 
 import br.com.questor.crm.data.ContatoEmailListProducer;
 import br.com.questor.crm.data.ContatoListProducer;
@@ -37,6 +42,8 @@ import br.com.questor.crm.model.ContatoEmail;
 import br.com.questor.crm.model.Email;
 import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
+import br.com.questor.crm.model.Principals;
+import br.com.questor.crm.model.Propriedades;
 
 @Stateful
 //@Model
@@ -133,12 +140,58 @@ public class SalvarEmail {
 		contatoEmail.setContato(contato);
 		newEmail.getEmailTo().add(contatoEmail);
 	}
+	public void enviarEmailNovoUsuario(Principals principals)
+	{
+		ContatoEmail contatoEmail = new ContatoEmail();
+		Contato contato = new Contato();
+		contato.setEmail(principals.getPrincipalID());
+		contatoEmail.setContato(contato);
+		List<ContatoEmail> contatoEmailList = new ArrayList<>();
+		contatoEmailList.add(contatoEmail);
+		Propriedades emailRecuperacaoSenha = (Propriedades) em.createNamedQuery("Propriedades.findByChave").setParameter("chave", Propriedades.EMAIL_NOVO_USUARIO).getSingleResult();
+		Email novoUsuario = new Email();
+		novoUsuario.setEmailFrom(emailRecuperacaoSenha.getValor());
+		novoUsuario.setEmailTo(contatoEmailList);
+		novoUsuario.setSubject("Bem vindo ao Questor CRM");
+		novoUsuario.setText("http://www.questores.com.br/crm Senha temporária "+principals.getPassword());
+		sendEmail(novoUsuario);
+	}
+	public void esqueceuSenha(String email)
+	{
+		try
+		{
+			Principals esquecido = (Principals) em.createNamedQuery("Principals.findByEmail").setParameter("email", email).getSingleResult();
+			ContatoEmail contatoEmail = new ContatoEmail();
+			Contato contato = new Contato();
+			contato.setEmail(esquecido.getPrincipalID());
+			contatoEmail.setContato(contato);
+			List<ContatoEmail> contatoEmailList = new ArrayList<>();
+			contatoEmailList.add(contatoEmail);
+			Propriedades emailRecuperacaoSenha = (Propriedades) em.createNamedQuery("Propriedades.findByChave").setParameter("chave", Propriedades.EMAIL_RECUPERACAO_SENHA).getSingleResult();
+			Email recuperaSenha = new Email();
+			recuperaSenha.setEmailFrom(emailRecuperacaoSenha.getValor());
+			recuperaSenha.setEmailTo(contatoEmailList);
+			recuperaSenha.setSubject("Email para recuperação de senha");
+			recuperaSenha.setText("http://www.questores.com.br/crm Senha temporária xyz");
+			sendEmail(recuperaSenha);
+			esquecido.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, "xyz"));
+			esquecido.setPrimeiroLogin(Boolean.TRUE);
+			em.merge(esquecido);
+			FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Email enviado com sucesso.", null);
+            FacesContext.getCurrentInstance().addMessage(null, m);
+		}
+		catch(NoResultException e)
+		{
+			FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Não foi localizado usuário válido para o email fornecido.", null);
+            FacesContext.getCurrentInstance().addMessage(null, m);
+		}
+	}
 	public void salvar() throws Exception {
 		log.info("Salvando Email" + newEmail.getEmailTo());
 		if(newEmail.getId() == null)
 		{
 			newEmail.getLead().getEmails().add(newEmail);
-			newEmail.setEmailFrom(loginBean.getPrincipalsFromDB().getEmail());
+			newEmail.setEmailFrom(loginBean.getPrincipalsFromDB().getPrincipalID());
 			newEmail.setSentDate(new Date());
 			em.persist(newEmail);
 			for(ContatoEmail contatoEmail:newEmail.getEmailTo())

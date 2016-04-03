@@ -1,47 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-   xmlns:f="http://xmlns.jcp.org/jsf/core"
-   xmlns:h="http://xmlns.jcp.org/jsf/html"
-   template="/WEB-INF/templates/default.xhtml">
-   <ui:define name="content">
-	         <h:panelGrid>		
-	         	<h:form>	
-					<h:commandLink value="Usuários" action="#{salvarPrincipals.novo}" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
-				</h:form>
-				<h:outputLink value="/crm/pages/protected/admin/grupousuarios.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
-					<h:outputText value="Grupos de usuários" />
-				</h:outputLink>
-				<h:outputLink value="/crm/pages/protected/admin/cargo.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
-					<h:outputText value="Cargo" />
-				</h:outputLink>
-				<h:form>
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+		<h:form id="index">
+			<h:panelGrid columns="2" columnClasses="leftColumn,rightColumnIndex">
+				<h:panelGrid>
+					<h:commandLink value="Usuários" action="#{salvarPrincipals.novo}"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
+					<h:outputLink
+						value="/crm/pages/protected/admin/grupousuarios.xhtml"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}">
+						<h:outputText value="Grupos de usuários" />
+					</h:outputLink>
+					<h:outputLink value="/crm/pages/protected/admin/cargo.xhtml"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}">
+						<h:outputText value="Cargo" />
+					</h:outputLink>
 					<h:panelGrid>
-						<h:commandLink value="Nova Lead" action="#{salvarLead.novo}" />
-						<h:commandLink value="Nova Oportunidade" action="#{salvarOportunidade.novo}" />
+						<h:commandLink value="Nova Lead ou Conta"
+							action="#{salvarLead.novo}" />
+						<h:commandLink value="Leads e Contas"
+							action="#{salvarLead.listagem}" />
+						<h:commandLink value="Nova Oportunidade"
+							action="#{salvarOportunidade.novo}" />
+						<h:commandLink value="Oportunidades"
+							action="#{salvarOportunidade.listagem}" />
 					</h:panelGrid>
-				</h:form>
-				<h:outputLink value="/crm/pages/protected/user/emailleads.xhtml">
-					<h:outputText value="Emails lead" />
-				</h:outputLink>
-				<h:outputLink value="/crm/pages/protected/user/atividadeagenda.xhtml">
-					<h:outputText value="Agenda" />
-				</h:outputLink>
-				<h:form>
-					<h:commandLink value="Produtos" action="#{salvarProduto.novo}" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
-				</h:form>
-				<h:outputLink value="/crm/pages/protected/admin/modulo.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
-					<h:outputText value="Módulos" />
-				</h:outputLink>
-				<h:outputLink value="/crm/pages/protected/admin/tipocontratacao.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
-					<h:outputText value="Tipos de contratação" />
-				</h:outputLink>
-				<h:outputLink value="/crm/pages/protected/user/uf.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
-					<h:outputText value="UFs" />
-				</h:outputLink>
-				<h:outputLink value="/crm/pages/protected/user/cidade.xhtml" rendered="#{loginBean.isCallerInRole('ADMIN')}">
-					<h:outputText value="Cidades" />
-				</h:outputLink>
+					<h:outputLink value="/crm/pages/protected/user/emailleads.xhtml">
+						<h:outputText value="Email lead ou Conta" />
+					</h:outputLink>
+					<h:outputLink
+						value="/crm/pages/protected/user/atividadeagenda.xhtml">
+						<h:outputText value="Agenda" />
+					</h:outputLink>
+					<h:commandLink value="Produtos" action="#{salvarProduto.novo}"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
+					<h:outputLink value="/crm/pages/protected/admin/modulo.xhtml"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}">
+						<h:outputText value="Módulos" />
+					</h:outputLink>
+					<h:outputLink
+						value="/crm/pages/protected/admin/tipocontratacao.xhtml"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}">
+						<h:outputText value="Tipos de contratação" />
+					</h:outputLink>
+					<h:outputLink value="/crm/pages/protected/user/uf.xhtml"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}">
+						<h:outputText value="UFs" />
+					</h:outputLink>
+					<h:outputLink value="/crm/pages/protected/user/cidade.xhtml"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}">
+						<h:outputText value="Cidades" />
+					</h:outputLink>
+				</h:panelGrid>
+				<h:panelGrid id="feedsPanelGrid">
+					<h:panelGroup rendered="#{empty feeds}">
+						<em>Nenhum Feed registrado.</em>
+					</h:panelGroup>
+					<h:dataTable id="feedsDataTable" var="_feed" value="#{feeds}"
+						rendered="#{not empty feeds}" styleClass="table"
+						headerClass="table-header"
+						rowClasses="table-odd-row,table-even-row">
+						<h:column>
+							<p:graphicImage
+							value="#{salvarFeed.carregaImagem(_feed)}" cache="false"
+							width="30px" height="40px" rendered="#{salvarFeed.imagemCarregada()}"/>
+						</h:column>
+						<h:column>
+							<h:outputText value="#{_feed.texto}" />
+						</h:column>
+					</h:dataTable>
+					<h:panelGroup>
+						<h:inputText id="texto" value="#{newFeed.texto}"/>
+						<h:commandButton id="enviar" action="#{salvarFeed.salvar}" value="Enviar">
+							<f:ajax execute="index:texto" render="index:feedsPanelGrid"/>
+						</h:commandButton>
+					</h:panelGroup>
+				</h:panelGrid>
 			</h:panelGrid>
-   </ui:define>
+		</h:form>
+	</ui:define>
 </ui:composition>

@@ -32,7 +32,13 @@ public class SalvarGrupoUsuarios {
 	public GrupoUsuarios getNewGrupoUsuarios() {
 		return newGrupoUsuarios;
 	}
-	
+	public void excluir(GrupoUsuarios grupoUsuarios)
+	{
+		log.info("Excluindo Cargo " + grupoUsuarios.getDescricao());
+		em.remove(em.contains(grupoUsuarios) ? grupoUsuarios:em.merge(grupoUsuarios));
+		grupoUsuariosEventSrc.fire(grupoUsuarios);
+		initNewGrupoUsuarios();
+	}
 	public void salvar() throws Exception {
 		log.info("Salvando Grupo Usuarios" + newGrupoUsuarios.getDescricao());
 		em.persist(newGrupoUsuarios);

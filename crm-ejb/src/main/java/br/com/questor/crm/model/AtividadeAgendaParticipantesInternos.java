@@ -32,10 +32,10 @@ public class AtividadeAgendaParticipantesInternos implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="ATIVIDADE_AGENDA_PARTICIPANTES_INTERNOS_SEQUENCE")
 	private Long id;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	  @JoinColumn(name = "atividadeagenda_id")
 	private AtividadeAgenda atividadeAgenda;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	  @JoinColumn(name = "participantesinternos_id")
 	private Principals participantesInternos;
 	

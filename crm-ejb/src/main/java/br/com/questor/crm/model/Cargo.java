@@ -11,7 +11,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "cargo",indexes = {
@@ -30,7 +33,8 @@ public class Cargo implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="CARGO_SEQUENCE")
 	private Long id;
-	
+	@NotNull
+	@NotEmpty
 	private String descricao;
 
 	public Long getId() {

@@ -43,6 +43,7 @@
 					}
 				});
 				leadsDataTable();
+				contatosOportunidadeDataTable();
 			});
 			function contatosDataTable() {
 				var table = $('#regOportunidade\\:contatosDataTable').DataTable();
@@ -135,7 +136,7 @@
 				<h:inputText id="titulo" value="#{newOportunidade.titulo}" />
 				<h:message for="titulo" errorClass="invalid" />
 				<h:outputLabel for="descricao" value="Obervação:" />
-				<h:inputTextarea id="descricao" value="#{newOportunidade.descricao}" />
+				<h:inputTextarea id="descricao" value="#{newOportunidade.descricao}" style="width:800px;"/>
 				<h:message for="descricao" errorClass="invalid" />
 				<h:outputLabel for="fase" value="Fase:" />
 				<h:selectOneMenu id="fase" value="#{newOportunidade.fase}">
@@ -157,7 +158,7 @@
 					pattern="dd/MM/yyyy" />
 				<h:outputLabel for="conta" value="Conta:" />
 				<h:panelGroup>
-					<h:inputText id="conta" value="#{newOportunidade.conta.id}" />
+					<h:inputText id="conta" value="#{newOportunidade.conta.id}"/>
 					<h:graphicImage library="images" name="magnifying.png"
 						onclick="javascript:modalLead()" />
 					<h:inputText id="conta_desc" disabled="true" style="border:none;background:white;"/>
@@ -165,7 +166,7 @@
 				<h:outputLabel for="contato" value="Contato:" />
 				<h:panelGroup>
 					<h:inputText id="contato"
-						value="#{newOportunidade.contatoSelecionado.id}" />
+						value="#{newOportunidade.contatoSelecionado.id}"/>
 					<h:graphicImage id="contatoImg" library="images"
 						name="magnifying.png" onclick="javascript:modalContatoOportunidade()">
 						<f:ajax event="click" execute="regOportunidade:conta"
@@ -230,6 +231,9 @@
 				<h:inputText id="valorTotalProdutos"
 					value="#{newOportunidade.valorTotalProdutos}" disabled="true" />
 				<h:message for="valorTotalProdutos" errorClass="invalid" />
+				<h:outputLabel for="observacaoProposta" value="Observação da proposta: "/>
+				<h:inputTextarea id="observacaoProposta" value="#{newOportunidade.observacao}" style="width:800px;"/>
+				<h:message for="observacaoProposta" errorClass="invalid" />
 				<br />
 				<h:commandButton id="salvar" action="#{salvarOportunidade.salvar}"
 					value="Salvar" />
@@ -256,12 +260,20 @@
 				</h:column>
 				<h:column>
 					<f:facet name="header"></f:facet>
+					<h:commandLink value="Editar" action="#{salvarOportunidade.editar(_oportunidade)}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
 					<h:commandLink id="cotacoesOportunidadeCommandLink"
 						value="Cotações"
 						action="#{salvarOportunidade.setOportunidade(_oportunidade)}"
 						onclick="javascript:modalCotacoesOportunidade()">
 						<f:ajax render="regOportunidade:cotacoesOportunidadePanelGrid" />
 					</h:commandLink>
+				</h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
+					<h:commandLink value="Enviar Proposta" action="#{salvarOportunidade.enviarProposta(_oportunidade)}" />
 				</h:column>
 			</h:dataTable>
 

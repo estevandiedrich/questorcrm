@@ -1,5 +1,6 @@
 package br.com.questor.crm.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -15,6 +16,7 @@ import javax.persistence.EntityManager;
 import br.com.questor.crm.data.ModuloListProducer;
 import br.com.questor.crm.data.ModuloSelecionadoListProducer;
 import br.com.questor.crm.data.ProdutoModulosSelecionadosListProducer;
+import br.com.questor.crm.enums.TipoProdutoEnum;
 import br.com.questor.crm.model.Cotacao;
 import br.com.questor.crm.model.Modulo;
 import br.com.questor.crm.model.ModuloSelecionado;
@@ -77,6 +79,19 @@ public class SalvarCotacao {
 	}
 	public void adicionarCotacao(Oportunidade oportunidade)
 	{
+		oportunidade.setValorTotalProdutos(BigDecimal.ZERO);
+		oportunidade.setValorTotalServicos(BigDecimal.ZERO);
+		for(ProdutoModulosSelecionados p:newCotacao.getProdutosModulosSelecionados())
+		{
+			if(p.getProduto().getTipoProduto() == TipoProdutoEnum.MANUTENCAO)
+			{
+				oportunidade.setValorTotalProdutos(oportunidade.getValorTotalProdutos().add(p.getValorTotal()));
+			}
+			else
+			{
+				oportunidade.setValorTotalServicos(oportunidade.getValorTotalServicos().add(p.getValorTotal()));
+			}
+		}
 		oportunidade.getCotacoes().add(newCotacao);
 		initNewCotacao();
 	}

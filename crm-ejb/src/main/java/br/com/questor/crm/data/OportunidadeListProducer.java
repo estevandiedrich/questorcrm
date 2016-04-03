@@ -42,6 +42,12 @@ public class OportunidadeListProducer {
 	public void onOportunidadeListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Oportunidade oportunidade) {
 		retrieveAllOportunidadesOrderedByNome();
 	}
+	public List<Oportunidade> retrieveAllOportunidadesByLeadOrderedByNome(Lead lead)
+	{
+		List<Long> ids = new ArrayList<>();
+		ids.add(lead.getId());
+		return em.createNamedQuery("Oportunidade.findByContaIds").setParameter("contas", ids).getResultList();
+	}
 	@PostConstruct
 	public void retrieveAllOportunidadesOrderedByNome() {
 //		@SuppressWarnings(value = "unchecked")

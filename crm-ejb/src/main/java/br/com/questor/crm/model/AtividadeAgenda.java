@@ -35,7 +35,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries(value = 
 	{
 			@NamedQuery(name = "AtividadeAgenda.findAll",query = "SELECT aa FROM AtividadeAgenda AS aa INNER JOIN aa.usuario AS u INNER JOIN u.Role AS r ORDER BY aa.dataEHora "),
-			@NamedQuery(name = "AtividadeAgenda.findByLead",query = "SELECT aa FROM AtividadeAgenda AS aa JOIN FETCH aa.usuario WHERE aa.lead.id = :lead ORDER BY aa.dataEHora ")
+			@NamedQuery(name = "AtividadeAgenda.findByLead",query = "SELECT aa FROM AtividadeAgenda AS aa JOIN FETCH aa.usuario WHERE aa.lead.id = :lead ORDER BY aa.dataEHora "),
+			@NamedQuery(name = "AtividadeAgenda.findByPrincipal",query = "SELECT aa FROM AtividadeAgenda AS aa JOIN FETCH aa.usuario JOIN aa.participantesInternos pi WHERE aa.usuario.id = :principal OR pi.participantesInternos.id = :principal ORDER BY aa.dataEHora ")
 	}
 )
 @SequenceGenerator(name="ATIVIDADE_AGENDA_SEQUENCE", sequenceName="ATIVIDADE_AGENDA_SEQUENCE", allocationSize=1, initialValue=1)

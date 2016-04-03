@@ -32,7 +32,13 @@ public class SalvarModulo {
 	public Modulo getNewModulo() {
 		return newModulo;
 	}
-	
+	public void excluir(Modulo modulo)
+	{
+		log.info("Excluindo Modulo " + modulo.getDescricao());
+		em.remove(em.contains(modulo) ? modulo:em.merge(modulo));
+		moduloEventSrc.fire(modulo);
+		initNewModulo();
+	}
 	public void salvar() throws Exception {
 		log.info("Salvando Modulo" + newModulo.getDescricao());
 		em.persist(newModulo);

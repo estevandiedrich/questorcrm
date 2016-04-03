@@ -56,7 +56,13 @@ public class SalvarProduto {
 		Modulo modulo = em.find(Modulo.class, Long.parseLong(id));
 		newProduto.getModulos().add(modulo);
 	}
-	
+	public void excluir(Produto produto)
+	{
+		log.info("Excluindo Produto " + produto.getDescricao());
+		em.remove(em.contains(produto) ? produto:em.merge(produto));
+		produtoEventSrc.fire(produto);
+		initNewProduto();
+	}
 	public void salvar() throws Exception {
 		log.info("Salvando " + newProduto.getDescricao());
 		if(newProduto.getId() == null)
@@ -64,11 +70,8 @@ public class SalvarProduto {
 			em.persist(newProduto);
 			for(Modulo modulo:newProduto.getModulos())
 			{
-				if(modulo.getId() == null)
-				{
-					modulo.setProduto(newProduto);
-					em.persist(modulo);
-				}
+				modulo.setProduto(newProduto);
+				em.merge(modulo);
 			}
 		}
 		else

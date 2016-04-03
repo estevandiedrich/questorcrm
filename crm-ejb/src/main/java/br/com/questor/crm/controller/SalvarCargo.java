@@ -34,12 +34,18 @@ public class SalvarCargo {
 	}
 	
 	public void salvar() throws Exception {
-		log.info("Salvando Cargo" + newCargo.getDescricao());
+		log.info("Salvando Cargo " + newCargo.getDescricao());
 		em.persist(newCargo);
 		cargoEventSrc.fire(newCargo);
 		initNewCargo();
 	}
-
+	public void excluir(Cargo cargo)
+	{
+		log.info("Excluindo Cargo " + cargo.getDescricao());
+		em.remove(em.contains(cargo) ? cargo:em.merge(cargo));
+		cargoEventSrc.fire(cargo);
+		initNewCargo();
+	}
 	@PostConstruct
 	public void initNewCargo() {
 		newCargo = new Cargo();

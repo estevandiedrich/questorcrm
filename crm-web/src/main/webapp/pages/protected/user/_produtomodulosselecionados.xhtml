@@ -185,7 +185,7 @@
 			<h:outputLabel for="tipoContratacao" value="Tipo contratação:" />
 			<h:panelGroup>
 				<h:inputText id="tipoContratacao"
-					value="#{newProdutoModulosSelecionados.tipoContratacao.id}" />
+					value="#{newProdutoModulosSelecionados.tipoContratacao.id}"/>
 				<h:graphicImage library="images" name="magnifying.png"
 					onclick="javascript:modalTipoContratacao()" />
 				<h:inputText id="tipoContratacao_desc" disabled="true" style="border:none;background:white;"/>
@@ -215,7 +215,7 @@
 			<h:outputLabel for="produto" value="Produto:" />
 			<h:panelGroup>
 				<h:inputText id="produto"
-					value="#{newProdutoModulosSelecionados.produto.id}" />
+					value="#{newProdutoModulosSelecionados.produto.id}"/>
 				<h:graphicImage library="images" name="magnifying.png"
 					onclick="javascript:modalProdutos()" />
 				<h:inputText id="produto_desc" disabled="true" style="border:none;background:white;"/>
@@ -223,7 +223,7 @@
 			<h:outputLabel for="modulo" value="Modulo:" />
 			<h:panelGroup>
 				<h:inputText id="modulo"
-					value="#{newProdutoModulosSelecionados.moduloSelecionado.id}" />
+					value="#{newProdutoModulosSelecionados.moduloSelecionado.id}"/>
 				<h:graphicImage id="imgModulo" library="images"
 					name="magnifying.png">
 					<f:ajax event="click" execute="regOportunidade:produto"
@@ -264,12 +264,15 @@
 				</h:dataTable>
 			</h:panelGrid>
 			<br />
+			<h:outputLabel for="observacao" value="Observação do produto: "/>
+			<h:inputTextarea id="observacao" value="#{newProdutoModulosSelecionados.observacao}" style="width:800px;"/>
+			<br/>
 			<h:commandButton id="salvarProdutoModulosSelecionados"
 				action="#{salvarProdutoModulosSelecionados.adicionar(cotacao)}"
 				value="Adicionar Cotação do Produto" onclick="javascript:limpaCampos()">
 				<f:ajax
 					execute="regOportunidade:tipoContratacao regOportunidade:quantidade"
-					render="regOportunidade:modulo regOportunidade:produto regOportunidade:valorTotal regOportunidade:valorUnitario regOportunidade:tipoContratacao regOportunidade:quantidade regOportunidade:produtosModulosSelecionadosPanelGrid regOportunidade:modulosSelecionadosPanelGrid" />
+					render="regOportunidade:observacao regOportunidade:modulo regOportunidade:produto regOportunidade:valorTotal regOportunidade:valorUnitario regOportunidade:tipoContratacao regOportunidade:quantidade regOportunidade:produtosModulosSelecionadosPanelGrid regOportunidade:modulosSelecionadosPanelGrid" />
 			</h:commandButton>
 		</h:panelGrid>
 		<h2>Produtos e Modulos Selecionados</h2>

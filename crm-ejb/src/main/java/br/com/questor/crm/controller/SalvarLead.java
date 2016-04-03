@@ -29,6 +29,7 @@ import br.com.questor.crm.data.EmailListProducer;
 import br.com.questor.crm.data.GrupoUsuariosLeadListProducer;
 import br.com.questor.crm.data.GrupoUsuariosPrincipalsListProducer;
 import br.com.questor.crm.data.NotaListProducer;
+import br.com.questor.crm.data.OportunidadeListProducer;
 import br.com.questor.crm.model.Anexo;
 import br.com.questor.crm.model.AtividadeAgenda;
 import br.com.questor.crm.model.Cidade;
@@ -40,6 +41,7 @@ import br.com.questor.crm.model.GrupoUsuariosPrincipals;
 import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
 import br.com.questor.crm.model.Nota;
+import br.com.questor.crm.model.Oportunidade;
 import br.com.questor.crm.model.Principals;
 import br.com.questor.crm.model.UF;
 
@@ -85,18 +87,38 @@ public class SalvarLead implements Serializable {
 	
 	@Inject
 	private CidadeListProducer cidadeListProducer;
+	
+	@Inject
+	private OportunidadeListProducer oportunidadesListProducer;
 
 	@Inject
 	private Event<Lead> leadEventSrc;
 
 	private Lead newLead;
+	
+	private List<Oportunidade> oportunidades = new ArrayList<>();
+	
+	public List<Oportunidade> getOportunidades()
+	{
+		if(newLead != null && newLead.getId() != null)
+		{
+			oportunidades = oportunidadesListProducer.retrieveAllOportunidadesByLeadOrderedByNome(newLead);
+		}
+		return oportunidades;
+	}
 
 	@Produces
 	@Named
 	public Lead getNewLead() {
 		return newLead;
 	}
-	
+	public void excluir(Lead lead)
+	{
+		log.info("Excluindo Lead " + lead.getNome());
+		em.remove(em.contains(lead) ? lead:em.merge(lead));
+		leadEventSrc.fire(lead);
+		initNewLead();
+	}
 	public void setUF()
 	{
 		if(newLead.getUf().getId() != null)
@@ -183,6 +205,11 @@ public class SalvarLead implements Serializable {
 			grupoUsuariosLead.setGrupoUsuarios(grupoUsuarios);
 			newLead.getGruposUsuarios().add(grupoUsuariosLead);
 		}
+	}
+	
+	public String listagem()
+	{
+		return "/pages/protected/user/listagemleads?faces-redirect=true";
 	}
 
 	public String editar(Lead lead) {

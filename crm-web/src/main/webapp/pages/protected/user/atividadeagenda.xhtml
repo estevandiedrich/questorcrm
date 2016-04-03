@@ -187,7 +187,7 @@
 			<h:panelGrid id="compromissosPanelGrid">
 				<h:outputLabel for="lead" value="Lead:" />
 				<h:panelGroup>
-					<h:inputText id="lead" value="#{newAtividadeAgenda.lead.id}" />
+					<h:inputText id="lead" value="#{newAtividadeAgenda.lead.id}"/>
 					<h:graphicImage id="leadImg" library="images" name="magnifying.png"
 						onclick="javascript:modalLead()"/>
 					<h:inputText id="lead_desc" disabled="true" style="border:none;background:white;"/>						
@@ -200,7 +200,7 @@
 					value="Participantes externos:" />
 				<h:panelGroup>
 					<h:inputText id="participantesExternos"
-						value="#{newAtividadeAgenda.participanteExternoSelecionado.id}" />
+						value="#{newAtividadeAgenda.participanteExternoSelecionado.id}"/>
 					<h:graphicImage id="participantesExternosImg" library="images"
 						name="magnifying.png">
 						<f:ajax event="click" execute="regAtividadeAgenda:lead"
@@ -255,7 +255,7 @@
 					value="Participantes internos:" />
 				<h:panelGroup>
 					<h:inputText id="participantesInternos"
-						value="#{newAtividadeAgenda.participanteInternoSelecionado.id}" />
+						value="#{newAtividadeAgenda.participanteInternoSelecionado.id}"/>
 					<h:graphicImage id="participantesInternosImg" library="images"
 						name="magnifying.png" onclick="javascript:modalParticipantesInternos()"/>
 					<h:inputText id="participantesInternos_desc" disabled="true" style="border:none;background:white;"/>
@@ -324,12 +324,12 @@
 			<h1>Compromissos</h1>
 			<h:panelGrid id="compromissosAgendadosPanelGrid">
 				<h:panelGroup
-					rendered="#{empty newAtividadeAgenda.lead.atividadesAgenda}">
+					rendered="#{empty atividadeAgendaQueParticipo}">
 					<em>Nenhum compromisso registrado.</em>
 				</h:panelGroup>
 				<h:dataTable id="atividadeAgendaDataTable" var="_atividadeAgenda"
-					value="#{newAtividadeAgenda.lead.atividadesAgenda}"
-					rendered="#{not empty newAtividadeAgenda.lead.atividadesAgenda}"
+					value="#{atividadeAgendaQueParticipo}"
+					rendered="#{not empty atividadeAgendaQueParticipo}"
 					styleClass="table" width="100%" style="display:inline-table;"
 					headerClass="table-header"
 					rowClasses="table-odd-row,table-even-row">
@@ -460,14 +460,6 @@
 										<f:facet name="header"></f:facet>
 										<h:outputLink value="Excluir" />
 									</h:column>
-									<h:column>
-										<f:facet name="header"></f:facet>
-										<h:form>
-											<h:commandLink value="Editar"
-												action="#{salvarPrincipals.editar(_participanteInterno)}">
-											</h:commandLink>
-										</h:form>
-									</h:column>
 								</h:dataTable>
 							</h:panelGrid>
 						</div>
@@ -503,20 +495,6 @@
 								<h:column>
 									<f:facet name="header">Nome</f:facet>
 									<h:outputText value="#{_lead.nome}" />
-								</h:column>
-								<h:column>
-									<f:facet name="header"></f:facet>
-									<h:form>
-										<h:commandLink value="Editar"
-											action="#{salvarLead.editar(_lead)}" />
-									</h:form>
-								</h:column>
-								<h:column>
-									<f:facet name="header"></f:facet>
-									<h:outputLink
-										value="/crm/pages/protected/user/emailleads.xhtml">
-										<h:outputText value="Email" />
-									</h:outputLink>
 								</h:column>
 							</h:dataTable>
 						</div>

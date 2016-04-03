@@ -11,11 +11,12 @@
 	        if (data.status == "success") {debugger
 	        	if(data.source.id == "regEnvioEmails:contatoImg"){
 		        	modalContatosDataTable();	        		
-		        	emailsEnviados();
 	        	} else if(data.source.id == "regEnvioEmails:leadImg") {
 		        	leadsDataTable();
 	        	} else if(data.source.id == "regEnvioEmails:adicionarContato") {
 		        	contatosDataTable();
+	        	} else if(data.source.id == "regEnvioEmails:enviar"){
+		        	emailsEnviados();
 	        	}
 	        }
 	    })
@@ -124,7 +125,7 @@
 				<h:inputText id="lead_desc" disabled="true" style="border:none;background:white;"/>						
 			</h:panelGroup>
            <h:outputLabel for="from" value="De:" />
-           <h:inputText id="from" value="#{loginBean.principalsFromDB.email}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
+           <h:inputText id="from" value="#{loginBean.principalsFromDB.principalID}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
            <h:message for="from" errorClass="invalid" />
            
            <br />
@@ -132,10 +133,10 @@
 				value="Contatos:" />
 			<h:panelGroup>
 				<h:inputText id="contato"
-					value="#{newEmail.contatoSelecionado.id}" />
+					value="#{newEmail.contatoSelecionado.id}"/>
 					<h:graphicImage id="contatoImg" library="images"
 						name="magnifying.png" onclick="javascript:modalContato()">
-						<f:ajax event="click" execute="regEnvioEmails:lead" render="contatosLead:modalContatosPanelGrid regEnvioEmails:emailsEnviadosPanelGrid" listener="#{salvarEmail.setLead}"/>
+						<f:ajax event="click" execute="regEnvioEmails:lead" render="contatosLead:modalContatosPanelGrid" listener="#{salvarEmail.setLead}"/>
 					</h:graphicImage>
 				<h:inputText id="contato_desc" disabled="true" style="border:none;background:white;"/>
 			</h:panelGroup>
@@ -185,7 +186,7 @@
            		<h:inputText id="subject" value="#{newEmail.subject}" />
            	<h:message for="subject" errorClass="invalid" />
            	<h:outputLabel for="text" value="Texto:" />
-       		<h:inputTextarea id="text" value="#{newEmail.text}" style="width:500px;height:100px;"/>
+       		<h:inputTextarea id="text" value="#{newEmail.text}" style="width:800px;height:100px;"/>
            	<h:message for="text" errorClass="invalid" />
          </h:panelGrid>
          <ui:include src="/pages/protected/user/anexosemail.xhtml">
@@ -199,11 +200,11 @@
 
       <h2>Emails enviados</h2>      
       <h:panelGrid id="emailsEnviadosPanelGrid">
-	      <h:panelGroup rendered="#{empty newEmail.lead.emails}">
+	      <h:panelGroup rendered="#{empty emailsEnviadosPorMim}">
 	         <em>Nenhum email enviado.</em>
 	      </h:panelGroup>
-	      <h:dataTable id="emailsEnviadosDataTable" var="_email" value="#{newEmail.lead.emails}"
-			rendered="#{not empty newEmail.lead.emails}"
+	      <h:dataTable id="emailsEnviadosDataTable" var="_email" value="#{emailsEnviadosPorMim}"
+			rendered="#{not empty emailsEnviadosPorMim}"
 			styleClass="table"
 			width="100%"
 			style="display:inline-table"

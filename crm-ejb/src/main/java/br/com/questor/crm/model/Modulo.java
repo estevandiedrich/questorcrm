@@ -29,7 +29,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries(value={
 		@NamedQuery(name = "Modulo.findByProduto",query = "SELECT m FROM Modulo m WHERE m.produto.id = :produto ORDER BY m.descricao"),
 		@NamedQuery(name = "Modulo.findAll",query = "SELECT m FROM Modulo m ORDER BY m.descricao"),
-		@NamedQuery(name = "Modulo.findAllComProduto",query = "SELECT m FROM Modulo m JOIN FETCH m.produto ORDER BY m.descricao")
+		@NamedQuery(name = "Modulo.findAllComProduto",query = "SELECT m FROM Modulo m LEFT JOIN FETCH m.produto ORDER BY m.descricao"),
+		@NamedQuery(name = "Modulo.findDisponiveis",query = "SELECT m FROM Modulo m WHERE m.produto IS NULL ORDER BY m.descricao")
 		}
 )
 @SequenceGenerator(name="MODULO_SEQUENCE", sequenceName="MODULO_SEQUENCE", allocationSize=1, initialValue=1)

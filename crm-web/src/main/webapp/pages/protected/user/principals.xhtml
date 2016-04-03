@@ -40,18 +40,15 @@
 						cache="false" width="300px" height="200px" rendered="#{salvarPrincipals.assinaturaCarregada()}"/>
 				</h:panelGrid>
 				<h:panelGrid>
-					<h:outputLabel for="usuario" value="Nome de Usuário:" />
-					<h:inputText id="usuario" value="#{newPrincipal.principalID}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
-					<h:message for="usuario" errorClass="invalid" />
+					<h:outputLabel for="email" value="Email:" />
+					<h:inputText id="email" value="#{newPrincipal.principalID}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
+					<h:message for="email" errorClass="invalid" />
 					<h:outputLabel for="senha" value="Senha:" />
 					<h:inputSecret id="senha" value="#{newPrincipal.password}"/>
 					<h:message for="senha" errorClass="invalid" />
 					<h:outputLabel for="nome" value="Nome:" />
 					<h:inputText id="nome" value="#{newPrincipal.nome}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
 					<h:message for="nome" errorClass="invalid" />
-					<h:outputLabel for="email" value="Email:" />
-					<h:inputText id="email" value="#{newPrincipal.email}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
-					<h:message for="email" errorClass="invalid" />
 					<h:outputLabel for="role" value="Nivel de acesso:" />
 					<h:selectOneMenu id="role" value="#{newPrincipal.role.role}" disabled="#{!loginBean.isCallerInRole('ADMIN')}">
 						<f:selectItem itemValue="USER" itemLabel="Usuário" />
@@ -82,11 +79,11 @@
 					rowClasses="table-odd-row,table-even-row">
 					<h:column>
 						<f:facet name="header">Id</f:facet>
-	                #{_grupoUsuarios.grupoUsuarios.id}
+	                	<h:outputText value="#{_grupoUsuarios.grupoUsuarios.id}"/>
 	            </h:column>
 					<h:column>
 						<f:facet name="header">Descrição</f:facet>
-	                #{_grupoUsuarios.grupoUsuarios.descricao}
+	                	<h:outputText value="#{_grupoUsuarios.grupoUsuarios.descricao}"/>
 	            </h:column>
 				</h:dataTable>
 			</h:panelGrid>

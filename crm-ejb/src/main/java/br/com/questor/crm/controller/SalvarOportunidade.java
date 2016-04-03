@@ -58,6 +58,19 @@ public class SalvarOportunidade {
 		initNewOportunidade();
 		return "/pages/protected/user/oportunidade?faces-redirect=true";
 	}
+	public String listagem()
+	{
+		return "/pages/protected/user/listagemoportunidades?faces-redirect=true";
+	}
+	public String editar(Oportunidade oportunidade)
+	{
+		setOportunidade(oportunidade);
+		return "/pages/protected/user/oportunidade?faces-redirect=true";
+	}
+	public void enviarProposta()
+	{
+		
+	}
 	public void adicionarContato()
 	{
 		if(newOportunidade.getContatoSelecionado() != null && newOportunidade.getContatoSelecionado().getId() != null)

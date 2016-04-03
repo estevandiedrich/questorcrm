@@ -26,11 +26,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "email",indexes = {
 		@Index(columnList = "id", name = "email_id_idx"),
-		@Index(columnList = "lead_id", name = "email_lead_id_idx")
+		@Index(columnList = "lead_id", name = "email_lead_id_idx"),
+		@Index(columnList = "emailFrom", name = "emailFrom_idx")
 		}
 )
 @XmlRootElement
-@NamedQueries(value = {@NamedQuery(name = "Email.findByLead", query = "SELECT e FROM Email e WHERE e.lead.id = :lead")})
+@NamedQueries(value = {
+		@NamedQuery(name = "Email.findByLead", query = "SELECT e FROM Email e WHERE e.lead.id = :lead"),
+		@NamedQuery(name = "Email.findByEmail", query = "SELECT DISTINCT e FROM Email e JOIN FETCH e.emailTo WHERE e.emailFrom = :email")
+		}
+)
 @SequenceGenerator(name="EMAIL_SEQUENCE", sequenceName="EMAIL_SEQUENCE", allocationSize=1, initialValue=1)
 public class Email implements Serializable{
 	public Email()

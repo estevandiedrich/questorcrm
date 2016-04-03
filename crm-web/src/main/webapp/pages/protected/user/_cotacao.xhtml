@@ -52,19 +52,15 @@
 				var table3 = $('#regOportunidade\\:produtoCotacaoDataTable')
 						.DataTable();
 
-				$('#regOportunidade\\:produtoCotacaoDataTable tbody')
-						.on(
-								'click',
-								'tr',
-								function() {
-									if ($(this).hasClass('selected')) {
-										$(this).removeClass('selected');
-									} else {
-										table3.$('tr.selected').removeClass(
-												'selected');
-										$(this).addClass('selected');
-									}
-								});
+				$('#regOportunidade\\:produtoCotacaoDataTable tbody').on('click','tr',function() {
+					if ($(this).hasClass('selected')) {
+						$(this).removeClass('selected');
+					} else {
+						table3.$('tr.selected').removeClass(
+								'selected');
+						$(this).addClass('selected');
+					}
+				});
 			}
 			function modalProdutosCotacao() {
 				$('#myModalProdutosCotacao').appendTo("body").modal('show');
@@ -87,7 +83,7 @@
 				action="#{salvarCotacao.adicionarCotacao(oportunidade)}"
 				value="Adicionar Cotação">
 				<f:ajax execute="regOportunidade:descricaoCotacao"
-					render="regOportunidade:propostaPanelGrid" />
+					render="regOportunidade:propostaPanelGrid regOportunidade:valorTotalServicos regOportunidade:valorTotalProdutos" />
 			</h:commandButton>
 		</h:panelGrid>
 

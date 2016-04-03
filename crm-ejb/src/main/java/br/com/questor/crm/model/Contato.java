@@ -17,6 +17,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 @Entity
 @Table(name = "contato",indexes = {
 		@Index(columnList = "id", name = "contato_id_idx"),
@@ -45,7 +47,7 @@ public class Contato implements Serializable{
 	
 	@NotNull
 	private String nome;
-	
+	@NotNull
 	private String email;
 	
 	private String telefone;

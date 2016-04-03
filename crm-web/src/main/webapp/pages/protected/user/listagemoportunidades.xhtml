@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+		<script type="text/javascript">
+		$(window).load(function() {
+			jsf.ajax.addOnEvent(function(data) {
+				if (data.status == "success") {
+					debugger
+					myModalProdutosCotacao();
+					cotacoesOportunidadeDataTable();
+					modulosDoProdutoDataTable();
+				}
+			})
+		});		
+		$(document).ready(function() {
+			var table = $('#listagemOportunidades\\:oportunidadesDataTable').DataTable();
+			$('#listagemOportunidades\\:oportunidadesDataTable tbody').on('click','tr',
+			function() {
+				if ($(this).hasClass('selected')) {
+					$(this).removeClass('selected');
+				} else {
+					table.$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+				}
+			});
+		});
+		
+		function modalCotacoesOportunidade() {
+			$('#myModalCotacoesOportunidade').modal('show');
+		}
+		function modalProdutosCotacao() {
+			$('#myModalProdutosCotacao').appendTo("body").modal('show');
+		}
+		function modalModulosDoProduto() {
+			$('#myModalModulosDoProduto').appendTo("body").modal('show');
+		}
+		function modulosDoProdutoDataTable() {
+			var table3 = $('#listagemOportunidades\\:modulosDoProdutoDataTable')
+					.DataTable();
+			$('#listagemOportunidades\\:modulosDoProdutoDataTable tbody')
+					.on(
+							'click',
+							'tr',
+							function() {
+								if ($(this).hasClass('selected')) {
+									$(this).removeClass('selected');
+								} else {
+									table3.$('tr.selected').removeClass(
+											'selected');
+									$(this).addClass('selected');
+								}
+							});
+		}
+		function myModalProdutosCotacao() {
+			var table3 = $('#listagemOportunidades\\:produtoCotacaoDataTable')
+					.DataTable();
+
+			$('#listagemOportunidades\\:produtoCotacaoDataTable tbody').on('click','tr',function() {
+				if ($(this).hasClass('selected')) {
+					$(this).removeClass('selected');
+				} else {
+					table3.$('tr.selected').removeClass(
+							'selected');
+					$(this).addClass('selected');
+				}
+			});
+		}
+		function cotacoesOportunidadeDataTable() {
+			var table = $(
+					'#listagemOportunidades\\:cotacoesOportunidadeDataTable')
+					.DataTable();
+
+			$('#listagemOportunidades\\:cotacoesOportunidadeDataTable tbody').on(
+					'click', 'tr', function() {
+						if ($(this).hasClass('selected')) {
+							$(this).removeClass('selected');
+						} else {
+							table.$('tr.selected').removeClass('selected');
+							$(this).addClass('selected');
+						}
+					});
+		}
+		</script>
+		<h:form id="listagemOportunidades">
+			<h2>Oportunidades</h2>
+			<h:panelGroup rendered="#{empty oportunidades}">
+				<em>Nenhuma oportunidade registrada.</em>
+			</h:panelGroup>
+			<h:dataTable id="oportunidadesDataTable" var="_oportunidade"
+				value="#{oportunidades}" rendered="#{not empty oportunidades}"
+				styleClass="table" headerClass="table-header"
+				rowClasses="table-odd-row,table-even-row">
+				<h:column>
+					<f:facet name="header">Id</f:facet>
+					<h:outputText value="#{_oportunidade.id}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">Descrição</f:facet>
+					<h:outputText value="#{_oportunidade.descricao}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">Conta</f:facet>
+					<h:outputText value="#{_oportunidade.conta.nome}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
+					<h:commandLink value="Editar" action="#{salvarOportunidade.editar(_oportunidade)}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
+					<h:commandLink id="cotacoesOportunidadeCommandLink"
+						value="Cotações"
+						action="#{salvarOportunidade.setOportunidade(_oportunidade)}"
+						onclick="javascript:modalCotacoesOportunidade()">
+						<f:ajax render="listagemOportunidades:cotacoesOportunidadePanelGrid" />
+					</h:commandLink>
+				</h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
+					<h:commandLink value="Enviar Proposta" action="#{salvarOportunidade.enviarProposta(_oportunidade)}" />
+				</h:column>
+			</h:dataTable>
+			<br/>
+			<h:commandButton id="nova" value="Nova Oportunidade" action="#{salvarOportunidade.novo}"/>
+			
+			<!-- Modal -->
+			<div id="myModalCotacoesOportunidade" class="modal fade"
+				role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Cotações oportunidade</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGrid id="cotacoesOportunidadePanelGrid">
+								<h:panelGroup rendered="#{empty newOportunidade.cotacoes}">
+									<em>Nenhuma cotação.</em>
+								</h:panelGroup>
+								<h:dataTable id="cotacoesOportunidadeDataTable" var="_cotacao"
+									value="#{newOportunidade.cotacoes}"
+									rendered="#{not empty newOportunidade.cotacoes}"
+									styleClass="table" width="100%" style="display:inline-table;"
+									headerClass="table-header"
+									rowClasses="table-odd-row,table-even-row">
+									<h:column>
+										<f:facet name="header">Id</f:facet>
+										<h:outputText value="#{_cotacao.id}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Descricao</f:facet>
+										<h:outputText value="#{_cotacao.descricao}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header"></f:facet>
+										<h:commandLink id="produtosCotacaoCommandLink"
+											value="Produtos"
+											action="#{salvarCotacao.setProdutoModulosSelecionados(_cotacao)}"
+											onclick="javascript:modalProdutosCotacao()">
+											<f:ajax render="listagemOportunidades:produtosPanelGrid" />
+										</h:commandLink>
+									</h:column>
+								</h:dataTable>
+							</h:panelGrid>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal -->
+			<div id="myModalProdutosCotacao" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content" style="display: inline-block;">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Produtos</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGrid id="produtosPanelGrid">
+								<h:panelGroup
+									rendered="#{empty newCotacao.produtosModulosSelecionados}">
+									<em>Nenhum produto registrado.</em>
+								</h:panelGroup>
+								<h:dataTable id="produtoCotacaoDataTable"
+									var="_produtoModulosSelecionados"
+									value="#{newCotacao.produtosModulosSelecionados}"
+									rendered="#{not empty newCotacao.produtosModulosSelecionados}"
+									styleClass="table" headerClass="table-header"
+									rowClasses="table-odd-row,table-even-row">
+									<h:column>
+										<f:facet name="header">Id</f:facet>
+										<h:outputText value="#{_produtoModulosSelecionados.produto.id}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Descrição</f:facet>
+										<h:outputText
+											value="#{_produtoModulosSelecionados.produto.descricao}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Tipo contratação</f:facet>
+										<h:outputText
+											value="#{_produtoModulosSelecionados.tipoContratacao.descricao}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Quantidade</f:facet>
+										<h:outputText value="#{_produtoModulosSelecionados.quantidade}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Valor unitatio</f:facet>
+										<h:outputText
+											value="#{_produtoModulosSelecionados.valorUnitario}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Valor total</f:facet>
+										<h:outputText value="#{_produtoModulosSelecionados.valorTotal}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header"></f:facet>
+										<h:commandLink id="modulosDoProdutoCommandLink" value="Modulos"
+											action="#{salvarProdutoModulosSelecionados.setProdutoModulosSelecionados(_produtoModulosSelecionados)}"
+											onclick="javascript:modalModulosDoProduto()">
+											<f:ajax render="listagemOportunidades:modulosDoProdutoPanelGrid" />
+										</h:commandLink>
+									</h:column>
+								</h:dataTable>
+							</h:panelGrid>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal -->
+			<div id="myModalModulosDoProduto" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Módulos do produto</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGrid id="modulosDoProdutoPanelGrid">
+								<h:panelGroup
+									rendered="#{empty newProdutoModulosSelecionados.modulosSelecionados}">
+									<em>Nenhum módulo registrado.</em>
+								</h:panelGroup>
+								<h:dataTable id="modulosDoProdutoDataTable" var="_modulo"
+									value="#{newProdutoModulosSelecionados.modulosSelecionados}"
+									rendered="#{not empty newProdutoModulosSelecionados.modulosSelecionados}"
+									width="100%" style="display:inline-table;" styleClass="table"
+									headerClass="table-header"
+									rowClasses="table-odd-row,table-even-row">
+									<h:column>
+										<f:facet name="header">Id</f:facet>
+										<h:outputText value="#{_modulo.modulo.id}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Descrição</f:facet>
+										<h:outputText value="#{_modulo.modulo.descricao}" />
+									</h:column>
+								</h:dataTable>
+							</h:panelGrid>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

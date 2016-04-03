@@ -3,20 +3,22 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
 	template="/WEB-INF/templates/default.xhtml">
 	<ui:define name="content">
-		<h1>Welcome to JBoss AS 7!</h1>
-
-		<p>You have successfully deployed a Java EE 6 web application on
-			JBoss AS 7.</p>
+	<h:messages id="erros" errorClass="invalid"/>
 		<h:form>
 			<h:panelGrid>
 		    	<h:outputLabel for="usernameInput" value="Usuário:"/>
-		    	<h:inputText id="usernameInput" value="#{loginBean.username}" required="true" />
+		    	<h:inputText id="usernameInput" value="#{loginBean.username}" required="true" requiredMessage="Email é obrigatório"/>
+		    	<h:message for="usernameInput" errorClass="invalid" />
 		    	<h:outputLabel for="passwordInput" value="Senha:"/>
-		    	<h:inputSecret id="passwordInput" value="#{loginBean.password}" required="true" />
+		    	<h:inputSecret id="passwordInput" value="#{loginBean.password}" required="true" requiredMessage="Senha é obrigatória" />
+		    	<h:message for="passwordInput" errorClass="invalid" />
 		    	<br/>
-		    	<h:commandButton value="Login" action="#{loginBean.login}" />
+		    	<h:commandButton value="Login" action="#{loginBean.login}"/>
+		    	<br/>
+		    	<h:commandLink value="Esqueci minha senha" action="#{salvarEmail.esqueceuSenha(loginBean.username)}"/>
 		    </h:panelGrid>
 		</h:form>
 	</ui:define>

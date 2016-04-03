@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <artifactId>crm</artifactId>
+      <groupId>br.com.questor</groupId>
+      <version>1.0-SNAPSHOT</version>
+   </parent>
+	<properties>
+	    <jboss-as.deploy.hostname>localhost</jboss-as.deploy.hostname>  <!-- Where to deploy. -->
+	    <jboss-as.deploy.user>estevan</jboss-as.deploy.user>
+	    <jboss-as.deploy.pass>Estevan@123</jboss-as.deploy.pass>
+	</properties>
+   <artifactId>crm-ear</artifactId>
+   <packaging>ear</packaging>
+
+   <name>CRM EAR module</name>
+
+   <dependencies>
+
+      <!-- Depend on the ejb module and war so that we can package them -->
+      <dependency>
+         <groupId>br.com.questor</groupId>
+         <artifactId>crm-web</artifactId>
+         <type>war</type>
+      </dependency>
+      <dependency>
+         <groupId>br.com.questor</groupId>
+         <artifactId>crm-ejb</artifactId>
+         <type>ejb</type>
+      </dependency>
+   </dependencies>
+
+   <build>
+      <finalName>crm</finalName>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-ear-plugin</artifactId>
+            <version>2.6</version>
+            <configuration>
+               <!-- Tell Maven we are using Java EE 6 -->
+               <version>6</version>
+               <!-- Use Java EE ear libraries as needed. Java EE ear libraries 
+                  are in easy way to package any libraries needed in the ear, and automatically 
+                  have any modules (EJB-JARs and WARs) use them -->
+               <defaultLibBundleDir>lib</defaultLibBundleDir>
+               <modules>
+                  <!-- Register our War as a web module, and set the context 
+                     root -->
+                  <webModule>
+                     <groupId>br.com.questor</groupId>
+                     <artifactId>crm-web</artifactId>
+                     <!-- Define the context root for the webapp -->
+                     <contextRoot>/crm</contextRoot>
+                  </webModule>
+               </modules>
+            </configuration>
+         </plugin>
+         <!-- The JBoss AS plugin deploys your ear to a local JBoss AS container -->
+         <!-- Due to Maven's lack of intelligence with EARs we need to configure 
+            the jboss-as maven plugin to skip deployment for all modules. We then enable 
+            it specifically in the ear module. -->
+         <plugin>
+            <groupId>org.wildfly.plugins</groupId>
+            <artifactId>wildfly-maven-plugin</artifactId>
+            <version>1.1.0.Alpha6</version>
+            <executions>
+                <execution>
+                    <phase>install</phase>
+                    <goals>
+                        <goal>deploy</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+            	<argLine>-Xmx1024m</argLine>
+               <skip>false</skip>
+                <force>true</force>
+                <hostname>${jboss-as.deploy.hostname}</hostname>
+                <username>${jboss-as.deploy.user}</username>
+                <password>${jboss-as.deploy.pass.prod}</password>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+</project>

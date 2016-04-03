@@ -22,8 +22,10 @@ public class FileUploadValidator implements Validator {
 		Part file = (Part) value;
 		if(file != null)
 		{
-			if (file.getSize() > 1024) {
-				msgs.add(new FacesMessage("Imagem muito grande"));
+			if (file.getSize() > 1024000) {
+				FacesMessage msg = new FacesMessage("Imagem não pode exceder 1MB");
+				msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+				msgs.add(msg);
 			}
 	//		if (!"image/jpeg".equals(file.getContentType())) {
 	//			msgs.add(new FacesMessage("Este arquivo não é uma imagem"));

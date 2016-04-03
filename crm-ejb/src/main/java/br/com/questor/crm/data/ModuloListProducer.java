@@ -33,29 +33,10 @@ public class ModuloListProducer {
 	}
 	@PostConstruct
 	public void retrieveAllModulosOrderedByNome() {
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Modulo> criteria = cb.createQuery(Modulo.class);
-//		Root<Modulo> modulo = criteria.from(Modulo.class);
-//		criteria.select(modulo).orderBy(cb.asc(modulo.get("descricao")));
-//		modulos = em.createQuery(criteria).getResultList();
-//		for(Modulo m:modulos)
-//		{
-//			if(m.getProduto() != null)
-//			{
-//				Produto p = em.find(Produto.class, m.getProduto().getId());
-//				m.setProduto(p);
-//			}
-//		}
 		modulos = em.createNamedQuery("Modulo.findAll").getResultList();
 	}
 	
 	public List<Modulo> retrieveAllModulosByProdutoOrderedByNome(Produto produto) {
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Modulo> criteria = cb.createQuery(Modulo.class);
-//		Root<Modulo> modulo = criteria.from(Modulo.class);
-//		criteria.select(modulo).where(cb.equal(modulo.get("produto"), produto)).orderBy(cb.asc(modulo.get("descricao")));
-//		modulos = em.createQuery(criteria).getResultList();
-//		return modulos;
 		return em.createNamedQuery("Modulo.findByProduto").setParameter("produto", produto.getId()).getResultList();
 	}
 }

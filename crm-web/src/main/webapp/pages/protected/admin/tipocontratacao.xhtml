@@ -44,11 +44,11 @@
 		 rowClasses="table-odd-row,table-even-row">
          <h:column>
             <f:facet name="header">Id</f:facet>
-                #{_tipoContratacao.id}
+            <h:outputText value="#{_tipoContratacao.id}"/>
             </h:column>
          <h:column>
             <f:facet name="header">Descrição</f:facet>
-                #{_tipoContratacao.descricao}
+            <h:outputText value="#{_tipoContratacao.descricao}"/>
             </h:column>                
       </h:dataTable>
    </ui:define>

@@ -24,6 +24,8 @@ import javax.servlet.http.Part;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import br.com.questor.crm.enums.LeadEnum;
 
 @Entity
@@ -50,7 +52,7 @@ public class Lead implements Serializable {
 	public Lead()
 	{
 		this.leadPai = null;
-		this.statusLead = LeadEnum.QUALIFICADA;
+		this.statusLead = LeadEnum.EM_AVALIACAO;
 		this.dataCadastro = new Date();
 		this.gruposUsuarios = new ArrayList<GrupoUsuariosLead>();
 		this.grupoUsuariosSelecionado = new GrupoUsuarios();
@@ -75,19 +77,22 @@ public class Lead implements Serializable {
 	private Long id;
 	
 	@NotNull
+	@NotEmpty
 	private String nome;
 	
 	private LeadEnum statusLead;
 	
-	@OneToMany(mappedBy = "lead", targetEntity = Contato.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	@OneToMany(mappedBy = "lead", targetEntity = Contato.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<Contato> contatos;
 	
-	@OneToMany(mappedBy = "lead", targetEntity = Nota.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	@OneToMany(mappedBy = "lead", targetEntity = Nota.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<Nota> notas;
 	
 	private String numero;
 	
-	private String rua;
+	private String logradouro;
+	
+	private String endereco;
 	
 	private String bairro;
 	
@@ -108,7 +113,7 @@ public class Lead implements Serializable {
 	@Transient
 	private AtividadeAgenda newAtividadeAgenda;
 
-	@OneToMany(mappedBy = "lead", targetEntity = AtividadeAgenda.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	@OneToMany(mappedBy = "lead", targetEntity = AtividadeAgenda.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<AtividadeAgenda> atividadesAgenda;
 	
 	private Date dataCadastro;
@@ -119,13 +124,13 @@ public class Lead implements Serializable {
 	
 //	@ManyToMany
 //    @JoinTable(name="grupousuarios_lead", joinColumns={@JoinColumn(name="lead_id")}, inverseJoinColumns={@JoinColumn(name="grupousuarios_id")})
-	@OneToMany(mappedBy = "lead", targetEntity = GrupoUsuariosLead.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	@OneToMany(mappedBy = "lead", targetEntity = GrupoUsuariosLead.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<GrupoUsuariosLead> gruposUsuarios;
 	
-	@OneToMany(mappedBy = "lead", targetEntity = Email.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	@OneToMany(mappedBy = "lead", targetEntity = Email.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<Email> emails; 
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	  @JoinColumn(name = "imagem_id")
 	private Imagem imagem;
 	
@@ -135,12 +140,16 @@ public class Lead implements Serializable {
 	@Transient
 	private List<Cidade> cidadesPorUf;
 	
-	@OneToMany(mappedBy = "lead", targetEntity = Anexo.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	@OneToMany(mappedBy = "lead", targetEntity = Anexo.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<Anexo> anexos;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "principals_id")
 	private Principals usuarioQueCadastrou;
+	
+	private int tipoDocumento;
+	
+	private String documento;
 	
 	public LeadEnum[] getStatusLeadValues()
 	{
@@ -283,14 +292,6 @@ public class Lead implements Serializable {
 		this.numero = numero;
 	}
 
-	public String getRua() {
-		return rua;
-	}
-
-	public void setRua(String rua) {
-		this.rua = rua;
-	}
-
 	public String getBairro() {
 		return bairro;
 	}
@@ -337,5 +338,37 @@ public class Lead implements Serializable {
 
 	public void setNotas(List<Nota> notas) {
 		this.notas = notas;
+	}
+
+	public int getTipoDocumento() {
+		return tipoDocumento;
+	}
+
+	public void setTipoDocumento(int tipoDocumento) {
+		this.tipoDocumento = tipoDocumento;
+	}
+
+	public String getDocumento() {
+		return documento;
+	}
+
+	public void setDocumento(String documento) {
+		this.documento = documento;
+	}
+
+	public String getLogradouro() {
+		return logradouro;
+	}
+
+	public void setLogradouro(String logradouro) {
+		this.logradouro = logradouro;
+	}
+
+	public String getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
 	}
 }

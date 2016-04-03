@@ -11,6 +11,8 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -22,6 +24,7 @@ import org.primefaces.model.StreamedContent;
 
 import br.com.questor.crm.data.GrupoUsuariosPrincipalsListProducer;
 import br.com.questor.crm.data.RolesListProducer;
+import br.com.questor.crm.model.Cargo;
 import br.com.questor.crm.model.GrupoUsuarios;
 import br.com.questor.crm.model.GrupoUsuariosPrincipals;
 import br.com.questor.crm.model.ImagePart;
@@ -56,6 +59,9 @@ public class SalvarPrincipals implements Serializable {
 	@Inject
 	private RolesListProducer rolesListProducer;
 	
+	@Inject
+	private SalvarEmail salvarEmail;
+	
 	@Produces
 	@Named
 	public Principals getNewPrincipal() {
@@ -77,9 +83,23 @@ public class SalvarPrincipals implements Serializable {
 			grupoUsuariosPrincipals.setPrincipals(newPrincipal);
 			grupoUsuariosPrincipals.setGrupoUsuarios(grupoUsuarios);
 			newPrincipal.getGruposUsuarios().add(grupoUsuariosPrincipals);
+			if(newPrincipal.getId() != null)
+			{
+				for(GrupoUsuariosPrincipals gu:newPrincipal.getGruposUsuarios())
+				{
+					gu.setPrincipals(newPrincipal);
+					em.persist(gu);
+				}
+			}
 		}
 	}
-
+	public void excluir(Principals principal)
+	{
+		log.info("Excluindo Principal " + principal.getPrincipalID());
+		em.remove(em.contains(principal) ? principal:em.merge(principal));
+		principalsEventSrc.fire(principal);
+		initNewPrincipal();
+	}
 	public void salvar() throws Exception {
 		log.info("Salvando Principal" + newPrincipal.getPrincipalID());
 		if(newPrincipal.getImagemPart() != null)
@@ -92,6 +112,10 @@ public class SalvarPrincipals implements Serializable {
 			newPrincipal.setImagem(imagem);
 			em.persist(imagem);
 		}
+		else
+		{
+			newPrincipal.setImagem(null);
+		}
 		if(newPrincipal.getAssinaturaPart() != null)
 		{
 			Imagem assinatura = new Imagem();
@@ -102,19 +126,20 @@ public class SalvarPrincipals implements Serializable {
 			newPrincipal.setAssinaturaEmail(assinatura);
 			em.persist(assinatura);
 		}
-		if(newPrincipal.getId() == null)
+		else
 		{
-			if(newPrincipal.getRole().getRole() == null)
+			newPrincipal.setAssinaturaEmail(null);
+		}
+		if(newPrincipal.getCargo().getId() == null)
+		{
+			FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Não pode estar vazio.", null);
+            FacesContext.getCurrentInstance().addMessage("regPrincipals:cargo", m);
+		}
+		else
+		{
+			if(newPrincipal.getId() == null)
 			{
-				Roles newRole = new Roles();
-				newRole.setPrincipalID(newPrincipal.getPrincipalID());
-				newRole.setRole("USER");
-				newRole.setRoleGroup("USUARIOS");
-				newPrincipal.setRole(newRole);
-			}
-			else
-			{
-				if("USER".equalsIgnoreCase(newPrincipal.getRole().getRole()))
+				if(newPrincipal.getRole().getRole() == null)
 				{
 					Roles newRole = new Roles();
 					newRole.setPrincipalID(newPrincipal.getPrincipalID());
@@ -124,38 +149,61 @@ public class SalvarPrincipals implements Serializable {
 				}
 				else
 				{
-					Roles newRole = new Roles();
-					newRole.setPrincipalID(newPrincipal.getPrincipalID());
-					newRole.setRole("ADMIN");
-					newRole.setRoleGroup("ADMINISTRADORES");
-					newPrincipal.setRole(newRole);
+					if("USER".equalsIgnoreCase(newPrincipal.getRole().getRole()))
+					{
+						Roles newRole = new Roles();
+						newRole.setPrincipalID(newPrincipal.getPrincipalID());
+						newRole.setRole("USER");
+						newRole.setRoleGroup("USUARIOS");
+						newPrincipal.setRole(newRole);
+					}
+					else
+					{
+						Roles newRole = new Roles();
+						newRole.setPrincipalID(newPrincipal.getPrincipalID());
+						newRole.setRole("ADMIN");
+						newRole.setRoleGroup("ADMINISTRADORES");
+						newPrincipal.setRole(newRole);
+					}
 				}
-			}
-			newPrincipal.setPassword("t+lL5RPpboxFzSPRYideWhLr3pEApCXE683X+k3NiXw=");
-			em.persist(newPrincipal.getRole());
-			em.persist(newPrincipal);
-			for(GrupoUsuariosPrincipals grupoUsuarios:newPrincipal.getGruposUsuarios())
-			{
-				grupoUsuarios.setPrincipals(newPrincipal);
-				em.persist(grupoUsuarios);
-			}
-		}
-		else
-		{
-			newPrincipal.setPrimeiroLogin(Boolean.FALSE);
-			for(GrupoUsuariosPrincipals grupoUsuarios:newPrincipal.getGruposUsuarios())
-			{
-				if(grupoUsuarios.getId() == null)
+				if(newPrincipal.getGruposUsuarios().isEmpty())
 				{
-					grupoUsuarios.setPrincipals(newPrincipal);
-					em.persist(grupoUsuarios);
+					FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Não pode estar vazio.", null);
+					FacesContext.getCurrentInstance().addMessage("regPrincipals:grupo", m);
+				}
+				else
+				{
+					newPrincipal.setPassword("t+lL5RPpboxFzSPRYideWhLr3pEApCXE683X+k3NiXw=");
+					em.persist(newPrincipal.getRole());
+					em.persist(newPrincipal);
+					salvarEmail.enviarEmailNovoUsuario(newPrincipal);
+					for(GrupoUsuariosPrincipals grupoUsuarios:newPrincipal.getGruposUsuarios())
+					{
+						grupoUsuarios.setPrincipals(newPrincipal);
+						em.persist(grupoUsuarios);
+					}
+					principalsEventSrc.fire(newPrincipal);
+					initNewPrincipal();
 				}
 			}
-			newPrincipal.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, newPrincipal.getPassword()));
-			em.merge(newPrincipal);
+			else
+			{
+				newPrincipal.setPrimeiroLogin(Boolean.FALSE);
+				for(GrupoUsuariosPrincipals grupoUsuarios:newPrincipal.getGruposUsuarios())
+				{
+					if(grupoUsuarios.getId() == null)
+					{
+						grupoUsuarios.setPrincipals(newPrincipal);
+						em.persist(grupoUsuarios);
+					}
+				}
+				newPrincipal.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, newPrincipal.getPassword()));
+				em.merge(newPrincipal);
+				
+				principalsEventSrc.fire(newPrincipal);
+				initNewPrincipal();
+			}
 		}
-		principalsEventSrc.fire(newPrincipal);
-		initNewPrincipal();
 	}
 	public boolean imagemCarregada()
 	{
@@ -169,13 +217,13 @@ public class SalvarPrincipals implements Serializable {
 	{
 		newPrincipal = principals;
 		lazyInicializationPrincipals();
-		return "/pages/protected/user/principals";
+		return "/pages/protected/user/principals?faces-redirect=true";
 	}
 	public String editar(Principals principals)
 	{
 		newPrincipal = principals;
 		lazyInicializationPrincipals();
-		return "/pages/protected/admin/principals";
+		return "/pages/protected/admin/principals?faces-redirect=true";
 	}
 	private void lazyInicializationPrincipals()
 	{		
@@ -207,6 +255,8 @@ public class SalvarPrincipals implements Serializable {
 			newPrincipal.setGruposUsuarios(gruposUsuariosPrincipals);
 			Roles roles = rolesListProducer.retrieveAllRolesByPrincipalOrderedByNome(newPrincipal);
 			newPrincipal.setRole(roles);
+			Cargo cargo = (Cargo) em.createNamedQuery("Principals.findCargoById").setParameter("id", newPrincipal.getId()).getSingleResult();
+			newPrincipal.setCargo(cargo);
 		}
 	}
 	@PostConstruct

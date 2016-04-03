@@ -23,6 +23,19 @@
 				$('#regPrincipals\\:grupo_desc').val(desc);
 				$('#myModal').modal('hide');
 			}
+			function modalCargos()
+			{
+				$('#myModalCargos').modal('show');
+			}
+			function selecionarCargo()
+			{
+				var table = $('#regPrincipals\\:cargosDataTable').DataTable();
+				var id = table.row('.selected').data()[0];
+				var desc = table.row('.selected').data()[1];
+				$('#regPrincipals\\:cargo').val(id);
+				$('#regPrincipals\\:cargo_desc').val(desc);
+				$('#myModalCargos').modal('hide');
+			}
 			function grupoUsuariosDataTable()
 			{
 				var table = $('#regPrincipals\\:grupoUsuariosDataTable').DataTable();
@@ -41,23 +54,42 @@
 			}
 			$(document).ready(
 					function() {
-						var table2 = $('#regPrincipals\\:principalsDataTable').DataTable();
-
-						$('#regPrincipals\\:principalsDataTable tbody').on(
-								'click',
-								'tr',
-								function() {
-									if ($(this).hasClass('selected')) {
-										$(this).removeClass('selected');
-									} else {
-										table2.$('tr.selected').removeClass(
-												'selected');
-										$(this).addClass('selected');
-									}
-								});
+						principalsDataTable();
 						grupoUsuarios();
 						grupoUsuariosDataTable();
+						cargoDataTable();
 					});
+			function principalsDataTable()
+			{
+				var table2 = $('#regPrincipals\\:principalsDataTable').DataTable();
+
+				$('#regPrincipals\\:principalsDataTable tbody').on(
+						'click',
+						'tr',
+						function() {
+							if ($(this).hasClass('selected')) {
+								$(this).removeClass('selected');
+							} else {
+								table2.$('tr.selected').removeClass(
+										'selected');
+								$(this).addClass('selected');
+							}
+						});
+			}
+			function cargoDataTable()
+			{
+				var table = $('#regPrincipals\\:cargosDataTable').DataTable();
+				 
+			    $('#regPrincipals\\:cargosDataTable tbody').on( 'click', 'tr', function () {
+			        if ( $(this).hasClass('selected') ) {
+			            $(this).removeClass('selected');
+			        }
+			        else {
+			            table.$('tr.selected').removeClass('selected');
+			            $(this).addClass('selected');
+			        }
+			    } );
+			}
 			function grupoUsuarios() {
 				var table3 = $('#regPrincipals\\:grupoUsuariosLeadDataTable')
 						.DataTable();
@@ -79,8 +111,11 @@
 				jsf.ajax.addOnEvent(function(data) {
 					if (data.status == "success") {
 						debugger
-						grupoUsuarios();
-// 						grupoUsuariosDataTable();
+						if(data.source.id == "regPrincipals:adicionarGrupoUsuarios"){
+							grupoUsuarios();
+						} else if(data.source.id.indexOf("excluir") > -1) {
+							principalsDataTable();
+						}
 					}
 				})
 			});
@@ -100,18 +135,18 @@
 						cache="false" width="300px" height="200px" rendered="#{salvarPrincipals.assinaturaCarregada()}"/>
 				</h:panelGrid>
 				<h:panelGrid>
-					<h:outputLabel for="usuario" value="Nome de Usuário:" />
-					<h:inputText id="usuario" value="#{newPrincipal.principalID}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
-					<h:message for="usuario" errorClass="invalid" />
+					<h:outputLabel for="email" value="Email:" />
+					<h:inputText id="email" value="#{newPrincipal.principalID}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
+					<h:message for="email" errorClass="invalid" />
 					<h:outputLabel for="senha" value="Senha:" />
 					<h:inputSecret id="senha" value="#{newPrincipal.password}"/>
 					<h:message for="senha" errorClass="invalid" />
 					<h:outputLabel for="nome" value="Nome:" />
 					<h:inputText id="nome" value="#{newPrincipal.nome}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
 					<h:message for="nome" errorClass="invalid" />
-					<h:outputLabel for="email" value="Email:" />
-					<h:inputText id="email" value="#{newPrincipal.email}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
-					<h:message for="email" errorClass="invalid" />
+					<h:outputLabel for="observacao" value="Observação:" />
+					<h:inputTextarea id="observacao" value="#{newPrincipal.observacao}" disabled="#{!loginBean.isCallerInRole('ADMIN')}" style="width:400px;"/>
+					<h:message for="observacao" errorClass="invalid" />
 					<h:outputLabel for="role" value="Nivel de acesso:" />
 					<h:selectOneMenu id="role" value="#{newPrincipal.role.role}" disabled="#{!loginBean.isCallerInRole('ADMIN')}">
 						<f:selectItem itemValue="USER" itemLabel="Usuário" />
@@ -122,15 +157,25 @@
 					<h:inputFile id="foto" value="#{newPrincipal.imagemPart}">
 						<f:validator binding="#{fileUploadValidator}"/>
 					</h:inputFile>
+					<h:message for="foto" errorClass="invalid" />
 					<h:outputLabel for="assinatura" value="Assinatura:" />
 					<h:inputFile id="assinatura" value="#{newPrincipal.assinaturaPart}">
 						<f:validator binding="#{fileUploadValidator}"/>
 					</h:inputFile>
-					<br />
+					<h:message for="assinatura" errorClass="invalid" />
+					<h:outputLabel for="cargo" value="Cargo:" />
+		            <h:panelGroup>
+						<h:inputText id="cargo"
+							value="#{newPrincipal.cargo.id}"/>
+						<h:graphicImage library="images" name="magnifying.png"
+							onclick="javascript:modalCargos()" />
+						<h:inputText id="cargo_desc" disabled="true" style="border:none;background:white;"/>
+					</h:panelGroup>
+					<h:message for="cargo" errorClass="invalid" />
 					<h:outputLabel for="grupo" value="Grupo:" />
 					<h:panelGroup>
 						<h:inputText id="grupo"
-							value="#{newPrincipal.grupoUsuariosSelecionado.id}" />
+							value="#{newPrincipal.grupoUsuariosSelecionado.id}"/>
 						<h:graphicImage library="images" name="magnifying.png"
 							onclick="javascript:modalGrupoUsuarios()" />
 						<h:inputText id="grupo_desc" disabled="true" style="border:none;background:white;"/>
@@ -140,7 +185,7 @@
 					<h:commandButton id="adicionarGrupoUsuarios"
 						disabled="#{!loginBean.isCallerInRole('ADMIN')}"
 						action="#{salvarPrincipals.adicionarGrupoUsuarios(newPrincipal.grupoUsuariosSelecionado.id)}"
-						value="Adicionar">
+						value="Adicionar Grupo">
 						<f:ajax execute="regPrincipals:grupo"
 							render="regPrincipals:gruposUsuariosPanelGrid" />
 					</h:commandButton>
@@ -171,37 +216,47 @@
 			<h:commandButton id="salvar" action="#{salvarPrincipals.salvar}"
 				value="Salvar" />
 
-		<h2>Usuários</h2>
-		<h:panelGroup rendered="#{empty principals}">
-			<em>Nenhum usuário registrado.</em>
-		</h:panelGroup>
-		<h:dataTable id="principalsDataTable" var="_principal"
-			value="#{principals}" rendered="#{not empty principals}"
-			styleClass="table" headerClass="table-header"
-			rowClasses="table-odd-row,table-even-row">
-			<h:column>
-				<f:facet name="header">Id</f:facet>
-                <h:outputText value="#{_principal.id}"/>
-            </h:column>
-			<h:column>
-				<f:facet name="header">Nome</f:facet>
-                <h:outputText value="#{_principal.principalID}"/>
-            </h:column>
-			<h:column>
-				<f:facet name="header">Nivel de acesso</f:facet>
-                <h:outputText value="#{_principal.role.role}"/>
-            </h:column>
-			<h:column>
-				<f:facet name="header"></f:facet>
-				<h:outputLink value="Excluir" />
-			</h:column>
-			<h:column>
-				<f:facet name="header"></f:facet>
-				<h:commandLink value="Editar"
-					action="#{salvarPrincipals.editar(_principal)}">
-				</h:commandLink>
-			</h:column>
-		</h:dataTable>
+		<h:panelGrid id="principalsPanelGrid">
+			<h2>Usuários</h2>
+			<h:panelGroup rendered="#{empty principals}">
+				<em>Nenhum usuário registrado.</em>
+			</h:panelGroup>
+			<h:dataTable id="principalsDataTable" var="_principal"
+				value="#{principals}" rendered="#{not empty principals}"
+				styleClass="table" headerClass="table-header"
+				width="100%" style="display:inline-table"
+				rowClasses="table-odd-row,table-even-row">
+				<h:column>
+					<f:facet name="header">Id</f:facet>
+	                <h:outputText value="#{_principal.id}"/>
+	            </h:column>
+				<h:column>
+					<f:facet name="header">Nome</f:facet>
+	                <h:outputText value="#{_principal.principalID}"/>
+	            </h:column>
+				<h:column>
+					<f:facet name="header">Nivel de acesso</f:facet>
+	                <h:outputText value="#{_principal.role.role}"/>
+	            </h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
+					<h:outputLink value="Excluir" />
+				</h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
+					<h:commandLink value="Editar"
+						action="#{salvarPrincipals.editar(_principal)}">
+						<f:ajax render="@form"/>
+					</h:commandLink>
+				</h:column>
+				<h:column>
+						<f:facet name="header"></f:facet>
+						<h:commandLink id="excluir" value="Excluir" action="#{salvarPrincipals.excluir(_principal)}" onclick="javascript:return confirm('Deseja realmente excluir este registro ?');">
+							<f:ajax render="regPrincipals:principalsPanelGrid"/>
+						</h:commandLink>
+					</h:column>
+			</h:dataTable>
+		</h:panelGrid>
 		<!-- Modal -->
 		<div id="myModal" class="modal fade" role="dialog">
 			<div class="modal-dialog">
@@ -268,6 +323,44 @@
 				      </h:form>
 					</div>
 					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal -->
+		<div id="myModalCargos" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">X</button>
+						<h4 class="modal-title">Selecione o Cargo</h4>
+					</div>
+					<div class="modal-body">
+						<h:panelGroup rendered="#{empty cargos}">
+					         <em>Nenhum cargo registrado.</em>
+					      </h:panelGroup>
+					      <h:dataTable id="cargosDataTable" var="_cargo" value="#{cargos}"
+							rendered="#{not empty cargos}"
+							styleClass="table"
+							width="100%"
+							style="display:inline-table;"
+							 headerClass="table-header"
+							 rowClasses="table-odd-row,table-even-row">
+					         <h:column>
+					          <f:facet name="header">Id</f:facet>
+					              <h:outputText value="#{_cargo.id}"/>
+					         </h:column>
+					         <h:column>
+					          <f:facet name="header">Descrição</f:facet>
+					              <h:outputText value="#{_cargo.descricao}"/>
+					          </h:column>
+					      </h:dataTable>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+							onclick="javascript:selecionarCargo()">Selecionar</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
 					</div>
 				</div>

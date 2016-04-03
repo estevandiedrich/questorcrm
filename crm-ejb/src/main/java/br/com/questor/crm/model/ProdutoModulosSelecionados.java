@@ -75,6 +75,8 @@ public class ProdutoModulosSelecionados implements Serializable{
 	
 	private BigDecimal valorTotal;
 	
+	private String observacao;
+	
 	public Long getId() {
 		return id;
 	}
@@ -146,5 +148,16 @@ public class ProdutoModulosSelecionados implements Serializable{
 	public void setValorTotal(BigDecimal valorTotal) {
 		this.valorTotal = valorTotal;
 	}
-	
+
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
+
+	public void setCotacao(Cotacao cotacao) {
+		this.cotacao = cotacao;
+	}
 }

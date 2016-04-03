@@ -24,7 +24,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 		@Index(columnList = "email_id", name = "contatoemail_email_id_idx")
 		}
 )
-@NamedQueries(value = {@NamedQuery(name = "ContatoEmail.findByEmail", query = "SELECT ce FROM ContatoEmail ce WHERE ce.email.id = :email")})
+@NamedQueries(value = {
+		@NamedQuery(name = "ContatoEmail.findByEmail", query = "SELECT ce FROM ContatoEmail ce WHERE ce.email.id = :email")		
+		}
+)
 @SequenceGenerator(name="CONTATO_EMAIL_SEQUENCE", sequenceName="CONTATO_EMAIL_SEQUENCE", allocationSize=1, initialValue=1)
 public class ContatoEmail implements Serializable{
 	/**
@@ -34,10 +37,10 @@ public class ContatoEmail implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="CONTATO_EMAIL_SEQUENCE")
 	private Long id;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 		@JoinColumn(name = "contato_id")
 	private Contato contato;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 		@JoinColumn(name = "email_id")
 	private Email email;
 	

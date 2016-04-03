@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import br.com.questor.crm.enums.FaseOportunidadeEnum;
@@ -56,6 +57,7 @@ public class Oportunidade implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="OPORTUNIDADE_SEQUENCE")
 	private Long id;
+	@NotNull
 	private String titulo;
 	private String descricao;
 	@ManyToOne(fetch = FetchType.LAZY)

@@ -1,4 +1,0 @@
-<jboss-web>
-      <security-domain>java:/jaas/loginDomain</security-domain>
-      <use-jboss-authorization>false</use-jboss-authorization>
-</jboss-web>

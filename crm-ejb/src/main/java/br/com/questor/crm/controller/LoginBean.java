@@ -100,11 +100,10 @@ public class LoginBean {
 		}
 		return "/pages/public/login?faces-redirect=true";
 	}
-	
-	@Schedule(second = "*",minute="*/1",hour="*")
+	@Schedule(second = "*",minute="*/1",hour="*",persistent=false)
 	public void buscaAtividadesAgenda2()
 	{
-		log.info("teste3");
+		log.info("buscaAtividadesAgenda2");
 		if(RequestContext.getCurrentInstance()!=null)
 		{
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message Title", "Message body");

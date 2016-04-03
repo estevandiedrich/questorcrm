@@ -24,6 +24,8 @@ import javax.servlet.http.Part;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 @Entity
 @Table(name = "principals",indexes = {
 		@Index(columnList = "id", name = "principals_id_idx"),
@@ -35,8 +37,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries(value={
 		@NamedQuery(name = "Principals.findById",query = "SELECT p FROM Principals p JOIN FETCH p.Role WHERE p.id = :id"),
+		@NamedQuery(name = "Principals.findByEmail",query = "SELECT p FROM Principals p JOIN FETCH p.Role WHERE p.PrincipalID = :email"),
 		@NamedQuery(name = "Principals.findImagemById",query = "SELECT p.imagem FROM Principals p WHERE p.id = :id"),
-		@NamedQuery(name = "Principals.findAssinaturaById",query = "SELECT p.assinaturaEmail FROM Principals p WHERE p.id = :id")
+		@NamedQuery(name = "Principals.findAssinaturaById",query = "SELECT p.assinaturaEmail FROM Principals p WHERE p.id = :id"),
+		@NamedQuery(name = "Principals.findCargoById",query = "SELECT p.cargo FROM Principals p WHERE p.id = :id")
 		}
 )
 @SequenceGenerator(name="PRINCIPALS_SEQUENCE", sequenceName="PRINCIPALS_SEQUENCE", allocationSize=1, initialValue=1)
@@ -55,6 +59,7 @@ public class Principals implements Serializable {
 		assinaturaEmail = new Imagem();
 		primeiroLogin = true;
 		nome = "";
+		cargo = new Cargo();
 	}
 	
 	@Id
@@ -62,38 +67,42 @@ public class Principals implements Serializable {
     private Long id;
 	
 	@NotNull
+	@NotEmpty
 	private String PrincipalID;
 	
 	@NotNull
+	@NotEmpty
 	private String nome;
 	
-	@NotNull
-	private String email;
+	private String observacao;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
 	  @JoinColumn(name = "role_id")
 	private Roles Role;
 	
 	@Transient
 	private GrupoUsuarios grupoUsuariosSelecionado;
 	
-//	@ManyToMany
-//    @JoinTable(name="grupousuarios_principals", joinColumns={@JoinColumn(name="principals_id")}, inverseJoinColumns={@JoinColumn(name="grupousuarios_id")})
-	@OneToMany(mappedBy = "principals", targetEntity = GrupoUsuariosPrincipals.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	@OneToMany(mappedBy = "principals", targetEntity = GrupoUsuariosPrincipals.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<GrupoUsuariosPrincipals> gruposUsuarios;
 	
 	@NotNull
+	@NotEmpty
 	private String Password;
 	
 	private boolean primeiroLogin;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	  @JoinColumn(name = "assinturaemail_id")
 	private Imagem assinaturaEmail;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	  @JoinColumn(name = "imagem_id")
 	private Imagem imagem;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	  @JoinColumn(name = "cargo_id")
+	private Cargo cargo;
 	
 	@Transient
 	private Part imagemPart;
@@ -173,14 +182,6 @@ public class Principals implements Serializable {
 		this.gruposUsuarios = gruposUsuarios;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
 	public GrupoUsuarios getGrupoUsuariosSelecionado() {
 		return grupoUsuariosSelecionado;
 	}
@@ -203,6 +204,22 @@ public class Principals implements Serializable {
 
 	public void setAssinaturaPart(Part assinaturaPart) {
 		this.assinaturaPart = assinaturaPart;
+	}
+
+	public Cargo getCargo() {
+		return cargo;
+	}
+
+	public void setCargo(Cargo cargo) {
+		this.cargo = cargo;
+	}
+
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
 	}
 	
 }

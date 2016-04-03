@@ -6,7 +6,7 @@ public enum FaseOportunidadeEnum {
 	PROSPECT_QUALIFICADO("Prospect qualificado"),
 	CLIENTE_EM_NEGOCIACAO("Cliente em negociação"),
 	NEGOCIO_FECHADO("Negócio fechado"),
-	NEGOCIO_PERDIDO("Negócio pergido"),
+	NEGOCIO_PERDIDO("Negócio perdido"),
 	NEGOCIO_TRANSFERIDO("Negócio transferido");
 	private final String descricao;
 	FaseOportunidadeEnum(String descricao)
