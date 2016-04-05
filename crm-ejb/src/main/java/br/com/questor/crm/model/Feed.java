@@ -31,7 +31,11 @@ import org.hibernate.validator.constraints.NotEmpty;
 		}
 )
 @XmlRootElement
-@NamedQueries(value = {@NamedQuery(name = "Feed.findAll",query = "SELECT f FROM Feed AS f JOIN FETCH f.usuarioQueCriou ORDER BY f.dataEHora DESC")})
+@NamedQueries(value = {
+		@NamedQuery(name = "Feed.findAll",query = "SELECT f FROM Feed AS f JOIN FETCH f.usuarioQueCriou ORDER BY f.dataEHora DESC"),
+		@NamedQuery(name = "Feed.findById",query = "SELECT f FROM Feed AS f JOIN FETCH f.usuarioQueCriou WHERE f.id = :id ORDER BY f.dataEHora DESC")
+		}
+)
 @SequenceGenerator(name="FEED_SEQUENCE", sequenceName="FEED_SEQUENCE", allocationSize=1, initialValue=1)
 public class Feed implements Serializable{
 	public Feed()

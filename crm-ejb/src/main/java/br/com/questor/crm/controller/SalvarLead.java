@@ -197,7 +197,23 @@ public class SalvarLead implements Serializable {
 			newLead.getContatos().add(contato);
 		}
 	}
-
+	public void removerGrupoUsuarios(GrupoUsuariosLead grupoUsuarios)
+	{
+		GrupoUsuariosLead remover = null;
+		for(GrupoUsuariosLead grupoUsuariosLead:newLead.getGruposUsuarios())
+		{
+			if(grupoUsuariosLead.getGrupoUsuarios().getId() == grupoUsuarios.getGrupoUsuarios().getId())
+			{
+				remover = grupoUsuariosLead;
+				break;
+			}
+		}
+		newLead.getGruposUsuarios().remove(remover);
+		if(remover.getId() != null)
+		{
+			em.remove(em.contains(remover) ? remover:em.merge(remover));
+		}
+	}
 	public void adicionarGrupoUsuarios(String id) {
 		if (id != null && !"".equalsIgnoreCase(id)) {
 			GrupoUsuarios grupoUsuarios = em.find(GrupoUsuarios.class, Long.parseLong(id));

@@ -32,6 +32,6 @@ public class FeedListProducer {
 	}
 	@PostConstruct
 	public void retrieveAllFeedsOrderedByDataEHora() {
-		feeds = em.createNamedQuery("Feed.findAll").getResultList();
+		feeds = em.createNamedQuery("Feed.findAll").setMaxResults(10).getResultList();
 	}
 }

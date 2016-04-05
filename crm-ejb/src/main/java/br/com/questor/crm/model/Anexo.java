@@ -52,7 +52,7 @@ public class Anexo implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "email_id")
-	private Lead email;
+	private Email email;
 
 	public Long getId() {
 		return id;
@@ -110,11 +110,11 @@ public class Anexo implements Serializable{
 		this.lead = lead;
 	}
 
-	public Lead getEmail() {
+	public Email getEmail() {
 		return email;
 	}
 
-	public void setEmail(Lead email) {
+	public void setEmail(Email email) {
 		this.email = email;
 	}	
 	

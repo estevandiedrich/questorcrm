@@ -1,7 +1,6 @@
 package br.com.questor.crm.model;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -46,8 +45,6 @@ public class Modulo implements Serializable{
 	
 	private String descricao;
 	
-	private BigDecimal valor;
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "produto_id")
 	private Produto produto;
@@ -62,12 +59,6 @@ public class Modulo implements Serializable{
 	}
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
-	}
-	public BigDecimal getValor() {
-		return valor;
-	}
-	public void setValor(BigDecimal valor) {
-		this.valor = valor;
 	}
 	public Produto getProduto() {
 		return produto;

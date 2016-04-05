@@ -3,7 +3,9 @@ package br.com.questor.crm.controller;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -25,6 +27,7 @@ import org.primefaces.model.StreamedContent;
 import br.com.questor.crm.data.GrupoUsuariosPrincipalsListProducer;
 import br.com.questor.crm.data.RolesListProducer;
 import br.com.questor.crm.model.Cargo;
+import br.com.questor.crm.model.Feed;
 import br.com.questor.crm.model.GrupoUsuarios;
 import br.com.questor.crm.model.GrupoUsuariosPrincipals;
 import br.com.questor.crm.model.ImagePart;
@@ -61,6 +64,9 @@ public class SalvarPrincipals implements Serializable {
 	
 	@Inject
 	private SalvarEmail salvarEmail;
+	
+	@Inject
+	private LoginBean loginBean;
 	
 	@Produces
 	@Named
@@ -173,10 +179,22 @@ public class SalvarPrincipals implements Serializable {
 				}
 				else
 				{
-					newPrincipal.setPassword("t+lL5RPpboxFzSPRYideWhLr3pEApCXE683X+k3NiXw=");
+					int[] senha = new int[6];
+					String senhaNaoCifrada = "";
+					Random random = new Random();
+					for(int i = 0;i < 6;i++)
+					{
+						senha[i] = random.nextInt(9);
+					}
+					senhaNaoCifrada = Arrays.toString(senha).replace("[", "").replace(",", "").replace(" ","").replace("]", "");
+					newPrincipal.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, senhaNaoCifrada));
 					em.persist(newPrincipal.getRole());
 					em.persist(newPrincipal);
-					salvarEmail.enviarEmailNovoUsuario(newPrincipal);
+					salvarEmail.enviarEmailNovoUsuario(newPrincipal,senhaNaoCifrada);
+//					Feed newFeed = new Feed();
+//					newFeed.setTexto("Novo usuário cadastrado: "+newPrincipal.getNome());
+//					newFeed.setUsuarioQueCriou(loginBean.getPrincipalsFromDB());
+//					em.persist(newFeed);
 					for(GrupoUsuariosPrincipals grupoUsuarios:newPrincipal.getGruposUsuarios())
 					{
 						grupoUsuarios.setPrincipals(newPrincipal);

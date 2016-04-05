@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
@@ -140,7 +141,7 @@ public class SalvarEmail {
 		contatoEmail.setContato(contato);
 		newEmail.getEmailTo().add(contatoEmail);
 	}
-	public void enviarEmailNovoUsuario(Principals principals)
+	public void enviarEmailNovoUsuario(Principals principals,String senhaNaoCifrada)
 	{
 		ContatoEmail contatoEmail = new ContatoEmail();
 		Contato contato = new Contato();
@@ -153,14 +154,24 @@ public class SalvarEmail {
 		novoUsuario.setEmailFrom(emailRecuperacaoSenha.getValor());
 		novoUsuario.setEmailTo(contatoEmailList);
 		novoUsuario.setSubject("Bem vindo ao Questor CRM");
-		novoUsuario.setText("http://www.questores.com.br/crm Senha temporária "+principals.getPassword());
+		novoUsuario.setText("http://www.questores.com.br/crm Senha temporária "+senhaNaoCifrada);
 		sendEmail(novoUsuario);
 	}
 	public void esqueceuSenha(String email)
 	{
 		try
 		{
+			int[] senha = new int[6];
+			String senhaNaoCifrada = "";
+			Random random = new Random();
+			for(int i = 0;i < 6;i++)
+			{
+				senha[i] = random.nextInt(9);
+			}
 			Principals esquecido = (Principals) em.createNamedQuery("Principals.findByEmail").setParameter("email", email).getSingleResult();
+			senhaNaoCifrada = Arrays.toString(senha).replace("[", "").replace(",", "").replace(" ","").replace("]", "");
+			esquecido.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, senhaNaoCifrada));
+			esquecido.setPrimeiroLogin(Boolean.TRUE);
 			ContatoEmail contatoEmail = new ContatoEmail();
 			Contato contato = new Contato();
 			contato.setEmail(esquecido.getPrincipalID());
@@ -169,13 +180,21 @@ public class SalvarEmail {
 			contatoEmailList.add(contatoEmail);
 			Propriedades emailRecuperacaoSenha = (Propriedades) em.createNamedQuery("Propriedades.findByChave").setParameter("chave", Propriedades.EMAIL_RECUPERACAO_SENHA).getSingleResult();
 			Email recuperaSenha = new Email();
+			recuperaSenha.setLead(null);
+			recuperaSenha.setSentDate(new Date());
 			recuperaSenha.setEmailFrom(emailRecuperacaoSenha.getValor());
 			recuperaSenha.setEmailTo(contatoEmailList);
-			recuperaSenha.setSubject("Email para recuperação de senha");
-			recuperaSenha.setText("http://www.questores.com.br/crm Senha temporária xyz");
+			recuperaSenha.setSubject("Solicitação de nova senha Questor CRM");
+			recuperaSenha.setText("Prezado "+esquecido.getNome() +"\n"
+									+"Você solicitou uma nova senha para acesso ao CRM Questor.\n" 
+									+"A sua nova senha é: " + senhaNaoCifrada + "\n" 
+									+"Lembre-se que os dados do CRM são de propriedade da empresa e você é responsável pela guarda dessas informações. \n"
+									+"Atenciosamente. \n"
+									+"Área de administração \n"
+									+"Questor Sistemas Inteligentes \n"
+									+"http://www.questores.com.br/crm");
 			sendEmail(recuperaSenha);
-			esquecido.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, "xyz"));
-			esquecido.setPrimeiroLogin(Boolean.TRUE);
+			em.persist(recuperaSenha);
 			em.merge(esquecido);
 			FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, "Email enviado com sucesso.", null);
             FacesContext.getCurrentInstance().addMessage(null, m);
@@ -184,6 +203,15 @@ public class SalvarEmail {
 		{
 			FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Não foi localizado usuário válido para o email fornecido.", null);
             FacesContext.getCurrentInstance().addMessage(null, m);
+		}
+	}
+	public void salvar(Email email)	{
+		newEmail = email;
+		try {
+			salvar();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	public void salvar() throws Exception {
@@ -200,6 +228,18 @@ public class SalvarEmail {
 				{
 					contatoEmail.setEmail(newEmail);
 					em.persist(contatoEmail);
+				}
+			}
+			for(Anexo anexo:newEmail.getAnexos())
+			{
+				if(anexo.getId() == null)
+				{
+					if(anexo.getImagem().getId() == null)
+					{
+						em.persist(anexo.getImagem());
+					}
+					anexo.setEmail(newEmail);
+					em.persist(anexo);
 				}
 			}
 		}

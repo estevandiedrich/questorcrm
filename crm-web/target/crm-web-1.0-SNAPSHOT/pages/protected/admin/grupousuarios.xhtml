@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+   template="/WEB-INF/templates/default.xhtml">
+   <ui:define name="content">
+   <script type="text/javascript">
+   function grupoUsuariosDataTable()
+   {
+	   var table = $('#regGrupoUsuarios\\:grupoUsuariosDataTable').DataTable();
+	    $('#regGrupoUsuarios\\:grupoUsuariosDataTable tbody').on( 'click', 'tr', function () {
+	        if ( $(this).hasClass('selected') ) {
+	            $(this).removeClass('selected');
+	        }
+	        else {
+	            table.$('tr.selected').removeClass('selected');
+	            $(this).addClass('selected');
+	        }
+	    } );
+   }
+   $(document).ready(function() {
+	   grupoUsuariosDataTable();
+	} );
+   $(window).load(function() {
+		jsf.ajax.addOnEvent(function(data) {
+			if (data.status == "success") {
+				debugger
+				if(data.source.id.indexOf("excluir") > -1){
+					grupoUsuariosDataTable();
+				}
+			}
+		})
+   });
+   </script>
+   
+      <h1>Cadastro de Grupos de Usuários</h1>
+
+      <h:form id="regGrupoUsuarios">
+		<h:panelGrid>
+        	<h:outputLabel for="descricao" value="Descrição:" />
+            <h:inputText id="descricao" value="#{newGrupoUsuarios.descricao}" />
+            <h:message for="descricao" errorClass="invalid" />
+            <br/>
+            <h:commandButton id="salvar"
+               action="#{salvarGrupoUsuarios.salvar}" value="Salvar" />
+		</h:panelGrid>
+      
+	      <h2>Grupos de usuários</h2>
+	      <h:panelGrid id="grupoUsuariosPanelGrid">
+		      <h:panelGroup rendered="#{empty gruposUsuarios}">
+		         <em>Nenhum Grupo registrado.</em>
+		      </h:panelGroup>
+		      <h:dataTable id="grupoUsuariosDataTable" var="_grupoUsuarios" value="#{gruposUsuarios}"
+				rendered="#{not empty gruposUsuarios}"
+				styleClass="table"
+				width="100%"
+				style="display:inline-table;"
+				 headerClass="table-header"
+				 rowClasses="table-odd-row,table-even-row">
+		         <h:column>
+		            <f:facet name="header">Id</f:facet>
+		                <h:outputText value="#{_grupoUsuarios.id}"/>
+		            </h:column>
+		         <h:column>
+		            <f:facet name="header">Descrição</f:facet>
+		                <h:outputText value="#{_grupoUsuarios.descricao}"/>
+		            </h:column>
+		         <h:column>
+					<f:facet name="header"></f:facet>
+						<h:commandLink id="excluir" value="Excluir" action="#{salvarGrupoUsuarios.excluir(_grupoUsuarios)}" onclick="javascript:return confirm('Deseja realmente excluir este registro ?');">
+							<f:ajax render="regGrupoUsuarios:grupoUsuariosPanelGrid"/>
+						</h:commandLink>
+					</h:column>
+		      </h:dataTable>
+	      </h:panelGrid>
+      </h:form>
+   </ui:define>
+</ui:composition>

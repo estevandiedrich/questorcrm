@@ -76,6 +76,8 @@ public class Principals implements Serializable {
 	
 	private String observacao;
 	
+	private String telefone;
+	
 	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
 	  @JoinColumn(name = "role_id")
 	private Roles Role;
@@ -220,6 +222,14 @@ public class Principals implements Serializable {
 
 	public void setObservacao(String observacao) {
 		this.observacao = observacao;
+	}
+
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
 	}
 	
 }

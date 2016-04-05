@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+   template="/WEB-INF/templates/default.xhtml">
+   <ui:define name="content">
+   <script type="text/javascript">
+   $(document).ready(function() {
+	   leadsDataTable();	 
+	} );
+   $(window).load(function() {
+		jsf.ajax.addOnEvent(function(data) {
+			if (data.status == "success") {
+				debugger
+				leadsDataTable();
+			}
+		})
+   });
+	function leadsDataTable()
+	{
+		var table = $('#listagemLeads\\:leadsDataTable').DataTable();
+		$('#listagemLeads\\:leadsDataTable tbody').on(
+				'click',
+				'tr',
+				function() {
+					if ($(this).hasClass('selected')) {
+						$(this).removeClass('selected');
+					} else {
+						table.$('tr.selected').removeClass(
+								'selected');
+						$(this).addClass('selected');
+					}
+				});
+		
+	}
+   </script>
+      <h:form id="listagemLeads">
+		<h2>Leads</h2>
+		<h:panelGrid id="leadsPanelGrid">
+			<h:panelGroup rendered="#{empty leads}">
+				<em>Nenhum lead ou conta registrado.</em>
+			</h:panelGroup>
+			<h:dataTable id="leadsDataTable" var="_lead" value="#{leads}"
+				rendered="#{not empty leads}" 
+				styleClass="table"
+				width="100%"
+				style="display:inline-table;"
+				headerClass="table-header" rowClasses="table-odd-row,table-even-row">
+				<h:column>
+					<f:facet name="header">Id</f:facet>
+			              <h:outputText value="#{_lead.id}"/>
+			          </h:column>
+				<h:column>
+					<f:facet name="header">Nome</f:facet>
+			              <h:outputText value="#{_lead.nome}"/>
+			          </h:column>
+			          <h:column>
+					<f:facet name="header">UF</f:facet>
+			              <h:outputText value="#{_lead.uf.sigla}"/>
+			          </h:column>
+			          <h:column>
+					<f:facet name="header">Cidade</f:facet>
+			              <h:outputText value="#{_lead.cidade.nome}"/>
+			          </h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
+					<h:commandLink value="Editar" action="#{salvarLead.editar(_lead)}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
+					<h:outputLink value="/crm/pages/protected/user/emailleads.xhtml">
+						<h:outputText value="Email" />
+					</h:outputLink>
+				</h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
+					<h:outputLink
+						value="/crm/pages/protected/user/atividadeagenda.xhtml">
+						<h:outputText value="Agenda" />
+					</h:outputLink>
+				</h:column>
+				<h:column>
+					<f:facet name="header"></f:facet>
+					<h:commandLink id="excluir" value="Excluir" action="#{salvarLead.excluir(_lead)}" onclick="javascript:return confirm('Deseja realmente excluir este registro ?');">
+						<f:ajax render="listagemLeads:leadsPanelGrid"/>
+					</h:commandLink>
+				</h:column>
+			</h:dataTable>
+		</h:panelGrid>
+		<br/>
+		<h:commandButton id="nova" value="Nova Lead ou Conta" action="#{salvarLead.novo}"/>
+		
+		</h:form>
+   </ui:define>
+</ui:composition>

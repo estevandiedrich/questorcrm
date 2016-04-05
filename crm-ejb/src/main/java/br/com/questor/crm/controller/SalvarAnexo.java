@@ -1,6 +1,8 @@
 package br.com.questor.crm.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -13,6 +15,7 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 
 import org.apache.commons.io.IOUtils;
+import org.primefaces.model.DefaultStreamedContent;
 
 import br.com.questor.crm.model.Anexo;
 import br.com.questor.crm.model.Email;
@@ -44,7 +47,11 @@ public class SalvarAnexo {
 		lead.getAnexos().add(newAnexo);
 		initNewAnexo();
 	}
-	
+	public DefaultStreamedContent baixarAnexo(Anexo anexo)
+	{
+		InputStream arquivo = new ByteArrayInputStream(anexo.getImagem().getImagem());
+		return new DefaultStreamedContent(arquivo, anexo.getContentType(), anexo.getImagem().getNome());
+	}
 	public void adicionar(Email email) throws IOException
 	{
 		Imagem imagem = new Imagem();

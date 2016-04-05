@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+   template="/WEB-INF/templates/default.xhtml">
+   <ui:define name="content">
+   <script type="text/javascript">
+   $(document).ready(function() {
+		dataTable();	 
+	} );
+	$(window).load(function() {
+	    jsf.ajax.addOnEvent(function (data) {
+	        if (data.status == "success") {debugger
+	        	dataTable();
+	        }
+	    })
+	});
+	function modalUF()
+	{
+		$('#myModal').modal('show');
+	}
+	function selecionarUF() {
+		var table = $('#ufsDataTable').DataTable();
+		var id = table.row('.selected').data()[0];
+		var desc = table.row('.selected').data()[1];
+		$('#regCidades\\:uf').val(id);
+		$('#regCidades\\:uf_desc').val(desc);
+		$('#myModal').modal('hide');
+	}
+	function dataTable()
+	{
+		var table = $('#cidadesDataTable').DataTable();
+		 
+	    $('#cidadesDataTable tbody').on( 'click', 'tr', function () {
+	        if ( $(this).hasClass('selected') ) {
+	            $(this).removeClass('selected');
+	        }
+	        else {
+	            table.$('tr.selected').removeClass('selected');
+	            $(this).addClass('selected');
+	        }
+	    } );
+	    var table2 = $('#ufsDataTable').DataTable();
+		 
+	    $('#ufsDataTable tbody').on( 'click', 'tr', function () {
+	        if ( $(this).hasClass('selected') ) {
+	            $(this).removeClass('selected');
+	        }
+	        else {
+	            table2.$('tr.selected').removeClass('selected');
+	            $(this).addClass('selected');
+	        }
+	    } );
+	}
+   </script>
+   
+      <h1>Nova Cidade</h1>
+
+      <h:form id="regCidades">
+		<h:panelGrid>
+			<h:outputLabel for="nome" value="Nome:" />
+            <h:inputText id="nome" value="#{newCidade.nome}" />
+            <h:message for="nome" errorClass="invalid" />
+            <h:outputLabel for="uf" value="UF:" />
+            <h:panelGroup>
+				<h:inputText id="uf" value="#{newCidade.uf.id}"/>
+				<h:graphicImage library="images" name="magnifying.png"
+					onclick="javascript:modalUF()" />
+				<h:inputText id="uf_desc" disabled="true" style="border:none;background:white;"/>
+			</h:panelGroup>
+            <h:message for="uf" errorClass="invalid" />
+         <p>
+            <h:commandButton id="salvar"
+               action="#{salvarCidade.salvar}" value="Salvar" />
+         </p>
+         </h:panelGrid>
+      </h:form>
+      <h2>Cidades</h2>
+      <h:panelGrid id="cidadesDataGrid">
+	      <h:panelGroup rendered="#{empty cidadesComUF}">
+	         <em>Nenhuma cidade registrada.</em>
+	      </h:panelGroup>
+	      <h:dataTable id="cidadesDataTable" var="_cidade" value="#{cidadesComUF}"
+			rendered="#{not empty cidadesComUF}"
+			styleClass="table"
+			width="100%"
+			style="display:inline-table;"
+			 headerClass="table-header"
+			 rowClasses="table-odd-row,table-even-row">
+	         <h:column>
+	          <f:facet name="header">Id</f:facet>
+	              <h:outputText value="#{_cidade.id}"/>
+	         </h:column>
+	         <h:column>
+	          <f:facet name="header">Nome</f:facet>
+	              <h:outputText value="#{_cidade.nome}"/>
+	          </h:column>
+	          <h:column>
+	          <f:facet name="header">UF</f:facet>
+	              <h:outputText value="#{_cidade.uf.nome}"/>
+	          </h:column>
+	      </h:dataTable>
+      </h:panelGrid>
+  		<!-- Modal -->
+		<div id="myModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">X</button>
+						<h4 class="modal-title">Selecione a UF</h4>
+					</div>
+					<div class="modal-body">
+						<h:panelGroup rendered="#{empty ufs}">
+					         <em>Nenhuma uf registrada.</em>
+					      </h:panelGroup>
+					      <h:dataTable id="ufsDataTable" var="_uf" value="#{ufs}"
+							rendered="#{not empty ufs}"
+							styleClass="table"
+							width="100%"
+							style="display:inline-table;"
+							 headerClass="table-header"
+							 rowClasses="table-odd-row,table-even-row">
+					         <h:column>
+					          <f:facet name="header">Id</f:facet>
+					              <h:outputText value="#{_uf.id}"/>
+					         </h:column>
+					         <h:column>
+					          <f:facet name="header">Nome</f:facet>
+					              <h:outputText value="#{_uf.nome}"/>
+					          </h:column>
+					         <h:column>
+					          <f:facet name="header">Sigla</f:facet>
+					              <h:outputText value="#{_uf.sigla}"/>
+					          </h:column>
+					          <h:column>
+					          <f:facet name="header">Prazo</f:facet>
+					              <h:outputText value="#{_uf.prazo}"/>
+					          </h:column>
+					      </h:dataTable>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+							onclick="javascript:selecionarUF()">Selecionar</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+   </ui:define>
+</ui:composition>

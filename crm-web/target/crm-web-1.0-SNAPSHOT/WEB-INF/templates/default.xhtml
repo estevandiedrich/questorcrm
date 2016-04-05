@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<title>Java EE 6 Starter Application</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<h:outputStylesheet name="css/screen.css" />
+	<h:outputStylesheet name="css/bootstrap.min.css" />
+	<h:outputStylesheet name="css/jquery.dataTables.min.css" />
+	<h:outputStylesheet>
+	.leftColumn{   
+		float:left;
+	}
+	.rightColumn
+	{
+		float:right;
+		padding-left:100px;
+	}
+	.rightColumnIndex
+	{
+		float:right;
+		padding-left:200px;
+		padding-top:40px;
+	}
+   .table{   
+		border-collapse:collapse;
+	}
+	
+	.table-header{
+		text-align:center;
+		background:none repeat scroll 0 0 #E5E5E5;
+		border-bottom:1px solid #BBBBBB;
+		padding:16px;
+	}
+	
+	.table-odd-row{
+		text-align:center;
+		background:none repeat scroll 0 0 #FFFFFFF;
+		border-top:1px solid #BBBBBB;
+	}
+	
+	.table-even-row{
+		text-align:center;
+		background:none repeat scroll 0 0 #F9F9F9;
+		border-top:1px solid #BBBBBB;
+	}
+
+   </h:outputStylesheet>
+   <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+<!-- 	<h:outputScript name="js/jquery-1.12.0.min.js" target="head"/> -->
+	<h:outputScript name="js/bootstrap.min.js" target="head"/>
+	<h:outputScript name="js/jquery.dataTables.min.js" target="head"/>
+	<h:outputScript name="js/jquery-ui.multidatespicker.js" target="head"/>
+	<h:outputScript name="js/jquery.inputmask.bundle.min.js" target="head"/>
+</h:head>
+<h:body>
+	<div id="container">
+		<div id="content">
+			<h:panelGroup>
+				<h:outputLink value="/crm/pages/protected/user/index.xhtml"
+					rendered="#{view.viewId != '/pages/public/login.xhtml' and view.viewId != '/pages/protected/user/index.xhtml'}">
+					<h:outputText value="Home" />
+				</h:outputLink>
+				<h:form>
+					<h:commandLink action="#{loginBean.logout}"
+						rendered="#{view.viewId != '/pages/public/login.xhtml'}">
+						<h:outputText value="Logout" />
+					</h:commandLink>
+				</h:form>
+			</h:panelGroup>
+			<ui:insert name="content">
+			
+			</ui:insert>
+		</div>
+		<div id="footer">
+			<h:graphicImage value="/resources/images/logo.jpg" alt="logo Questor" />
+		</div>
+	</div>
+</h:body>
+</html>
