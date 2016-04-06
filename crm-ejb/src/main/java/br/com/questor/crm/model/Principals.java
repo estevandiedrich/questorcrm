@@ -39,6 +39,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 		@NamedQuery(name = "Principals.findById",query = "SELECT p FROM Principals p JOIN FETCH p.Role WHERE p.id = :id"),
 		@NamedQuery(name = "Principals.findByEmail",query = "SELECT p FROM Principals p JOIN FETCH p.Role WHERE p.PrincipalID = :email"),
 		@NamedQuery(name = "Principals.findImagemById",query = "SELECT p.imagem FROM Principals p WHERE p.id = :id"),
+		@NamedQuery(name = "Principals.findThumbnailById",query = "SELECT p.thumbnail FROM Principals p WHERE p.id = :id"),
 		@NamedQuery(name = "Principals.findAssinaturaById",query = "SELECT p.assinaturaEmail FROM Principals p WHERE p.id = :id"),
 		@NamedQuery(name = "Principals.findCargoById",query = "SELECT p.cargo FROM Principals p WHERE p.id = :id")
 		}
@@ -101,6 +102,10 @@ public class Principals implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	  @JoinColumn(name = "imagem_id")
 	private Imagem imagem;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	  @JoinColumn(name = "thumbnail_id")
+	private Imagem thumbnail;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "cargo_id")
@@ -230,6 +235,14 @@ public class Principals implements Serializable {
 
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
+	}
+
+	public Imagem getThumbnail() {
+		return thumbnail;
+	}
+
+	public void setThumbnail(Imagem thumbnail) {
+		this.thumbnail = thumbnail;
 	}
 	
 }

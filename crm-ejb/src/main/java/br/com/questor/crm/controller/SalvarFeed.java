@@ -1,6 +1,7 @@
 package br.com.questor.crm.controller;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,6 +21,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -63,7 +65,7 @@ public class SalvarFeed {
 	        {
 				Feed feed = (Feed) em.createNamedQuery("Feed.findById").setParameter("id", Long.parseLong(feedId)).getSingleResult();
 				if (feed != null) {
-					Imagem imagem = (Imagem) em.createNamedQuery("Principals.findImagemById")
+					Imagem imagem = (Imagem) em.createNamedQuery("Principals.findThumbnailById")
 							.setParameter("id", feed.getUsuarioQueCriou().getId()).getSingleResult();
 					if (imagem != null && imagem.getImagem() != null) {
 						StreamedContent streamedContent = new DefaultStreamedContent(

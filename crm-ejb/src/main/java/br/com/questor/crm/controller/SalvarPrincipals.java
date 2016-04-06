@@ -1,6 +1,10 @@
 package br.com.questor.crm.controller;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -15,6 +19,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -99,6 +104,20 @@ public class SalvarPrincipals implements Serializable {
 			}
 		}
 	}
+	public byte[] gerarImagemPadrao()
+	{
+		BufferedImage bufferedImg = new BufferedImage(100, 25, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = bufferedImg.createGraphics();
+        g2.drawString("Imagem nao encontrada", 0, 10);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+		try {
+			ImageIO.write(bufferedImg, "jpg", os);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return os.toByteArray();
+	}
 	public void excluir(Principals principal)
 	{
 		log.info("Excluindo Principal " + principal.getPrincipalID());
@@ -106,31 +125,75 @@ public class SalvarPrincipals implements Serializable {
 		principalsEventSrc.fire(principal);
 		initNewPrincipal();
 	}
+	public void gerarThumbnail(Imagem imagem) throws Exception
+	{
+		BufferedImage bufferedImage = new BufferedImage(30,40,BufferedImage.TYPE_INT_RGB);
+		ByteArrayInputStream bais = new ByteArrayInputStream(imagem.getImagem());
+		Image image = ImageIO.read(bais).getScaledInstance(30, 40, BufferedImage.SCALE_SMOOTH);
+		bufferedImage.createGraphics().drawImage(image, 0, 0, null);
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
+		Imagem thumbnail = new Imagem();
+		thumbnail.setNome(newPrincipal.getImagemPart().getName());
+		thumbnail.setSize(120);
+		thumbnail.setContentType(newPrincipal.getImagemPart().getContentType());
+		thumbnail.setImagem(byteArrayOutputStream.toByteArray());
+		newPrincipal.setThumbnail(thumbnail);
+		em.persist(thumbnail);
+	}
 	public void salvar() throws Exception {
 		log.info("Salvando Principal" + newPrincipal.getPrincipalID());
 		if(newPrincipal.getImagemPart() != null)
 		{
-			Imagem imagem = new Imagem();
-			imagem.setNome(newPrincipal.getImagemPart().getName());
-			imagem.setSize(newPrincipal.getImagemPart().getSize());
-			imagem.setContentType(newPrincipal.getImagemPart().getContentType());
-			imagem.setImagem(IOUtils.toByteArray(newPrincipal.getImagemPart().getInputStream()));
-			newPrincipal.setImagem(imagem);
-			em.persist(imagem);
+			if(newPrincipal.getImagem().getId() == null)
+			{
+				Imagem imagem = new Imagem();
+				imagem.setNome(newPrincipal.getImagemPart().getName());
+				imagem.setSize(newPrincipal.getImagemPart().getSize());
+				imagem.setContentType(newPrincipal.getImagemPart().getContentType());
+				imagem.setImagem(IOUtils.toByteArray(newPrincipal.getImagemPart().getInputStream()));
+				newPrincipal.setImagem(imagem);
+				em.persist(imagem);
+				gerarThumbnail(imagem);
+			}
+			else
+			{
+				Imagem imagem = newPrincipal.getImagem();
+				imagem.setNome(newPrincipal.getImagemPart().getName());
+				imagem.setSize(newPrincipal.getImagemPart().getSize());
+				imagem.setContentType(newPrincipal.getImagemPart().getContentType());
+				imagem.setImagem(IOUtils.toByteArray(newPrincipal.getImagemPart().getInputStream()));
+				em.merge(imagem);
+				gerarThumbnail(imagem);
+			}
+			
 		}
 		else
 		{
-			newPrincipal.setImagem(null);
+			if(newPrincipal.getImagem() == null)
+			{
+				Imagem imagem = new Imagem();
+				imagem.setNome("Imagem Padrão");
+				imagem.setSize(120);
+				imagem.setContentType("image/jpeg");
+				imagem.setImagem(gerarImagemPadrao());
+				newPrincipal.setImagem(imagem);
+				newPrincipal.setThumbnail(imagem);
+				em.persist(imagem);
+			}
 		}
 		if(newPrincipal.getAssinaturaPart() != null)
 		{
-			Imagem assinatura = new Imagem();
-			assinatura.setNome(newPrincipal.getAssinaturaPart().getName());
-			assinatura.setSize(newPrincipal.getAssinaturaPart().getSize());
-			assinatura.setContentType(newPrincipal.getAssinaturaPart().getContentType());
-			assinatura.setImagem(IOUtils.toByteArray(newPrincipal.getAssinaturaPart().getInputStream()));
-			newPrincipal.setAssinaturaEmail(assinatura);
-			em.persist(assinatura);
+			if(newPrincipal.getAssinaturaEmail().getId() == null)
+			{
+				Imagem assinatura = new Imagem();
+				assinatura.setNome(newPrincipal.getAssinaturaPart().getName());
+				assinatura.setSize(newPrincipal.getAssinaturaPart().getSize());
+				assinatura.setContentType(newPrincipal.getAssinaturaPart().getContentType());
+				assinatura.setImagem(IOUtils.toByteArray(newPrincipal.getAssinaturaPart().getInputStream()));
+				newPrincipal.setAssinaturaEmail(assinatura);
+				em.persist(assinatura);
+			}
 		}
 		else
 		{

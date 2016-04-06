@@ -41,7 +41,7 @@
 			<role-name>ADMIN</role-name>
 		</auth-constraint>
 		<user-data-constraint>
-			<transport-guarantee>NONE</transport-guarantee>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
 		</user-data-constraint>
 	</security-constraint>
 	<security-constraint>
@@ -58,7 +58,7 @@
 			<role-name>ADMIN</role-name>
 		</auth-constraint>
 		<user-data-constraint>
-			<transport-guarantee>NONE</transport-guarantee>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
 		</user-data-constraint>
 	</security-constraint>
 	<login-config>

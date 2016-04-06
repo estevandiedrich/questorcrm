@@ -59,6 +59,7 @@
 				</h:panelGrid>
 			</h:form>
 			<h:form id="feeds">
+				<p:poll interval="15" update="feedsPanelGrid"/>
 				<h:panelGrid id="feedsPanelGrid">
 					<h:panelGroup rendered="#{empty feeds}">
 						<em>Nenhum Feed registrado.</em>

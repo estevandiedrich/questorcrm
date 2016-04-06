@@ -188,24 +188,38 @@ public class SalvarOportunidade {
 	}
 	public void salvar() throws Exception {
 		log.info("Salvando Oportunidade" + newOportunidade.getDescricao());
-		em.persist(newOportunidade);
+		if(newOportunidade.getId() == null) {
+			em.persist(newOportunidade);
+		}
+		else {
+			em.merge(newOportunidade);
+		}
 		for(OportunidadeContato oportunidadeContato:newOportunidade.getContatos())
 		{
-			oportunidadeContato.setOportunidade(newOportunidade);
-			em.persist(oportunidadeContato);
+			if(oportunidadeContato.getId() == null)
+			{
+				oportunidadeContato.setOportunidade(newOportunidade);
+				em.persist(oportunidadeContato);
+			}
 		}
 		for(Cotacao cotacao:newOportunidade.getCotacoes())
 		{
-			cotacao.setOportunidade(newOportunidade);
-			em.persist(cotacao);
+			if(cotacao.getId() == null) {
+				cotacao.setOportunidade(newOportunidade);
+				em.persist(cotacao);
+			}
 			for(ProdutoModulosSelecionados p:cotacao.getProdutosModulosSelecionados())
 			{
-				p.setProposta(cotacao);
-				em.persist(p);
+				if(p.getId() == null) {
+					p.setProposta(cotacao);
+					em.persist(p);
+				}
 				for(ModuloSelecionado m:p.getModulosSelecionados())
 				{
-					m.setProdutosModulosSelecionados(p);
-					em.persist(m);
+					if(m.getId() == null) {
+						m.setProdutosModulosSelecionados(p);
+						em.persist(m);
+					}
 				}
 			}
 		}

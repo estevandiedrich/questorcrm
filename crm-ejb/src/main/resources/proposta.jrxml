@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="proposta" language="groovy" pageWidth="595" pageHeight="1062" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="756"/>
+	<property name="ireport.y" value="591"/>
 	<parameter name="oportunidadeId" class="java.lang.Long"/>
 	<queryString>
 		<![CDATA[select
@@ -17,10 +17,11 @@
 	p.telefone as telefonequemcadastrou,
 	tcon.descricao as tipocontratacao,
 	pms.quantidade,
-	pms.valorunitario,
-	pms.valortotal,
+	op.valortotalservicos,
+	op.valortotalprodutos,
 	prod.descricao as produto,
-	mod.descricao as modulo
+	array_to_string(array_agg(mod.descricao),',') as modulo,
+	pms.observacao
 from
 	oportunidade op
 inner join
@@ -34,7 +35,7 @@ inner join
 inner join
 	principals p on (l.principals_id = p.id)
 inner join
-	cotacao cot on (op.id = cot.oportunidade_id)
+	cotacao cot on (op.id = cot.oportunidade_id and cot.dataehoracriacao = (select max(c1.dataehoracriacao) from cotacao c1 where c1.oportunidade_id = op.id))
 inner join
 	produtomodulosselecionados pms on (pms.cotacao_id = cot.id)
 inner join
@@ -45,7 +46,23 @@ inner join
 	moduloselecionado mods on (mods.produtomodulosselecionados_id = pms.id)
 inner join
 	modulo mod on (mod.id = mods.modulo_id)
-where op.id = $P{oportunidadeId}]]>
+where op.id = $P{oportunidadeId}
+group by
+	op.id,
+	op.dataabertura,
+	op.datavalidade,
+	l.nome,
+	c.telefone,
+	ci.nome,
+	p.nome,
+	p.principalid,
+	p.telefone,
+	tcon.descricao,
+	pms.quantidade,
+	op.valortotalservicos,
+	op.valortotalprodutos,
+	prod.descricao,
+	pms.observacao]]>
 	</queryString>
 	<field name="id" class="java.lang.Long"/>
 	<field name="dataabertura" class="java.sql.Timestamp"/>
@@ -58,10 +75,11 @@ where op.id = $P{oportunidadeId}]]>
 	<field name="telefonequemcadastrou" class="java.lang.String"/>
 	<field name="tipocontratacao" class="java.lang.String"/>
 	<field name="quantidade" class="java.math.BigDecimal"/>
-	<field name="valorunitario" class="java.math.BigDecimal"/>
-	<field name="valortotal" class="java.math.BigDecimal"/>
+	<field name="valortotalservicos" class="java.math.BigDecimal"/>
+	<field name="valortotalprodutos" class="java.math.BigDecimal"/>
 	<field name="produto" class="java.lang.String"/>
 	<field name="modulo" class="java.lang.String"/>
+	<field name="observacao" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -211,7 +229,63 @@ Atualmente a família de produtos e serviços Questor é composta por:]]></text>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="109" splitType="Stretch">
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="170" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="108" width="555" height="20" backcolor="#DEE5EC"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COTAÇÃO DOS SISTEMAS E SERVIÇOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="128" width="59" height="41" forecolor="#FFFFFF" backcolor="#767676"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Produto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="59" y="128" width="59" height="41" forecolor="#FFFFFF" backcolor="#767676"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="118" y="128" width="66" height="41" forecolor="#FFFFFF" backcolor="#767676"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantidade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="184" y="128" width="189" height="41" forecolor="#FFFFFF" backcolor="#767676"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Módulos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="373" y="128" width="63" height="41" forecolor="#FFFFFF" backcolor="#767676"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="436" y="128" width="119" height="41" forecolor="#FFFFFF" backcolor="#767676"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observações]]></text>
+			</staticText>
+			<image>
+				<reportElement x="294" y="19" width="261" height="89"/>
+				<imageExpression class="java.lang.String"><![CDATA["C:\\Users\\estevan\\workspace\\softexpert\\crm\\crm-web\\src\\main\\webapp\\resources\\images\\logo_questor.jpg"]]></imageExpression>
+			</image>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="0" width="555" height="20" backcolor="#DEE5EC"/>
 				<textElement>
@@ -219,62 +293,10 @@ Atualmente a família de produtos e serviços Questor é composta por:]]></text>
 				</textElement>
 				<text><![CDATA[ORÇAMENTO SISTEMAS  QUESTOR]]></text>
 			</staticText>
-			<image>
-				<reportElement x="294" y="20" width="261" height="89"/>
-				<imageExpression class="java.lang.String"><![CDATA["C:\\Users\\estevan\\workspace\\softexpert\\crm\\crm-web\\src\\main\\webapp\\resources\\images\\logo_questor.jpg"]]></imageExpression>
-			</image>
-		</band>
-	</pageHeader>
-	<columnHeader>
-		<band height="61" splitType="Stretch">
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="555" height="20" backcolor="#DEE5EC"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[COTAÇÃO DOS SISTEMAS E SERVIÇOS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="0" y="20" width="59" height="41" forecolor="#FFFFFF" backcolor="#767676"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Produto]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="59" y="20" width="59" height="41" forecolor="#FFFFFF" backcolor="#767676"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Tipo]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="118" y="20" width="66" height="41" forecolor="#FFFFFF" backcolor="#767676"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Quantidade]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="184" y="20" width="189" height="41" forecolor="#FFFFFF" backcolor="#767676"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Módulos]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="373" y="20" width="63" height="41" forecolor="#FFFFFF" backcolor="#767676"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Valor total]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="436" y="20" width="119" height="41" forecolor="#FFFFFF" backcolor="#767676"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Observações]]></text>
+				<reportElement x="461" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[observacao]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -314,6 +336,16 @@ Atualmente a família de produtos e serviços Questor é composta por:]]></text>
 				<reportElement x="185" y="0" width="188" height="40"/>
 				<textElement/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{modulo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="375" y="0" width="61" height="40"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new DecimalFormat("#,##0.00",new DecimalFormatSymbols(new Locale("pt","BR"))).format($F{valortotalservicos}.add($F{valortotalprodutos}))]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="437" y="0" width="118" height="40"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{observacao}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

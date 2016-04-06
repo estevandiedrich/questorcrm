@@ -93,6 +93,16 @@ public class SalvarCotacao {
 			}
 		}
 		oportunidade.getCotacoes().add(newCotacao);
+		if(oportunidade.getId() != null) {
+			newCotacao.setOportunidade(oportunidade);
+			try {
+				salvar();
+				em.merge(oportunidade);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		initNewCotacao();
 	}
 	
