@@ -345,6 +345,10 @@
 						<f:facet name="header">Criado por</f:facet>
 		                <h:outputText value="#{_atividadeAgenda.usuario.nome}"/>
 		            </h:column>
+		            <h:column>
+						<f:facet name="header">Lead ou Conta</f:facet>
+		                <h:outputText value="#{_atividadeAgenda.lead.nome}"/>
+		            </h:column>
 					<h:column>
 						<f:facet name="header"></f:facet>
 						<h:commandLink id="participantesInternosCommandLink"

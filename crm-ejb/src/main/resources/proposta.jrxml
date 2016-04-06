@@ -17,8 +17,7 @@
 	p.telefone as telefonequemcadastrou,
 	tcon.descricao as tipocontratacao,
 	pms.quantidade,
-	op.valortotalservicos,
-	op.valortotalprodutos,
+	pms.valortotal,
 	prod.descricao as produto,
 	array_to_string(array_agg(mod.descricao),',') as modulo,
 	pms.observacao
@@ -59,8 +58,7 @@ group by
 	p.telefone,
 	tcon.descricao,
 	pms.quantidade,
-	op.valortotalservicos,
-	op.valortotalprodutos,
+	pms.valortotal,
 	prod.descricao,
 	pms.observacao]]>
 	</queryString>
@@ -75,8 +73,7 @@ group by
 	<field name="telefonequemcadastrou" class="java.lang.String"/>
 	<field name="tipocontratacao" class="java.lang.String"/>
 	<field name="quantidade" class="java.math.BigDecimal"/>
-	<field name="valortotalservicos" class="java.math.BigDecimal"/>
-	<field name="valortotalprodutos" class="java.math.BigDecimal"/>
+	<field name="valortotal" class="java.math.BigDecimal"/>
 	<field name="produto" class="java.lang.String"/>
 	<field name="modulo" class="java.lang.String"/>
 	<field name="observacao" class="java.lang.String"/>
@@ -340,7 +337,7 @@ Atualmente a família de produtos e serviços Questor é composta por:]]></text>
 			<textField>
 				<reportElement x="375" y="0" width="61" height="40"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[new DecimalFormat("#,##0.00",new DecimalFormatSymbols(new Locale("pt","BR"))).format($F{valortotalservicos}.add($F{valortotalprodutos}))]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[new DecimalFormat("#,##0.00",new DecimalFormatSymbols(new Locale("pt","BR"))).format($F{valortotal})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="437" y="0" width="118" height="40"/>

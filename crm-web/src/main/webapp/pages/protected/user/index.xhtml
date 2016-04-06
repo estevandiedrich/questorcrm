@@ -11,6 +11,8 @@
 				<h:panelGrid>
 					<h:commandLink value="Usuários" action="#{salvarPrincipals.novo}"
 						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
+					<h:commandLink value="Meu Perfil" action="#{salvarPrincipals.editarMeuPerfil}"
+						rendered="#{!loginBean.isCallerInRole('ADMIN')}" />
 					<h:outputLink
 						value="/crm/pages/protected/admin/grupousuarios.xhtml"
 						rendered="#{loginBean.isCallerInRole('ADMIN')}">

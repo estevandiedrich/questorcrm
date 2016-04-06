@@ -73,6 +73,10 @@
 		<error-code>403</error-code>
 		<location>/pages/public/access_denied.xhtml</location>
 	</error-page>
+	<error-page>
+	    <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+	    <location>/pages/public/login.xhtml</location>
+	</error-page>
 	<security-role>
 		<role-name>ADMIN</role-name>
 	</security-role>

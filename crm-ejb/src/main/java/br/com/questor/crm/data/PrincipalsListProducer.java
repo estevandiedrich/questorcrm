@@ -57,16 +57,16 @@ public class PrincipalsListProducer {
 	}
 	@PostConstruct
 	public void retrieveAllPrincipalsOrderedByNome() {
-		Metamodel metamodel = em.getMetamodel();
-	    EntityType<Principals> entityPrincipals_ = metamodel.entity(Principals.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Principals> criteria = cb.createQuery(Principals.class);
-		Root<Principals> principal = criteria.from(entityPrincipals_);
+//		Metamodel metamodel = em.getMetamodel();
+//	    EntityType<Principals> entityPrincipals_ = metamodel.entity(Principals.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Principals> criteria = cb.createQuery(Principals.class);
+//		Root<Principals> principal = criteria.from(entityPrincipals_);
 //		Join role = principal.join(entityPrincipals_.getSingularAttribute("Role"), JoinType.INNER);
 		if(loginBean.isCallerInRole("ADMIN"))
 		{
-			criteria.select(principal).orderBy(cb.asc(principal.get("PrincipalID")));
-			principals = em.createQuery(criteria).getResultList();
+//			criteria.select(principal).orderBy(cb.asc(principal.get("PrincipalID")));
+			principals = em.createNamedQuery("Principals.findAll").getResultList();
 			for(Principals pr:principals)
 			{
 				Roles role = rolesListProducer.retrieveAllRolesByPrincipalOrderedByNome(pr);

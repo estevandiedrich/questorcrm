@@ -41,23 +41,23 @@
 				</h:panelGrid>
 				<h:panelGrid>
 					<h:outputLabel for="email" value="Email:" />
-					<h:inputText id="email" value="#{newPrincipal.principalID}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
+					<h:inputText id="email" value="#{newPrincipal.principalID}" disabled="true"/>
 					<h:message for="email" errorClass="invalid" />
 					<h:outputLabel for="senha" value="Senha:" />
 					<h:inputSecret id="senha" value="#{newPrincipal.password}"/>
 					<h:message for="senha" errorClass="invalid" />
 					<h:outputLabel for="nome" value="Nome:" />
-					<h:inputText id="nome" value="#{newPrincipal.nome}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
+					<h:inputText id="nome" value="#{newPrincipal.nome}"/>
 					<h:message for="nome" errorClass="invalid" />
 					<h:outputLabel for="telefone" value="Telefone:" />
 					<h:inputText id="telefone" value="#{newPrincipal.telefone}"/>
 					<h:message for="telefone" errorClass="invalid" />
 					<h:outputLabel for="role" value="Nivel de acesso:" />
-					<h:selectOneMenu id="role" value="#{newPrincipal.role.role}" disabled="#{!loginBean.isCallerInRole('ADMIN')}">
-						<f:selectItem itemValue="USER" itemLabel="Usuário" />
-						<f:selectItem itemValue="ADMIN" itemLabel="Administrador" />
-					</h:selectOneMenu>
+					<h:inputText id="role" value="#{newPrincipal.role.role}" disabled="true"/>
 					<h:message for="role" errorClass="invalid" />
+					<h:outputLabel for="cargo" value="Cargo:" />
+					<h:inputText id="cargo" value="#{newPrincipal.cargo.descricao}" disabled="true"/>
+					<h:message for="cargo" errorClass="invalid" />
 					<h:outputLabel for="foto" value="Foto:" />
 					<h:inputFile id="foto" value="#{newPrincipal.imagemPart}">
 						<f:validator binding="#{fileUploadValidator}"/>

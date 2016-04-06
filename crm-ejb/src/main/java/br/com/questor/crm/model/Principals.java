@@ -36,6 +36,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 )
 @XmlRootElement
 @NamedQueries(value={
+		@NamedQuery(name = "Principals.findAll",query = "SELECT p FROM Principals p JOIN FETCH p.Role ORDER BY p.nome"),
 		@NamedQuery(name = "Principals.findById",query = "SELECT p FROM Principals p JOIN FETCH p.Role WHERE p.id = :id"),
 		@NamedQuery(name = "Principals.findByEmail",query = "SELECT p FROM Principals p JOIN FETCH p.Role WHERE p.PrincipalID = :email"),
 		@NamedQuery(name = "Principals.findImagemById",query = "SELECT p.imagem FROM Principals p WHERE p.id = :id"),

@@ -32,8 +32,8 @@ import org.primefaces.model.StreamedContent;
 import br.com.questor.crm.data.GrupoUsuariosPrincipalsListProducer;
 import br.com.questor.crm.data.RolesListProducer;
 import br.com.questor.crm.model.Cargo;
-import br.com.questor.crm.model.Feed;
 import br.com.questor.crm.model.GrupoUsuarios;
+import br.com.questor.crm.model.GrupoUsuariosLead;
 import br.com.questor.crm.model.GrupoUsuariosPrincipals;
 import br.com.questor.crm.model.ImagePart;
 import br.com.questor.crm.model.Imagem;
@@ -84,7 +84,23 @@ public class SalvarPrincipals implements Serializable {
 		initNewPrincipal();
 		return "/pages/protected/admin/principals?faces-redirect=true";
 	}
-	
+	public void removerGrupoUsuarios(GrupoUsuariosPrincipals grupoUsuarios)
+	{
+		GrupoUsuariosPrincipals remover = null;
+		for(GrupoUsuariosPrincipals grupoUsuariosPrincipals:newPrincipal.getGruposUsuarios())
+		{
+			if(grupoUsuariosPrincipals.getGrupoUsuarios().getId() == grupoUsuarios.getGrupoUsuarios().getId())
+			{
+				remover = grupoUsuariosPrincipals;
+				break;
+			}
+		}
+		newPrincipal.getGruposUsuarios().remove(remover);
+		if(remover.getId() != null)
+		{
+			em.remove(em.contains(remover) ? remover:em.merge(remover));
+		}
+	}
 	public void adicionarGrupoUsuarios(String id)
 	{
 		if(id != null && !"".equalsIgnoreCase(id))
@@ -278,11 +294,29 @@ public class SalvarPrincipals implements Serializable {
 						em.persist(grupoUsuarios);
 					}
 				}
-				newPrincipal.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, newPrincipal.getPassword()));
-				em.merge(newPrincipal);
-				
-				principalsEventSrc.fire(newPrincipal);
-				initNewPrincipal();
+				if(loginBean.isCallerInRole("ADMIN"))
+				{
+					em.merge(newPrincipal);
+					
+					principalsEventSrc.fire(newPrincipal);
+					initNewPrincipal();
+				}
+				else
+				{
+					if(!"".equalsIgnoreCase(newPrincipal.getPassword()))
+					{
+						newPrincipal.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, newPrincipal.getPassword()));
+						em.merge(newPrincipal);
+					
+						principalsEventSrc.fire(newPrincipal);
+						initNewPrincipal();
+					}
+					else
+					{
+						FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Não pode estar vazio.", null);
+						FacesContext.getCurrentInstance().addMessage("regPrincipals:senha", m);
+					}
+				}
 			}
 		}
 	}
@@ -297,6 +331,12 @@ public class SalvarPrincipals implements Serializable {
 	public String primeiroAcesso(Principals principals)
 	{
 		newPrincipal = principals;
+		lazyInicializationPrincipals();
+		return "/pages/protected/user/principals?faces-redirect=true";
+	}
+	public String editarMeuPerfil()
+	{
+		newPrincipal = loginBean.getPrincipalsFromDB();
 		lazyInicializationPrincipals();
 		return "/pages/protected/user/principals?faces-redirect=true";
 	}
