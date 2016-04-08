@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 @Table(name = "grupousuarios",indexes = {
 		@Index(columnList = "id", name = "grupousuarios_id_idx")
@@ -34,7 +36,10 @@ public class GrupoUsuarios implements Serializable{
     private Long id;
 	
 	@NotNull
+	@NotEmpty
 	private String descricao;
+	
+	private String observacao;
 	
 	public Long getId() {
 		return id;
@@ -51,4 +56,13 @@ public class GrupoUsuarios implements Serializable{
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
+
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
+	
 }

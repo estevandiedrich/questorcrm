@@ -10,6 +10,18 @@
 			$(document).ready(
 					function() {
 						grupoUsuarios();
+						$('#regPrincipals\\:telefone').inputmask({
+					           mask: "(99)9999-99999"
+					 		}
+						);
+						$('#regPrincipals\\:celular1').inputmask({
+					           mask: "(99)9999-99999"
+					 		}
+						);
+						$('#regPrincipals\\:celular2').inputmask({
+					           mask: "(99)9999-99999"
+					 		}
+						);
 					});
 			function grupoUsuarios() {
 				var table3 = $('#regPrincipals\\:grupoUsuariosLeadDataTable').DataTable();
@@ -52,6 +64,12 @@
 					<h:outputLabel for="telefone" value="Telefone:" />
 					<h:inputText id="telefone" value="#{newPrincipal.telefone}"/>
 					<h:message for="telefone" errorClass="invalid" />
+					<h:outputLabel for="celular1" value="Celular 1:" />
+					<h:inputText id="celular1" value="#{newPrincipal.celular1}"/>
+					<h:message for="celular1" errorClass="invalid" />
+					<h:outputLabel for="celular2" value="Celular 2:" />
+					<h:inputText id="celular2" value="#{newPrincipal.celular2}"/>
+					<h:message for="celular2" errorClass="invalid" />
 					<h:outputLabel for="role" value="Nivel de acesso:" />
 					<h:inputText id="role" value="#{newPrincipal.role.role}" disabled="true"/>
 					<h:message for="role" errorClass="invalid" />

@@ -80,6 +80,10 @@ public class Principals implements Serializable {
 	
 	private String telefone;
 	
+	private String celular1;
+	
+	private String celular2;
+	
 	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
 	  @JoinColumn(name = "role_id")
 	private Roles Role;
@@ -90,8 +94,6 @@ public class Principals implements Serializable {
 	@OneToMany(mappedBy = "principals", targetEntity = GrupoUsuariosPrincipals.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<GrupoUsuariosPrincipals> gruposUsuarios;
 	
-	@NotNull
-	@NotEmpty
 	private String Password;
 	
 	private boolean primeiroLogin;
@@ -244,6 +246,22 @@ public class Principals implements Serializable {
 
 	public void setThumbnail(Imagem thumbnail) {
 		this.thumbnail = thumbnail;
+	}
+
+	public String getCelular1() {
+		return celular1;
+	}
+
+	public void setCelular1(String celular1) {
+		this.celular1 = celular1;
+	}
+
+	public String getCelular2() {
+		return celular2;
+	}
+
+	public void setCelular2(String celular2) {
+		this.celular2 = celular2;
 	}
 	
 }

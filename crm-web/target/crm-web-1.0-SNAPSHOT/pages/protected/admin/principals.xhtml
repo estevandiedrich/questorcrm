@@ -58,6 +58,20 @@
 						grupoUsuarios();
 						grupoUsuariosDataTable();
 						cargoDataTable();
+						$('#regPrincipals\\:telefone').inputmask({
+					           mask: "(99)9999-99999"
+					 		}
+						);
+						$('#regPrincipals\\:celular1').inputmask({
+					           mask: "(99)9999-99999"
+					 		}
+						);
+						$('#regPrincipals\\:celular2').inputmask({
+					           mask: "(99)9999-99999"
+					 		}
+						);
+						$('#regPrincipals\\:cargo').numeric();
+						$('#regPrincipals\\:grupo').numeric();
 					});
 			function principalsDataTable()
 			{
@@ -115,6 +129,8 @@
 							grupoUsuarios();
 						} else if(data.source.id.indexOf("excluir") > -1) {
 							principalsDataTable();
+						} else if(data.source.id == "regPrincipals:regGrupoUsuarios:salvarNovoGrupoUsuarios") {
+							grupoUsuariosDataTable();
 						}
 					}
 				})
@@ -144,6 +160,12 @@
 					<h:outputLabel for="telefone" value="Telefone:" />
 					<h:inputText id="telefone" value="#{newPrincipal.telefone}"/>
 					<h:message for="telefone" errorClass="invalid" />
+					<h:outputLabel for="celular1" value="Celular 1:" />
+					<h:inputText id="celular1" value="#{newPrincipal.celular1}"/>
+					<h:message for="celular1" errorClass="invalid" />
+					<h:outputLabel for="celular2" value="Celular 2:" />
+					<h:inputText id="celular2" value="#{newPrincipal.celular2}"/>
+					<h:message for="celular2" errorClass="invalid" />
 					<h:outputLabel for="observacao" value="Observação:" />
 					<h:inputTextarea id="observacao" value="#{newPrincipal.observacao}" style="width:400px;"/>
 					<h:message for="observacao" errorClass="invalid" />
@@ -207,9 +229,10 @@
 				</h:column>
 				</h:dataTable>
 			</h:panelGrid>
+			
 			<br />
-			<h:commandButton id="salvar" action="#{salvarPrincipals.salvar}"
-				value="Salvar" />
+			<h:commandButton id="salvar" action="#{salvarPrincipals.salvar()}"
+				value="Salvar" type="submit"/>
 
 		<h:panelGrid id="principalsPanelGrid">
 			<h2>Usuários</h2>
@@ -294,36 +317,6 @@
 			</div>
 		</div>
 		<!-- Modal -->
-		<div id="myModalNovoGrupoUsuarios" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<!-- Modal content-->
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">X</button>
-						<h4 class="modal-title">Novo grupo de usuários</h4>
-					</div>
-					<div class="modal-body">
-						<h2>Grupos de usuários</h2>
-						<h:form id="regGrupoUsuarios">
-						<h:panelGrid>
-				        	<h:outputLabel for="descricao" value="Descrição:" />
-				            <h:inputText id="descricao" value="#{newGrupoUsuarios.descricao}" />
-				            <h:message for="descricao" errorClass="invalid" />
-				            <br/>
-				            <h:commandButton id="salvar"
-				               action="#{salvarGrupoUsuarios.salvar}" value="Salvar">
-				               <f:ajax execute="regGrupoUsuarios:descricao" render="regGrupoUsuarios:descricao regPrincipals:grupoUsuariosPanelGrid"/>
-			                </h:commandButton>
-						</h:panelGrid>
-				      </h:form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- Modal -->
 		<div id="myModalCargos" class="modal fade" role="dialog">
 			<div class="modal-dialog">
 				<!-- Modal content-->
@@ -362,5 +355,35 @@
 			</div>
 		</div>
 		</h:form>
+		<!-- Modal -->
+		<div id="myModalNovoGrupoUsuarios" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">X</button>
+						<h4 class="modal-title">Novo grupo de usuários</h4>
+					</div>
+					<div class="modal-body">
+						<h2>Grupos de usuários</h2>
+						<h:form id="regGrupoUsuarios">
+						<h:panelGrid>
+				        	<h:outputLabel for="descricao" value="Descrição:" />
+				            <h:inputText id="descricao" value="#{newGrupoUsuarios.descricao}" />
+				            <h:message for="descricao" errorClass="invalid" />
+				            <br/>
+				            <h:commandButton id="salvarNovoGrupoUsuarios"
+				               action="#{salvarGrupoUsuarios.salvar}" value="Salvar">
+				               <f:ajax execute="regGrupoUsuarios:descricao" render="regGrupoUsuarios:descricao regPrincipals:grupoUsuariosPanelGrid"/>
+			                </h:commandButton>
+						</h:panelGrid>
+				      </h:form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</ui:define>
 </ui:composition>

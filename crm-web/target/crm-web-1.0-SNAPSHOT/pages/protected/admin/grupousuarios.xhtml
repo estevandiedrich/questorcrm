@@ -41,6 +41,9 @@
         	<h:outputLabel for="descricao" value="Descrição:" />
             <h:inputText id="descricao" value="#{newGrupoUsuarios.descricao}" />
             <h:message for="descricao" errorClass="invalid" />
+            <h:outputLabel for="observacao" value="Observação:" />
+            <h:inputTextarea id="observacao" value="#{newGrupoUsuarios.observacao}" style="width:800px;"/>
+            <h:message for="observacao" errorClass="invalid" />
             <br/>
             <h:commandButton id="salvar"
                action="#{salvarGrupoUsuarios.salvar}" value="Salvar" />

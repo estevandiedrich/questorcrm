@@ -157,11 +157,36 @@ public class SalvarPrincipals implements Serializable {
 		newPrincipal.setThumbnail(thumbnail);
 		em.persist(thumbnail);
 	}
-	public void salvar() throws Exception {
-		log.info("Salvando Principal" + newPrincipal.getPrincipalID());
+	public boolean valido()
+	{
+		if(newPrincipal.getCargo().getId() == null)
+		{
+			FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Não pode estar vazio.", null);
+            FacesContext.getCurrentInstance().addMessage("regPrincipals:cargo", m);
+            return Boolean.FALSE;
+		}
+		if(newPrincipal.getGruposUsuarios().isEmpty())
+		{
+			FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Não pode estar vazio.", null);
+			FacesContext.getCurrentInstance().addMessage("regPrincipals:grupo", m);
+			return Boolean.FALSE;
+		}
+		if(!loginBean.isCallerInRole("ADMIN"))
+		{
+			if("".equalsIgnoreCase(newPrincipal.getPassword()))
+			{
+				FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Não pode estar vazio.", null);
+				FacesContext.getCurrentInstance().addMessage("regPrincipals:senha", m);
+				return Boolean.FALSE;
+			}
+		}
+		return Boolean.TRUE;
+	}
+	public void salvaImagemEAssinatura() throws Exception
+	{
 		if(newPrincipal.getImagemPart() != null)
 		{
-			if(newPrincipal.getImagem().getId() == null)
+			if(newPrincipal.getImagem() == null || newPrincipal.getImagem().getId() == null)
 			{
 				Imagem imagem = new Imagem();
 				imagem.setNome(newPrincipal.getImagemPart().getName());
@@ -186,7 +211,7 @@ public class SalvarPrincipals implements Serializable {
 		}
 		else
 		{
-			if(newPrincipal.getImagem() == null)
+			if(newPrincipal.getImagem() == null || newPrincipal.getImagem().getId() == null)
 			{
 				Imagem imagem = new Imagem();
 				imagem.setNome("Imagem Padrão");
@@ -200,7 +225,7 @@ public class SalvarPrincipals implements Serializable {
 		}
 		if(newPrincipal.getAssinaturaPart() != null)
 		{
-			if(newPrincipal.getAssinaturaEmail().getId() == null)
+			if(newPrincipal.getAssinaturaEmail() == null || newPrincipal.getAssinaturaEmail().getId() == null)
 			{
 				Imagem assinatura = new Imagem();
 				assinatura.setNome(newPrincipal.getAssinaturaPart().getName());
@@ -210,113 +235,125 @@ public class SalvarPrincipals implements Serializable {
 				newPrincipal.setAssinaturaEmail(assinatura);
 				em.persist(assinatura);
 			}
+			else
+			{
+				Imagem assinatura = newPrincipal.getAssinaturaEmail();
+				assinatura.setNome(newPrincipal.getAssinaturaPart().getName());
+				assinatura.setSize(newPrincipal.getAssinaturaPart().getSize());
+				assinatura.setContentType(newPrincipal.getAssinaturaPart().getContentType());
+				assinatura.setImagem(IOUtils.toByteArray(newPrincipal.getAssinaturaPart().getInputStream()));
+				em.merge(assinatura);
+			}
 		}
 		else
 		{
 			newPrincipal.setAssinaturaEmail(null);
 		}
-		if(newPrincipal.getCargo().getId() == null)
+	}
+	private void salvarNovoUsuario()
+	{
+		if(newPrincipal.getRole().getRole() == null)
 		{
-			FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Não pode estar vazio.", null);
-            FacesContext.getCurrentInstance().addMessage("regPrincipals:cargo", m);
+			Roles newRole = new Roles();
+			newRole.setPrincipalID(newPrincipal.getPrincipalID());
+			newRole.setRole("USER");
+			newRole.setRoleGroup("USUARIOS");
+			newPrincipal.setRole(newRole);
 		}
 		else
 		{
-			if(newPrincipal.getId() == null)
+			if("USER".equalsIgnoreCase(newPrincipal.getRole().getRole()))
 			{
-				if(newPrincipal.getRole().getRole() == null)
-				{
-					Roles newRole = new Roles();
-					newRole.setPrincipalID(newPrincipal.getPrincipalID());
-					newRole.setRole("USER");
-					newRole.setRoleGroup("USUARIOS");
-					newPrincipal.setRole(newRole);
-				}
-				else
-				{
-					if("USER".equalsIgnoreCase(newPrincipal.getRole().getRole()))
-					{
-						Roles newRole = new Roles();
-						newRole.setPrincipalID(newPrincipal.getPrincipalID());
-						newRole.setRole("USER");
-						newRole.setRoleGroup("USUARIOS");
-						newPrincipal.setRole(newRole);
-					}
-					else
-					{
-						Roles newRole = new Roles();
-						newRole.setPrincipalID(newPrincipal.getPrincipalID());
-						newRole.setRole("ADMIN");
-						newRole.setRoleGroup("ADMINISTRADORES");
-						newPrincipal.setRole(newRole);
-					}
-				}
-				if(newPrincipal.getGruposUsuarios().isEmpty())
-				{
-					FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Não pode estar vazio.", null);
-					FacesContext.getCurrentInstance().addMessage("regPrincipals:grupo", m);
-				}
-				else
-				{
-					int[] senha = new int[6];
-					String senhaNaoCifrada = "";
-					Random random = new Random();
-					for(int i = 0;i < 6;i++)
-					{
-						senha[i] = random.nextInt(9);
-					}
-					senhaNaoCifrada = Arrays.toString(senha).replace("[", "").replace(",", "").replace(" ","").replace("]", "");
-					newPrincipal.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, senhaNaoCifrada));
-					em.persist(newPrincipal.getRole());
-					em.persist(newPrincipal);
-					salvarEmail.enviarEmailNovoUsuario(newPrincipal,senhaNaoCifrada);
-//					Feed newFeed = new Feed();
-//					newFeed.setTexto("Novo usuário cadastrado: "+newPrincipal.getNome());
-//					newFeed.setUsuarioQueCriou(loginBean.getPrincipalsFromDB());
-//					em.persist(newFeed);
-					for(GrupoUsuariosPrincipals grupoUsuarios:newPrincipal.getGruposUsuarios())
-					{
-						grupoUsuarios.setPrincipals(newPrincipal);
-						em.persist(grupoUsuarios);
-					}
-					principalsEventSrc.fire(newPrincipal);
-					initNewPrincipal();
-				}
+				Roles newRole = new Roles();
+				newRole.setPrincipalID(newPrincipal.getPrincipalID());
+				newRole.setRole("USER");
+				newRole.setRoleGroup("USUARIOS");
+				newPrincipal.setRole(newRole);
 			}
 			else
 			{
-				newPrincipal.setPrimeiroLogin(Boolean.FALSE);
-				for(GrupoUsuariosPrincipals grupoUsuarios:newPrincipal.getGruposUsuarios())
-				{
-					if(grupoUsuarios.getId() == null)
-					{
-						grupoUsuarios.setPrincipals(newPrincipal);
-						em.persist(grupoUsuarios);
-					}
-				}
-				if(loginBean.isCallerInRole("ADMIN"))
-				{
-					em.merge(newPrincipal);
-					
-					principalsEventSrc.fire(newPrincipal);
-					initNewPrincipal();
-				}
-				else
-				{
-					if(!"".equalsIgnoreCase(newPrincipal.getPassword()))
-					{
-						newPrincipal.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, newPrincipal.getPassword()));
-						em.merge(newPrincipal);
-					
-						principalsEventSrc.fire(newPrincipal);
-						initNewPrincipal();
-					}
-					else
-					{
-						FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Não pode estar vazio.", null);
-						FacesContext.getCurrentInstance().addMessage("regPrincipals:senha", m);
-					}
-				}
+				Roles newRole = new Roles();
+				newRole.setPrincipalID(newPrincipal.getPrincipalID());
+				newRole.setRole("ADMIN");
+				newRole.setRoleGroup("ADMINISTRADORES");
+				newPrincipal.setRole(newRole);
+			}
+		}
+		if(newPrincipal.getGruposUsuarios().isEmpty())
+		{
+			FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Não pode estar vazio.", null);
+			FacesContext.getCurrentInstance().addMessage("regPrincipals:grupo", m);
+		}
+		else
+		{
+			int[] senha = new int[6];
+			String senhaNaoCifrada = "";
+			Random random = new Random();
+			for(int i = 0;i < 6;i++)
+			{
+				senha[i] = random.nextInt(9);
+			}
+			senhaNaoCifrada = Arrays.toString(senha).replace("[", "").replace(",", "").replace(" ","").replace("]", "");
+			newPrincipal.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, senhaNaoCifrada));
+			em.persist(newPrincipal.getRole());
+			em.persist(newPrincipal);
+			salvarEmail.enviarEmailNovoUsuario(newPrincipal,senhaNaoCifrada);
+//				Feed newFeed = new Feed();
+//				newFeed.setTexto("Novo usuário cadastrado: "+newPrincipal.getNome());
+//				newFeed.setUsuarioQueCriou(loginBean.getPrincipalsFromDB());
+//				em.persist(newFeed);
+			for(GrupoUsuariosPrincipals grupoUsuarios:newPrincipal.getGruposUsuarios())
+			{
+				grupoUsuarios.setPrincipals(newPrincipal);
+				em.persist(grupoUsuarios);
+			}
+			principalsEventSrc.fire(newPrincipal);
+			initNewPrincipal();
+		}
+	}
+	private void atualizarUsuario()
+	{
+		newPrincipal.setPrimeiroLogin(Boolean.FALSE);
+		for(GrupoUsuariosPrincipals grupoUsuarios:newPrincipal.getGruposUsuarios())
+		{
+			if(grupoUsuarios.getId() == null)
+			{
+				grupoUsuarios.setPrincipals(newPrincipal);
+				em.persist(grupoUsuarios);
+			}
+		}
+		if(!loginBean.isCallerInRole("ADMIN"))
+		{
+			if(!"".equalsIgnoreCase(newPrincipal.getPassword()))
+			{
+				newPrincipal.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, newPrincipal.getPassword()));
+				em.merge(newPrincipal);
+			
+				principalsEventSrc.fire(newPrincipal);
+				initNewPrincipal();
+			}
+		}
+		else
+		{
+			em.merge(newPrincipal);
+			
+			principalsEventSrc.fire(newPrincipal);
+			initNewPrincipal();
+			
+		}
+	}
+	public void salvar() throws Exception {
+		log.info("Salvando Principal" + newPrincipal.getPrincipalID());
+		if(valido())
+		{
+			salvaImagemEAssinatura();
+			if(newPrincipal.getId() == null)
+			{
+				salvarNovoUsuario();
+			}
+			else
+			{
+				atualizarUsuario();
 			}
 		}
 	}
