@@ -23,6 +23,7 @@ import javax.persistence.UniqueConstraint;
 import javax.servlet.http.Part;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.validator.constraints.Email;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -38,11 +39,12 @@ import org.hibernate.validator.constraints.NotEmpty;
 @NamedQueries(value={
 		@NamedQuery(name = "Principals.findAll",query = "SELECT p FROM Principals p JOIN FETCH p.Role ORDER BY p.nome"),
 		@NamedQuery(name = "Principals.findById",query = "SELECT p FROM Principals p JOIN FETCH p.Role WHERE p.id = :id"),
-		@NamedQuery(name = "Principals.findByEmail",query = "SELECT p FROM Principals p JOIN FETCH p.Role WHERE p.PrincipalID = :email"),
+		@NamedQuery(name = "Principals.findByEmail",query = "SELECT p FROM Principals p JOIN FETCH p.Role WHERE p.principalId = :email"),
 		@NamedQuery(name = "Principals.findImagemById",query = "SELECT p.imagem FROM Principals p WHERE p.id = :id"),
 		@NamedQuery(name = "Principals.findThumbnailById",query = "SELECT p.thumbnail FROM Principals p WHERE p.id = :id"),
 		@NamedQuery(name = "Principals.findAssinaturaById",query = "SELECT p.assinaturaEmail FROM Principals p WHERE p.id = :id"),
-		@NamedQuery(name = "Principals.findCargoById",query = "SELECT p.cargo FROM Principals p WHERE p.id = :id")
+		@NamedQuery(name = "Principals.findCargoById",query = "SELECT p.cargo FROM Principals p WHERE p.id = :id"),
+		@NamedQuery(name = "Principals.findDistribuidorById",query = "SELECT p.distribuidor FROM Principals p WHERE p.id = :id")
 		}
 )
 @SequenceGenerator(name="PRINCIPALS_SEQUENCE", sequenceName="PRINCIPALS_SEQUENCE", allocationSize=1, initialValue=1)
@@ -62,15 +64,17 @@ public class Principals implements Serializable {
 		primeiroLogin = true;
 		nome = "";
 		cargo = new Cargo();
+		distribuidor = null;
 	}
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="PRINCIPALS_SEQUENCE")
     private Long id;
 	
+	@Email
 	@NotNull
 	@NotEmpty
-	private String PrincipalID;
+	private String principalId;
 	
 	@NotNull
 	@NotEmpty
@@ -114,6 +118,10 @@ public class Principals implements Serializable {
 	  @JoinColumn(name = "cargo_id")
 	private Cargo cargo;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	  @JoinColumn(name = "distribuidor_id",referencedColumnName = "id", nullable=true)
+	private Lead distribuidor;
+	
 	@Transient
 	private Part imagemPart;
 	
@@ -128,12 +136,12 @@ public class Principals implements Serializable {
 		this.id = id;
 	}
 
-	public String getPrincipalID() {
-		return PrincipalID;
+	public String getPrincipalId() {
+		return principalId;
 	}
 
-	public void setPrincipalID(String principalID) {
-		PrincipalID = principalID;
+	public void setPrincipalId(String principalID) {
+		principalId = principalID;
 	}
 
 	public String getPassword() {
@@ -263,5 +271,12 @@ public class Principals implements Serializable {
 	public void setCelular2(String celular2) {
 		this.celular2 = celular2;
 	}
-	
+
+	public Lead getDistribuidor() {
+		return distribuidor;
+	}
+
+	public void setDistribuidor(Lead distribuidor) {
+		this.distribuidor = distribuidor;
+	}
 }

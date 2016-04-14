@@ -74,7 +74,7 @@ public class LoginBean {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Principals> criteria = cb.createQuery(Principals.class);
 		Root<Principals> principal = criteria.from(Principals.class);
-		criteria.select(principal).where(cb.equal(principal.get("PrincipalID"), username));
+		criteria.select(principal).where(cb.equal(principal.get("principalId"), username));
 		Principals principal2 = em.createQuery(criteria).getSingleResult();
 		return principal2;
 	}
@@ -99,15 +99,5 @@ public class LoginBean {
 			
 		}
 		return "/pages/public/login?faces-redirect=true";
-	}
-	@Schedule(second = "*",minute="*/1",hour="*",persistent=false)
-	public void buscaAtividadesAgenda2()
-	{
-		log.info("buscaAtividadesAgenda2");
-		if(RequestContext.getCurrentInstance()!=null)
-		{
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message Title", "Message body");
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-		}
 	}
 }

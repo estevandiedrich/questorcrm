@@ -9,7 +9,9 @@
 		<h:panelGrid columns="2" columnClasses="leftColumn,rightColumnIndex">
 			<h:form id="index">
 				<h:panelGrid>
-					<h:commandLink value="Usuários" action="#{salvarPrincipals.novo}"
+					<h:commandLink value="Novo Usuário" action="#{salvarPrincipals.novo}"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
+					<h:commandLink value="Usuários" action="#{salvarPrincipals.listagem}"
 						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
 					<h:commandLink value="Meu Perfil" action="#{salvarPrincipals.editarMeuPerfil}"
 						rendered="#{!loginBean.isCallerInRole('ADMIN')}" />

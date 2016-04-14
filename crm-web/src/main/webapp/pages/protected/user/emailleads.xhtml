@@ -125,7 +125,7 @@
 				<h:inputText id="lead_desc" disabled="true" style="border:none;background:white;"/>						
 			</h:panelGroup>
            <h:outputLabel for="from" value="De:" />
-           <h:inputText id="from" value="#{loginBean.principalsFromDB.principalID}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
+           <h:inputText id="from" value="#{loginBean.principalsFromDB.principalId}" disabled="#{!loginBean.isCallerInRole('ADMIN')}"/>
            <h:message for="from" errorClass="invalid" />
            
            <br />

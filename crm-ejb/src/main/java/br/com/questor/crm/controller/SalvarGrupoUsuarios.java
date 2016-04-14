@@ -5,8 +5,8 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Model;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -14,7 +14,9 @@ import javax.persistence.EntityManager;
 import br.com.questor.crm.model.GrupoUsuarios;
 
 @Stateful
-@Model
+//@Model
+@SessionScoped
+@Named
 public class SalvarGrupoUsuarios {
 	@Inject
 	private Logger log;
@@ -31,6 +33,11 @@ public class SalvarGrupoUsuarios {
 	@Named
 	public GrupoUsuarios getNewGrupoUsuarios() {
 		return newGrupoUsuarios;
+	}
+	public String editar(GrupoUsuarios grupoUsuarios)
+	{
+		newGrupoUsuarios = grupoUsuarios;
+		return "/pages/protected/admin/grupousuarios?faces-redirect=true";
 	}
 	public void excluir(GrupoUsuarios grupoUsuarios)
 	{

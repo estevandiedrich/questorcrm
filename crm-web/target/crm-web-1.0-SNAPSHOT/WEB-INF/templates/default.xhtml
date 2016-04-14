@@ -60,6 +60,10 @@
 	<div id="container">
 		<div id="content">
 			<h:panelGroup>
+				<h:outputLabel value="QUESTOR SISTEMAS INTELIGENTES" style="padding-bottom:40px;"/>
+				<h:outputLabel value="CONTROLE DE RELACIONAMENTO COMERCIAL" style="float:right;padding-bottom:40px;"/>
+			</h:panelGroup>
+			<h:panelGrid>
 				<h:outputLink value="/crm/pages/protected/user/index.xhtml"
 					rendered="#{view.viewId != '/pages/public/login.xhtml' and view.viewId != '/pages/protected/user/index.xhtml'}">
 					<h:outputText value="Home" />
@@ -70,7 +74,7 @@
 						<h:outputText value="Logout" />
 					</h:commandLink>
 				</h:form>
-			</h:panelGroup>
+			</h:panelGrid>
 			<ui:insert name="content">
 			
 			</ui:insert>

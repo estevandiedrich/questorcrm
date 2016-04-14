@@ -101,10 +101,10 @@ public class SalvarEmail {
             message.setRecipients(Message.RecipientType.TO,InternetAddress.parse(emailTo));            
             message.setSubject(newEmail.getSubject());
             //Corpo do email
-            message.setText(newEmail.getText());
+//            message.setText(newEmail.getText());
             
             BodyPart messageBodyPart = new MimeBodyPart();
-            messageBodyPart.setText("Anexos");
+            messageBodyPart.setText(newEmail.getText());
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messageBodyPart);
             messageBodyPart = new MimeBodyPart();
@@ -145,7 +145,7 @@ public class SalvarEmail {
 	{
 		ContatoEmail contatoEmail = new ContatoEmail();
 		Contato contato = new Contato();
-		contato.setEmail(principals.getPrincipalID());
+		contato.setEmail(principals.getPrincipalId());
 		contatoEmail.setContato(contato);
 		List<ContatoEmail> contatoEmailList = new ArrayList<>();
 		contatoEmailList.add(contatoEmail);
@@ -154,7 +154,13 @@ public class SalvarEmail {
 		novoUsuario.setEmailFrom(emailRecuperacaoSenha.getValor());
 		novoUsuario.setEmailTo(contatoEmailList);
 		novoUsuario.setSubject("Bem vindo ao Questor CRM");
-		novoUsuario.setText("http://www.questores.com.br/crm Senha temporária "+senhaNaoCifrada);
+		novoUsuario.setText("Prezado "+principals.getNome() +"\n"
+				+"A sua senha é: " + senhaNaoCifrada + "\n" 
+				+"Lembre-se que os dados do CRM são de propriedade da empresa e você é responsável pela guarda dessas informações. \n"
+				+"Atenciosamente. \n"
+				+"Área de administração \n"
+				+"Questor Sistemas Inteligentes \n"
+				+"http://www.questores.com.br/crm");
 		sendEmail(novoUsuario);
 	}
 	public void esqueceuSenha(String email)
@@ -174,7 +180,7 @@ public class SalvarEmail {
 			esquecido.setPrimeiroLogin(Boolean.TRUE);
 			ContatoEmail contatoEmail = new ContatoEmail();
 			Contato contato = new Contato();
-			contato.setEmail(esquecido.getPrincipalID());
+			contato.setEmail(esquecido.getPrincipalId());
 			contatoEmail.setContato(contato);
 			List<ContatoEmail> contatoEmailList = new ArrayList<>();
 			contatoEmailList.add(contatoEmail);
@@ -219,7 +225,7 @@ public class SalvarEmail {
 		if(newEmail.getId() == null)
 		{
 			newEmail.getLead().getEmails().add(newEmail);
-			newEmail.setEmailFrom(loginBean.getPrincipalsFromDB().getPrincipalID());
+			newEmail.setEmailFrom(loginBean.getPrincipalsFromDB().getPrincipalId());
 			newEmail.setSentDate(new Date());
 			em.persist(newEmail);
 			for(ContatoEmail contatoEmail:newEmail.getEmailTo())

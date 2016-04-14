@@ -36,9 +36,9 @@
 
       <h:form id="regCargo">
 		<h:panelGrid>
-			<h:outputLabel for="nome" value="Nome:" />
-            <h:inputText id="nome" value="#{newCargo.descricao}" />
-            <h:message for="nome" errorClass="invalid" />
+			<h:outputLabel for="descricao" value="Descrição:" />
+            <h:inputText id="descricao" value="#{newCargo.descricao}" />
+            <h:message for="descricao" errorClass="invalid" />
          <p>
             <h:commandButton id="salvar"
                action="#{salvarCargo.salvar}" value="Salvar" />
@@ -65,6 +65,13 @@
 		          <f:facet name="header">Descrição</f:facet>
 		              <h:outputText value="#{_cargo.descricao}"/>
 		        </h:column>
+		        <h:column>
+					<f:facet name="header"></f:facet>
+				        <h:commandLink value="Editar"
+							action="#{salvarCargo.editar(_cargo)}">
+							<f:ajax render="regCargo:descricao"/>
+						</h:commandLink>
+				</h:column>
 		        <h:column>
 					<f:facet name="header"></f:facet>
 					<h:commandLink value="Excluir" action="#{salvarCargo.excluir(_cargo)}" onclick="javascript:return confirm('Deseja realmente excluir este registro ?');">

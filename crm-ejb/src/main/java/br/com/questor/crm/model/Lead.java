@@ -37,12 +37,15 @@ import br.com.questor.crm.enums.LeadEnum;
 @NamedQueries(value = {
 		@NamedQuery(name = "Lead.findByIds",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade WHERE l.id IN (:leads) ORDER BY l.nome"),
 		@NamedQuery(name = "Conta.findByIds",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.CONTA AND l.id IN (:leads) ORDER BY l.nome"),
+		@NamedQuery(name = "Lead.findLeadsEmAvaliacao",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.EM_AVALIACAO ORDER BY l.dataCadastro DESC"),
 		@NamedQuery(name = "Lead.findByIdsSemUFCidade",query = "SELECT l FROM Lead l WHERE l.id IN (:leads) ORDER BY l.nome"),
 		@NamedQuery(name = "Conta.findByIdsSemUFCidade",query = "SELECT l FROM Lead l WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.CONTA AND l.id IN (:leads) ORDER BY l.nome"),
+		@NamedQuery(name = "Distribuidor.findByIdsSemUFCidade",query = "SELECT l FROM Lead l WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.DISTRIBUIDOR AND l.id IN (:leads) ORDER BY l.nome"),
 		@NamedQuery(name = "Lead.findAll",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade ORDER BY l.nome"),
 		@NamedQuery(name = "Conta.findAll",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.CONTA ORDER BY l.nome"),
 		@NamedQuery(name = "Lead.findAllSemUFCidade",query = "SELECT l FROM Lead l ORDER BY l.nome"),
 		@NamedQuery(name = "Conta.findAllSemUFCidade",query = "SELECT l FROM Lead l WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.CONTA ORDER BY l.nome"),
+		@NamedQuery(name = "Distribuidor.findAllSemUFCidade",query = "SELECT l FROM Lead l WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.DISTRIBUIDOR ORDER BY l.nome"),
 		@NamedQuery(name = "Lead.findImagemById",query = "SELECT l.imagem FROM Lead l WHERE l.id = :id")
 		}
 )
@@ -52,6 +55,7 @@ public class Lead implements Serializable {
 	public Lead()
 	{
 		this.leadPai = null;
+		
 		this.statusLead = LeadEnum.EM_AVALIACAO;
 		this.dataCadastro = new Date();
 		this.gruposUsuarios = new ArrayList<GrupoUsuariosLead>();

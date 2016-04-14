@@ -69,6 +69,13 @@
 		            <f:facet name="header">Descrição</f:facet>
 		                <h:outputText value="#{_grupoUsuarios.descricao}"/>
 		            </h:column>
+	            <h:column>
+				<f:facet name="header"></f:facet>
+			        <h:commandLink value="Editar"
+						action="#{salvarGrupoUsuarios.editar(_grupoUsuarios)}">
+						<f:ajax render="@form"/>
+					</h:commandLink>
+				</h:column>
 		         <h:column>
 					<f:facet name="header"></f:facet>
 						<h:commandLink id="excluir" value="Excluir" action="#{salvarGrupoUsuarios.excluir(_grupoUsuarios)}" onclick="javascript:return confirm('Deseja realmente excluir este registro ?');">

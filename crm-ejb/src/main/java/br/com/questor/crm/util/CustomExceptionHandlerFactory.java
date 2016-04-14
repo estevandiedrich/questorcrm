@@ -19,7 +19,7 @@ public class CustomExceptionHandlerFactory extends ExceptionHandlerFactory {
 //	se tiver problemas com sessao expirada adicionar o exceptionHandlerFactory no faces-config.xml
 //	    <factory>
 //        <exception-handler-factory>
-//            com.forest.exception.CustomExceptionHandlerFactory
+//            br.com.questor.crm.util.CustomExceptionHandlerFactory
 //        </exception-handler-factory>
 //		</factory>
 }

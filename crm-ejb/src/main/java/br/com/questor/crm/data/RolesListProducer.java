@@ -46,7 +46,7 @@ public class RolesListProducer {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Roles> criteria = cb.createQuery(Roles.class);
 		Root<Roles> role = criteria.from(Roles.class);
-		criteria.select(role).where(cb.equal(role.get("PrincipalID"), principal.getPrincipalID()));
+		criteria.select(role).where(cb.equal(role.get("PrincipalID"), principal.getPrincipalId()));
 		return em.createQuery(criteria).getSingleResult();
 	}
 }

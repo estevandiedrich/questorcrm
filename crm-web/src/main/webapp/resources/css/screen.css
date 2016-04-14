@@ -10,9 +10,9 @@ body {
     padding: 0 20px 10px 20px;
     border: 1px solid #666666;
     width: 865px; /* subtract 40px from banner width for padding */
-    background: #FFFFFF url(#{request.contextPath}/resources/images/logo_questor.png) no-repeat top right;
+    background: #FFFFFF url(#{request.contextPath}/resources/images/logo_questor.png) no-repeat bottom right;
     background-size: 200px;
-    padding-top: 110px;
+    padding-bottom: 110px;
 }
 #sidebar {
     font-size: 0.9em;

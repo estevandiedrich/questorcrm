@@ -35,6 +35,6 @@ public class EmailsEnviadosListProducer {
 	}
 	@PostConstruct
 	public void retrieveAllEmailsOrderedByNome() {
-		emailsEnviadosPorMim = em.createNamedQuery("Email.findByEmail").setParameter("email", loginBean.getPrincipalsFromDB().getPrincipalID()).getResultList();
+		emailsEnviadosPorMim = em.createNamedQuery("Email.findByEmail").setParameter("email", loginBean.getPrincipalsFromDB().getPrincipalId()).getResultList();
 	}
 }

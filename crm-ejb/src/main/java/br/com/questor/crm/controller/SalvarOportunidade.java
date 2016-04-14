@@ -131,7 +131,7 @@ public class SalvarOportunidade {
 		oportunidade.getConta().setEmails(emailListProducer.retrieveAllEmailsByLeadOrderedBySentDate(oportunidade.getConta()));
 		emailProposta.setLead(oportunidade.getConta());
 		emailProposta.setSentDate(new Date());
-		emailProposta.setEmailFrom(loginBean.getPrincipalsFromDB().getPrincipalID());
+		emailProposta.setEmailFrom(loginBean.getPrincipalsFromDB().getPrincipalId());
 		emailProposta.setEmailTo(contatoEmailList);
 		emailProposta.setSubject("Proposta comercial");
 		emailProposta.setText("Prezado Segue anexo proposta comercial");

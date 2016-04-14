@@ -36,6 +36,35 @@
 				$('#regPrincipals\\:cargo_desc').val(desc);
 				$('#myModalCargos').modal('hide');
 			}
+			function modalDistribuidor(){
+				$('#myModalDistribuidor').modal('show');
+			}
+			function selecionarDistribuidor()
+			{
+				var table = $('#regPrincipals\\:distribuidorDataTable').DataTable();
+				var id = table.row('.selected').data()[0];
+				var desc = table.row('.selected').data()[1];
+				$('#regPrincipals\\:distribuidor').val(id);
+				$('#regPrincipals\\:distribuidor_desc').val(desc);
+				$('#myModalDistribuidor').modal('hide');
+			}
+			function distribuidorDataTable()
+			{
+				var table2 = $('#regPrincipals\\:distribuidorDataTable').DataTable();
+
+				$('#regPrincipals\\:distribuidorDataTable tbody').on(
+						'click',
+						'tr',
+						function() {
+							if ($(this).hasClass('selected')) {
+								$(this).removeClass('selected');
+							} else {
+								table2.$('tr.selected').removeClass(
+										'selected');
+								$(this).addClass('selected');
+							}
+						});
+			}
 			function grupoUsuariosDataTable()
 			{
 				var table = $('#regPrincipals\\:grupoUsuariosDataTable').DataTable();
@@ -58,6 +87,7 @@
 						grupoUsuarios();
 						grupoUsuariosDataTable();
 						cargoDataTable();
+						distribuidorDataTable();
 						$('#regPrincipals\\:telefone').inputmask({
 					           mask: "(99)9999-99999"
 					 		}
@@ -138,7 +168,6 @@
 		</script>
 
 		<h1>Cadastro de Usuários</h1>
-
 		<h:form id="regPrincipals" enctype="multipart/form-data">
 			<h:panelGrid columns="2" columnClasses="rightColumn,leftColumn">
 				<h:panelGrid>
@@ -151,9 +180,9 @@
 						cache="false" width="300px" height="200px" rendered="#{salvarPrincipals.assinaturaCarregada()}"/>
 				</h:panelGrid>
 				<h:panelGrid>
-					<h:outputLabel for="email" value="Email:" />
-					<h:inputText id="email" value="#{newPrincipal.principalID}"/>
-					<h:message for="email" errorClass="invalid" />
+					<h:outputLabel for="principalId" value="Email:" />
+					<h:inputText id="principalId" value="#{newPrincipal.principalId}"/>
+					<h:message for="principalId" errorClass="invalid" />
 					<h:outputLabel for="nome" value="Nome:" />
 					<h:inputText id="nome" value="#{newPrincipal.nome}"/>
 					<h:message for="nome" errorClass="invalid" />
@@ -169,6 +198,13 @@
 					<h:outputLabel for="observacao" value="Observação:" />
 					<h:inputTextarea id="observacao" value="#{newPrincipal.observacao}" style="width:400px;"/>
 					<h:message for="observacao" errorClass="invalid" />
+					<h:outputLabel for="distribuidor" value="Distribuidor:" />
+					<h:panelGroup>
+						<h:inputText id="distribuidor" value="#{newPrincipal.distribuidor.id}"/>
+						<h:graphicImage library="images" name="magnifying.png"
+							onclick="javascript:modalDistribuidor()" />
+						<h:inputText id="distribuidor_desc" disabled="true" style="border:none;background:white;"/>
+					</h:panelGroup>
 					<h:outputLabel for="role" value="Nivel de acesso:" />
 					<h:selectOneMenu id="role" value="#{newPrincipal.role.role}" >
 						<f:selectItem itemValue="USER" itemLabel="Usuário" />
@@ -250,7 +286,7 @@
 	            </h:column>
 				<h:column>
 					<f:facet name="header">Nome</f:facet>
-	                <h:outputText value="#{_principal.principalID}"/>
+	                <h:outputText value="#{_principal.principalId}"/>
 	            </h:column>
 				<h:column>
 					<f:facet name="header">Nivel de acesso</f:facet>
@@ -289,9 +325,6 @@
 						<h:panelGrid id="grupoUsuariosPanelGrid">
 							<h:panelGroup rendered="#{empty gruposUsuarios}">
 								<em>Nenhum Grupo registrado.</em>
-								<h:outputLink value="javascript:myModalNovoGrupoUsuarios()">
-									<h:outputText value="Novo"/>
-								</h:outputLink>
 							</h:panelGroup>
 							<h:dataTable id="grupoUsuariosDataTable" var="_grupoUsuarios"
 								value="#{gruposUsuarios}" rendered="#{not empty gruposUsuarios}"
@@ -350,6 +383,63 @@
 						<button type="button" class="btn btn-primary"
 							onclick="javascript:selecionarCargo()">Selecionar</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal -->
+		<div id="myModalDistribuidor" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">X</button>
+						<h4 class="modal-title">Selecione o Distribuidor</h4>
+					</div>
+					<div class="modal-body">
+						<h:panelGroup rendered="#{empty distribuidores}">
+							<em>Nenhum distribuidor registrado.</em>
+						</h:panelGroup>
+						<h:dataTable id="distribuidorDataTable" var="_distribuidor" value="#{distribuidores}"
+							rendered="#{not empty distribuidores}" styleClass="table"
+							headerClass="table-header"
+							rowClasses="table-odd-row,table-even-row">
+							<h:column>
+								<f:facet name="header">Id</f:facet>
+								<h:outputText value="#{_distribuidor.id}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">Nome</f:facet>
+								<h:outputText value="#{_distribuidor.nome}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header"></f:facet>
+								<h:form>
+									<h:commandLink value="Editar"
+										action="#{salvarLead.editar(_distribuidor)}" />
+								</h:form>
+							</h:column>
+							<h:column>
+								<f:facet name="header"></f:facet>
+								<h:outputLink
+									value="/crm/pages/protected/user/emailleads.xhtml">
+									<h:outputText value="Email" />
+								</h:outputLink>
+							</h:column>
+							<h:column>
+								<f:facet name="header"></f:facet>
+								<h:outputLink
+									value="/crm/pages/protected/user/atividadeagenda.xhtml">
+									<h:outputText value="Agenda" />
+								</h:outputLink>
+							</h:column>
+						</h:dataTable>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+							onclick="javascript:selecionarDistribuidor()">Selecionar</button>
+						<button type="button" class="btn btn-default"
+							data-dismiss="modal">Fechar</button>
 					</div>
 				</div>
 			</div>

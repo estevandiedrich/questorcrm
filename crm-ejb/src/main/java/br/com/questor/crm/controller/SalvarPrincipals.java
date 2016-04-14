@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -23,6 +24,8 @@ import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 
 import org.apache.commons.io.IOUtils;
 import org.jboss.security.auth.spi.Util;
@@ -33,10 +36,10 @@ import br.com.questor.crm.data.GrupoUsuariosPrincipalsListProducer;
 import br.com.questor.crm.data.RolesListProducer;
 import br.com.questor.crm.model.Cargo;
 import br.com.questor.crm.model.GrupoUsuarios;
-import br.com.questor.crm.model.GrupoUsuariosLead;
 import br.com.questor.crm.model.GrupoUsuariosPrincipals;
 import br.com.questor.crm.model.ImagePart;
 import br.com.questor.crm.model.Imagem;
+import br.com.questor.crm.model.Lead;
 import br.com.questor.crm.model.Principals;
 import br.com.questor.crm.model.Roles;
 
@@ -78,7 +81,10 @@ public class SalvarPrincipals implements Serializable {
 	public Principals getNewPrincipal() {
 		return newPrincipal;
 	}
-	
+	public String listagem()
+	{
+		return "/pages/protected/admin/listagemprincipals?faces-redirect=true";
+	}
 	public String novo()
 	{
 		initNewPrincipal();
@@ -136,7 +142,7 @@ public class SalvarPrincipals implements Serializable {
 	}
 	public void excluir(Principals principal)
 	{
-		log.info("Excluindo Principal " + principal.getPrincipalID());
+		log.info("Excluindo Principal " + principal.getPrincipalId());
 		em.remove(em.contains(principal) ? principal:em.merge(principal));
 		principalsEventSrc.fire(principal);
 		initNewPrincipal();
@@ -252,10 +258,14 @@ public class SalvarPrincipals implements Serializable {
 	}
 	private void salvarNovoUsuario()
 	{
+		if(newPrincipal.getDistribuidor().getId() == null)
+		{
+			newPrincipal.setDistribuidor(null);
+		}
 		if(newPrincipal.getRole().getRole() == null)
 		{
 			Roles newRole = new Roles();
-			newRole.setPrincipalID(newPrincipal.getPrincipalID());
+			newRole.setPrincipalID(newPrincipal.getPrincipalId());
 			newRole.setRole("USER");
 			newRole.setRoleGroup("USUARIOS");
 			newPrincipal.setRole(newRole);
@@ -265,7 +275,7 @@ public class SalvarPrincipals implements Serializable {
 			if("USER".equalsIgnoreCase(newPrincipal.getRole().getRole()))
 			{
 				Roles newRole = new Roles();
-				newRole.setPrincipalID(newPrincipal.getPrincipalID());
+				newRole.setPrincipalID(newPrincipal.getPrincipalId());
 				newRole.setRole("USER");
 				newRole.setRoleGroup("USUARIOS");
 				newPrincipal.setRole(newRole);
@@ -273,7 +283,7 @@ public class SalvarPrincipals implements Serializable {
 			else
 			{
 				Roles newRole = new Roles();
-				newRole.setPrincipalID(newPrincipal.getPrincipalID());
+				newRole.setPrincipalID(newPrincipal.getPrincipalId());
 				newRole.setRole("ADMIN");
 				newRole.setRoleGroup("ADMINISTRADORES");
 				newPrincipal.setRole(newRole);
@@ -343,18 +353,26 @@ public class SalvarPrincipals implements Serializable {
 		}
 	}
 	public void salvar() throws Exception {
-		log.info("Salvando Principal" + newPrincipal.getPrincipalID());
-		if(valido())
+		log.info("Salvando Principal" + newPrincipal.getPrincipalId());
+		try
 		{
-			salvaImagemEAssinatura();
-			if(newPrincipal.getId() == null)
+			if(valido())
 			{
-				salvarNovoUsuario();
+				salvaImagemEAssinatura();
+				if(newPrincipal.getId() == null)
+				{
+					salvarNovoUsuario();
+				}
+				else
+				{
+					atualizarUsuario();
+				}
 			}
-			else
-			{
-				atualizarUsuario();
-			}
+		}
+		catch(PersistenceException e)
+		{
+			FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getCause().getMessage(), null);
+            FacesContext.getCurrentInstance().addMessage("erros", m);
 		}
 	}
 	public boolean imagemCarregada()
@@ -387,6 +405,10 @@ public class SalvarPrincipals implements Serializable {
 	{		
 		if(newPrincipal != null && newPrincipal.getId() != null)
 		{
+			if(newPrincipal.getDistribuidor() == null)
+			{
+				newPrincipal.setDistribuidor(new Lead());
+			}
 			if(newPrincipal.getImagem() != null)
 			{
 				Imagem imagem = (Imagem)em.createNamedQuery("Principals.findImagemById").setParameter("id", newPrincipal.getId()).getSingleResult();
@@ -415,20 +437,46 @@ public class SalvarPrincipals implements Serializable {
 			newPrincipal.setRole(roles);
 			Cargo cargo = (Cargo) em.createNamedQuery("Principals.findCargoById").setParameter("id", newPrincipal.getId()).getSingleResult();
 			newPrincipal.setCargo(cargo);
+			try
+			{
+				Lead distribuidor = (Lead) em.createNamedQuery("Principals.findDistribuidorById").setParameter("id", newPrincipal.getId()).getSingleResult();
+				newPrincipal.setDistribuidor(distribuidor);
+			}
+			catch(NoResultException nre)
+			{
+				log.log(Level.SEVERE, "Não tem distribuidor", nre);
+			}
 		}
 	}
 	@PostConstruct
 	public void initNewPrincipal() {
 		newPrincipal = new Principals();
+		newPrincipal.setDistribuidor(new Lead());
 	}
 	public StreamedContent carregaAssinatura(Principals principals) throws IOException
 	{
-		Imagem imagem = (Imagem)em.createNamedQuery("Principals.findAssinaturaById").setParameter("id", principals.getId()).getSingleResult();
+		Imagem imagem = null;
+		try
+		{
+			imagem = (Imagem)em.createNamedQuery("Principals.findAssinaturaById").setParameter("id", principals.getId()).getSingleResult();
+		}
+		catch(NoResultException e)
+		{
+			log.log(Level.SEVERE, "Não há assinatura cadastrada", e);
+		}
 		return carregaImagem(imagem);
 	}
 	public StreamedContent carregaImagem(Principals principals) throws IOException
 	{
-		Imagem imagem = (Imagem)em.createNamedQuery("Principals.findImagemById").setParameter("id", principals.getId()).getSingleResult();
+		Imagem imagem = null;
+		try
+		{
+			imagem = (Imagem)em.createNamedQuery("Principals.findImagemById").setParameter("id", principals.getId()).getSingleResult();
+		}
+		catch(NoResultException e)
+		{
+			log.log(Level.SEVERE, "Não há imagem cadastrada", e);
+		}
 		return carregaImagem(imagem);
 	}
 	public StreamedContent carregaImagem(Imagem imagem)

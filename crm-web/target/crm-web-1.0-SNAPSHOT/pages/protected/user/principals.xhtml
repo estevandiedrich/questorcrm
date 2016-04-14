@@ -52,9 +52,9 @@
 						cache="false" width="300px" height="200px" rendered="#{salvarPrincipals.assinaturaCarregada()}"/>
 				</h:panelGrid>
 				<h:panelGrid>
-					<h:outputLabel for="email" value="Email:" />
-					<h:inputText id="email" value="#{newPrincipal.principalID}" disabled="true"/>
-					<h:message for="email" errorClass="invalid" />
+					<h:outputLabel for="principalId" value="Email:" />
+					<h:inputText id="principalId" value="#{newPrincipal.principalId}" disabled="true"/>
+					<h:message for="principalId" errorClass="invalid" />
 					<h:outputLabel for="senha" value="Senha:" />
 					<h:inputSecret id="senha" value="#{newPrincipal.password}"/>
 					<h:message for="senha" errorClass="invalid" />

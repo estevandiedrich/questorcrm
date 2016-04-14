@@ -4,7 +4,8 @@ public enum LeadEnum {
 	EM_AVALIACAO("Em avaliação"),
 	QUALIFICADA("Qualificada"),
 	DESQUALIFICADA("Desqualificada"),
-	CONTA("Conta");
+	CONTA("Conta"),
+	DISTRIBUIDOR("Distribuidor");
 	private final String descricao;
 	LeadEnum(String descricao)
 	{
