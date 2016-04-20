@@ -56,6 +56,30 @@
 				$('#regLeads\\:uf_desc').val(desc);
 				$('#myModalUF').modal('hide');
 			}
+			function modalOrigem()
+			{
+				$('#myModalOrigem').modal('show');
+			}
+			function selecionarOrigem() {
+				var table = $('#regLeads\\:origensDataTable').DataTable();
+				var id = table.row('.selected').data()[0];
+				var desc = table.row('.selected').data()[1];
+				$('#regLeads\\:origem').val(id);
+				$('#regLeads\\:origem_desc').val(desc);
+				$('#myModalOrigem').modal('hide');
+			}
+			function modalAtividade()
+			{
+				$('#myModalAtividade').modal('show');
+			}
+			function selecionarAtividade() {
+				var table = $('#regLeads\\:atividadesDataTable').DataTable();
+				var id = table.row('.selected').data()[0];
+				var desc = table.row('.selected').data()[1];
+				$('#regLeads\\:atividade').val(id);
+				$('#regLeads\\:atividade_desc').val(desc);
+				$('#myModalAtividade').modal('hide');
+			}
 			function modalCidade()
 			{
 				$('#myModalCidade').modal('show');
@@ -67,6 +91,22 @@
 				$('#regLeads\\:cidade').val(id);
 				$('#regLeads\\:cidade_desc').val(desc);
 				$('#myModalCidade').modal('hide');
+			}
+			function atividadesDataTable()
+			{
+				var table = $('#regLeads\\:atividadesDataTable').DataTable();
+				$('#regLeads\\:atividadesDataTable tbody').on(
+						'click',
+						'tr',
+						function() {
+							if ($(this).hasClass('selected')) {
+								$(this).removeClass('selected');
+							} else {
+								table.$('tr.selected').removeClass(
+										'selected');
+								$(this).addClass('selected');
+							}
+						});
 			}
 			function leadsDataTable()
 			{
@@ -106,6 +146,21 @@
 						leadsDataTable();
 						leadsPaiDataTable();
 						oportunidadesDataTable();
+						origensDataTable();
+						atividadesDataTable();
+						$('#regLeads\\:quantidadeFuncionarios').numeric();
+						$('#regLeads\\:uf').numeric();
+						$('#regLeads\\:cidade').numeric();
+						$('#regLeads\\:membro').numeric();
+						$('#regLeads\\:origem').numeric();
+						$('#regLeads\\:grupoUsuarios').numeric();
+						$('#regLeads\\:receitaAnual').maskMoney({
+					           allowNegative:false,
+					           thousands:'.',
+					           decimal:',',
+					           affixesStay:false
+					 		}
+						);
 					});
 			$(window).load(function() {
 				jsf.ajax.addOnEvent(function(data) {
@@ -139,6 +194,20 @@
 				var table2 = $('#regLeads\\:oportunidadesDataTable').DataTable();
 				 
 			    $('#regLeads\\:oportunidadesDataTable tbody').on( 'click', 'tr', function () {
+			        if ( $(this).hasClass('selected') ) {
+			            $(this).removeClass('selected');
+			        }
+			        else {
+			            table2.$('tr.selected').removeClass('selected');
+			            $(this).addClass('selected');
+			        }
+			    } );
+			}
+			function origensDataTable()
+			{
+				var table2 = $('#regLeads\\:origensDataTable').DataTable();
+				 
+			    $('#regLeads\\:origensDataTable tbody').on( 'click', 'tr', function () {
 			        if ( $(this).hasClass('selected') ) {
 			            $(this).removeClass('selected');
 			        }
@@ -195,9 +264,23 @@
 			<h:panelGrid>
 				<h:panelGrid columns="2" columnClasses="leftColumn,rightColumn">
 					<h:panelGrid>
+						<h:outputLabel for="usuarioQueCadastrou" value="Usuário que Cadastrou:" />
+						<h:inputText id="usuarioQueCadastrou" value="#{newLead.usuarioQueCadastrou.nome}" disabled="true"/>
+						<h:message for="usuarioQueCadastrou" errorClass="invalid" />
+						<h:outputLabel for="dataCadastro" value="Data do Cadastro:" />
+						<h:inputText id="dataCadastro" value="#{newLead.dataCadastro}" disabled="true">
+							<f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm:ss" locale="pt_BR" timeZone="GMT-3"/>
+						</h:inputText>
+						<h:message for="dataCadastro" errorClass="invalid" />
 						<h:outputLabel for="nome" value="Nome:" />
 						<h:inputText id="nome" value="#{newLead.nome}" />
 						<h:message for="nome" errorClass="invalid" />
+						<h:outputLabel for="site" value="Site:" />
+						<h:inputText id="site" value="#{newLead.site}" />
+						<h:message for="site" errorClass="invalid" />
+						<h:outputLabel for="observacao" value="Observação:" />
+						<h:inputTextarea id="observacao" value="#{newLead.observacao}" style="width:800px;"/>
+						<h:message for="observacao" errorClass="invalid" />
 						<h:outputLabel for="foto" value="Foto:" />
 						<h:inputFile id="foto" value="#{newLead.imagemPart}">
 							<f:validator binding="#{fileUploadValidator}"/>
@@ -247,6 +330,14 @@
 						<h:outputLabel for="bairro" value="Bairro:" />
 						<h:inputText id="bairro" value="#{newLead.bairro}" />
 						<h:message for="bairro" errorClass="invalid" />
+						<h:outputLabel for="quantidadeFuncionarios" value="Quantidade de funcionários:" />
+						<h:inputText id="quantidadeFuncionarios" value="#{newLead.quantidadeFuncionarios}" style="text-align:right;"/>
+						<h:message for="quantidadeFuncionarios" errorClass="invalid" />
+						<h:outputLabel for="receitaAnual" value="Receita anual:" />
+						<h:inputText id="receitaAnual" value="#{newLead.receitaAnual}" style="text-align:right;">
+							<f:convertNumber pattern="#,##0.00"/>
+						</h:inputText>
+						<h:message for="receitaAnual" errorClass="invalid" />
 						<h:outputLabel for="logradouro" value="Logradouro:" />
 						<h:inputText id="logradouro" value="#{newLead.logradouro}" />
 						<h:message for="logradouro" errorClass="invalid" />
@@ -254,7 +345,7 @@
 						<h:inputText id="endereco" value="#{newLead.endereco}" />
 						<h:message for="endereco" errorClass="invalid" />
 						<h:outputLabel for="numero" value="Número:" />
-						<h:inputText id="numero" value="#{newLead.numero}" />
+						<h:inputText id="numero" value="#{newLead.numero}" style="text-align:right;"/>
 						<h:message for="numero" errorClass="invalid" />
 						<h:outputLabel for="cep" value="CEP:" />
 						<h:inputText id="cep" value="#{newLead.cep}" />
@@ -265,6 +356,22 @@
 							<h:graphicImage library="images" name="magnifying.png"
 								onclick="javascript:modalLeadPai()" />
 							<h:inputText id="membro_desc" disabled="true" style="border:none;background:white;"/>
+						</h:panelGroup>
+						<h:outputLabel for="origem" value="Origem:" />
+						<h:panelGroup>
+							<h:inputText id="origem"
+								value="#{newLead.origem.id}"/>
+							<h:graphicImage library="images" name="magnifying.png"
+								onclick="javascript:modalOrigem()" />
+							<h:inputText id="origem_desc" disabled="true" style="border:none;background:white;"/>
+						</h:panelGroup>
+						<h:outputLabel for="atividade" value="Ramo de Atividade:" />
+						<h:panelGroup>
+							<h:inputText id="atividade"
+								value="#{newLead.atividade.id}"/>
+							<h:graphicImage library="images" name="magnifying.png"
+								onclick="javascript:modalAtividade()" />
+							<h:inputText id="atividade_desc" disabled="true" style="border:none;background:white;"/>
 						</h:panelGroup>
 						<h:outputLabel for="grupoUsuarios" value="Grupos de Usuários:" />
 						<h:panelGroup>
@@ -442,6 +549,78 @@
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary"
 								onclick="javascript:selecionarGrupoUsuarios()">Selecionar</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal -->
+			<div id="myModalOrigem" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Selecione a Origem</h4>
+						</div>
+						<div class="modal-body">
+							<h2>Origens</h2>
+							<h:panelGroup rendered="#{empty origens}">
+								<em>Nenhuma Origem registrada.</em>
+							</h:panelGroup>
+							<h:dataTable id="origensDataTable" var="_origem"
+								value="#{origens}" rendered="#{not empty origens}"
+								styleClass="table" headerClass="table-header"
+								rowClasses="table-odd-row,table-even-row">
+								<h:column>
+									<f:facet name="header">Id</f:facet>
+						                <h:outputText value="#{_origem.id}"/>
+						            </h:column>
+								<h:column>
+									<f:facet name="header">Descrição</f:facet>
+						                <h:outputText value="#{_origem.descricao}"/>
+						            </h:column>
+							</h:dataTable>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								onclick="javascript:selecionarOrigem()">Selecionar</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal -->
+			<div id="myModalAtividade" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Selecione a Atividade</h4>
+						</div>
+						<div class="modal-body">
+							<h2>Atividades</h2>
+							<h:panelGroup rendered="#{empty atividades}">
+								<em>Nenhuma Atividade registrada.</em>
+							</h:panelGroup>
+							<h:dataTable id="atividadesDataTable" var="_atividade"
+								value="#{atividades}" rendered="#{not empty atividades}"
+								styleClass="table" headerClass="table-header"
+								rowClasses="table-odd-row,table-even-row">
+								<h:column>
+									<f:facet name="header">Id</f:facet>
+						                <h:outputText value="#{_atividade.id}"/>
+						            </h:column>
+								<h:column>
+									<f:facet name="header">Descrição</f:facet>
+						                <h:outputText value="#{_atividade.descricao}"/>
+						            </h:column>
+							</h:dataTable>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								onclick="javascript:selecionarAtividade()">Selecionar</button>
 							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
 						</div>
 					</div>

@@ -34,6 +34,11 @@ public class SalvarGrupoUsuarios {
 	public GrupoUsuarios getNewGrupoUsuarios() {
 		return newGrupoUsuarios;
 	}
+	public String novo()
+	{
+		initNewGrupoUsuarios();
+		return "/pages/protected/admin/grupousuarios?faces-redirect=true";
+	}
 	public String editar(GrupoUsuarios grupoUsuarios)
 	{
 		newGrupoUsuarios = grupoUsuarios;
@@ -48,7 +53,14 @@ public class SalvarGrupoUsuarios {
 	}
 	public void salvar() throws Exception {
 		log.info("Salvando Grupo Usuarios" + newGrupoUsuarios.getDescricao());
-		em.persist(newGrupoUsuarios);
+		if(newGrupoUsuarios.getId() == null)
+		{
+			em.persist(newGrupoUsuarios);
+		}
+		else
+		{
+			em.merge(newGrupoUsuarios);
+		}
 		grupoUsuariosEventSrc.fire(newGrupoUsuarios);
 		initNewGrupoUsuarios();
 	}

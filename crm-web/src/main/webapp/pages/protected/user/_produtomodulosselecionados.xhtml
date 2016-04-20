@@ -85,6 +85,20 @@
 						modulosSelecionadosDataTable();
 						modulosDataTable();
 						tipoContratacaoDataTable();
+						$('#regOportunidade\\:valorUnitario').maskMoney({
+					           allowNegative:false,
+					           thousands:'.',
+					           decimal:',',
+					           affixesStay:false
+					 		}
+						);
+						$('#regOportunidade\\:valorTotal').maskMoney({
+					           allowNegative:false,
+					           thousands:'.',
+					           decimal:',',
+					           affixesStay:false
+					 		}
+						);
 					});
 			function produtoModulosSelecionadosDataTable() {
 				var table = $(
@@ -201,7 +215,8 @@
 			<h:message for="quantidade" errorClass="invalid" />
 			<h:outputLabel for="valorUnitario" value="Valor unitário:" />
 			<h:inputText id="valorUnitario"
-				value="#{newProdutoModulosSelecionados.valorUnitario}">
+				value="#{newProdutoModulosSelecionados.valorUnitario}" style="text-align:right;">
+				<f:convertNumber pattern="#,##0.00"/>
 				<f:ajax event="change"
 					execute="regOportunidade:quantidade regOportunidade:valorUnitario"
 					render="regOportunidade:valorTotal"
@@ -210,7 +225,9 @@
 			<h:message for="quantidade" errorClass="invalid" />
 			<h:outputLabel for="valorTotal" value="Valor total:" />
 			<h:inputText id="valorTotal"
-				value="#{newProdutoModulosSelecionados.valorTotal}" disabled="true" />
+				value="#{newProdutoModulosSelecionados.valorTotal}" disabled="true" style="text-align:right;">
+				<f:convertNumber pattern="#,##0.00"/>
+			</h:inputText>
 			<h:message for="valorTotal" errorClass="invalid" />
 			<h:outputLabel for="produto" value="Produto:" />
 			<h:panelGroup>

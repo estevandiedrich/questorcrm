@@ -15,15 +15,10 @@
 						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
 					<h:commandLink value="Meu Perfil" action="#{salvarPrincipals.editarMeuPerfil}"
 						rendered="#{!loginBean.isCallerInRole('ADMIN')}" />
-					<h:outputLink
-						value="/crm/pages/protected/admin/grupousuarios.xhtml"
-						rendered="#{loginBean.isCallerInRole('ADMIN')}">
-						<h:outputText value="Grupos de usuários" />
-					</h:outputLink>
-					<h:outputLink value="/crm/pages/protected/admin/cargo.xhtml"
-						rendered="#{loginBean.isCallerInRole('ADMIN')}">
-						<h:outputText value="Cargo" />
-					</h:outputLink>
+					<h:commandLink value="Cargo" action="#{salvarCargo.novo}"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
+					<h:commandLink value="Grupo de usuários" action="#{salvarGrupoUsuarios.novo}"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
 					<h:panelGrid>
 						<h:commandLink value="Nova Lead ou Conta"
 							action="#{salvarLead.novo}" />
@@ -43,15 +38,12 @@
 					</h:outputLink>
 					<h:commandLink value="Produtos" action="#{salvarProduto.novo}"
 						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
-					<h:outputLink value="/crm/pages/protected/admin/modulo.xhtml"
-						rendered="#{loginBean.isCallerInRole('ADMIN')}">
-						<h:outputText value="Módulos" />
-					</h:outputLink>
-					<h:outputLink
-						value="/crm/pages/protected/admin/tipocontratacao.xhtml"
-						rendered="#{loginBean.isCallerInRole('ADMIN')}">
-						<h:outputText value="Tipos de contratação" />
-					</h:outputLink>
+					<h:commandLink value="Origens" action="#{salvarOrigem.novo}"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
+					<h:commandLink value="Atividades" action="#{salvarAtividade.novo}"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
+					<h:commandLink value="Tipos de Contratação"
+							action="#{salvarTipoContratacao.novo}" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
 					<h:outputLink value="/crm/pages/protected/user/uf.xhtml"
 						rendered="#{loginBean.isCallerInRole('ADMIN')}">
 						<h:outputText value="UFs" />
@@ -60,6 +52,8 @@
 						rendered="#{loginBean.isCallerInRole('ADMIN')}">
 						<h:outputText value="Cidades" />
 					</h:outputLink>
+					<h:commandLink value="Propriedades"
+							action="#{salvarPropriedade.novo}" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
 				</h:panelGrid>
 			</h:form>
 			<h:form id="feeds">

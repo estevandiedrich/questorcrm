@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -73,9 +74,9 @@ public class Oportunidade implements Serializable{
 	private String observacao;
 	
 	private FaseOportunidadeEnum fase;
-	
+	@Column(length=13,precision=2)
 	private BigDecimal valorTotalServicos;
-	
+	@Column(length=13,precision=2)
 	private BigDecimal valorTotalProdutos;
 	
 	@OneToMany(mappedBy = "oportunidade", targetEntity = OportunidadeContato.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)

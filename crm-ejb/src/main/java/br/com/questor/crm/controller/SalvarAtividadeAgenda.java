@@ -11,6 +11,7 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -111,7 +112,10 @@ public class SalvarAtividadeAgenda {
 	public AtividadeAgenda getNewAtividadeAgenda() {
 		return newAtividadeAgenda;
 	}
-	
+	public void avisarComAntecedenciaHandler(AjaxBehaviorEvent e)
+	{
+		log.info("avisar com antecedencia");
+	}
 	public void salvar() throws Exception {
 		log.info("Salvando AtividadeAgenda" + newAtividadeAgenda.getLembrete());
 		em.persist(newAtividadeAgenda);

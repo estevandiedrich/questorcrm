@@ -31,6 +31,7 @@ import br.com.questor.crm.data.GrupoUsuariosPrincipalsListProducer;
 import br.com.questor.crm.data.NotaListProducer;
 import br.com.questor.crm.data.OportunidadeListProducer;
 import br.com.questor.crm.model.Anexo;
+import br.com.questor.crm.model.Atividade;
 import br.com.questor.crm.model.AtividadeAgenda;
 import br.com.questor.crm.model.Cidade;
 import br.com.questor.crm.model.Contato;
@@ -42,6 +43,7 @@ import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
 import br.com.questor.crm.model.Nota;
 import br.com.questor.crm.model.Oportunidade;
+import br.com.questor.crm.model.Origem;
 import br.com.questor.crm.model.Principals;
 import br.com.questor.crm.model.UF;
 
@@ -142,6 +144,14 @@ public class SalvarLead implements Serializable {
 				imagem.setImagem(IOUtils.toByteArray(newLead.getImagemPart().getInputStream()));
 				em.persist(imagem);
 				newLead.setImagem(imagem);
+			}
+			if(newLead.getOrigem() != null && newLead.getOrigem().getId() == null)
+			{
+				newLead.setOrigem(null);
+			}
+			if(newLead.getAtividade() != null && newLead.getAtividade().getId() == null)
+			{
+				newLead.setAtividade(null);
 			}
 			if (newLead.getLeadPai() != null && newLead.getLeadPai().getId() == null) {
 				newLead.setLeadPai(null);
@@ -282,7 +292,14 @@ public class SalvarLead implements Serializable {
 			{
 				newLead.setCidadesPorUf(new ArrayList<Cidade>());
 			}
-			log.info(newLead.getEmails().size() + " emails");
+			if(newLead.getOrigem() == null)
+			{
+				newLead.setOrigem(new Origem());
+			}
+			if(newLead.getAtividade() == null)
+			{
+				newLead.setAtividade(new Atividade());
+			}
 		}
 	}
 	@PostConstruct

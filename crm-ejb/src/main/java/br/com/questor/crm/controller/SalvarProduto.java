@@ -50,11 +50,27 @@ public class SalvarProduto {
 		initNewProduto();
 		return "/pages/protected/admin/produtos?faces-redirect=true";
 	}
-	
-	public void adicionar(String id)
+	public void editarModulo(Modulo modulo)
 	{
-		Modulo modulo = em.find(Modulo.class, Long.parseLong(id));
-		newProduto.getModulos().add(modulo);
+		newProduto.setModulo(modulo);
+	}
+	public void excluirModulo(Modulo modulo)
+	{
+		log.info("Excluindo Modulo " + modulo.getDescricao());
+		em.remove(em.contains(modulo) ? modulo:em.merge(modulo));
+		newProduto.getModulos().remove(modulo);
+	}
+	public void adicionar(Modulo modulo)
+	{
+		if(modulo.getId() != null)
+		{
+			em.merge(modulo);
+		}
+		else
+		{
+			newProduto.getModulos().add(modulo);
+		}
+		newProduto.setModulo(new Modulo());
 	}
 	public void excluir(Produto produto)
 	{
@@ -70,13 +86,21 @@ public class SalvarProduto {
 			em.persist(newProduto);
 			for(Modulo modulo:newProduto.getModulos())
 			{
-				modulo.setProduto(newProduto);
-				em.merge(modulo);
+				modulo.setProduto(newProduto);				
+				em.persist(modulo);
 			}
 		}
 		else
 		{
 			em.merge(newProduto);
+			for(Modulo modulo:newProduto.getModulos())
+			{
+				modulo.setProduto(newProduto);
+				if(modulo.getId() == null)
+				{
+					em.persist(modulo);
+				}
+			}
 		}
 		produtoEventSrc.fire(newProduto);
 		initNewProduto();

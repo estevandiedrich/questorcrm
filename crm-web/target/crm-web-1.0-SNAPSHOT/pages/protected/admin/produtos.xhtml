@@ -128,15 +128,11 @@
 					<f:selectItems value="#{newProduto.tipoProdutoValues}"/>
 				</h:selectOneMenu>
 				<h:outputLabel for="modulo" value="Módulo:" />
-				<h:panelGroup>
-					<h:inputText id="modulo" value="#{newProduto.modulo.id}"/>
-					<h:graphicImage library="images" name="magnifying.png" onclick="javascript:modalModulo()"/>
-					<h:inputText id="modulo_desc" disabled="true" style="border:none;background:white;"/> 
-				</h:panelGroup>
+				<h:inputText id="modulo" value="#{newProduto.modulo.descricao}"/>
 				<h:message for="modulo" errorClass="invalid" />
 				<br/>
-				<h:commandButton id="adicionar" action="#{salvarProduto.adicionar(newProduto.modulo.id)}" value="Adicionar Módulo">
-					<f:ajax execute="regProdutos:modulo" render="regProdutos:modulosDoProdutoPanelGrid"/>
+				<h:commandButton id="adicionar" action="#{salvarProduto.adicionar(newProduto.modulo)}" value="Adicionar Módulo">
+					<f:ajax execute="regProdutos:modulo" render="regProdutos:modulo regProdutos:modulosDoProdutoPanelGrid"/>
 				</h:commandButton>
 				<br/>
 				<h:panelGrid id="modulosDoProdutoPanelGrid">
@@ -158,6 +154,16 @@
 			            	<f:facet name="header">Descrição</f:facet>
 			                <h:outputText value="#{_modulo.descricao}"/>
 			            </h:column>
+			            <h:column>
+			                <h:commandLink value="Editar" action="#{salvarProduto.editarModulo(_modulo)}">
+			                	<f:ajax render="regProdutos:modulo"/>
+			                </h:commandLink>
+			            </h:column>
+			            <h:column>
+							<h:commandLink id="excluir" value="Excluir" action="#{salvarProduto.excluirModulo(_modulo)}" onclick="javascript:return confirm('Deseja realmente excluir este registro ?');">
+								<f:ajax render="regProdutos:modulosDoProdutoPanelGrid"/>
+							</h:commandLink>
+						</h:column>
 			     	 </h:dataTable>
 		     	 </h:panelGrid>
 				<br />

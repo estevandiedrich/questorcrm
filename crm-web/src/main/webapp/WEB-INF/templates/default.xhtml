@@ -2,6 +2,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <h:head>
 	<title>Java EE 6 Starter Application</title>
@@ -55,10 +56,17 @@
 	<h:outputScript name="js/jquery.dataTables.min.js" target="head"/>
 	<h:outputScript name="js/jquery-ui.multidatespicker.js" target="head"/>
 	<h:outputScript name="js/jquery.inputmask.bundle.min.js" target="head"/>
+	<h:outputScript name="js/jquery.maskMoney.min.js" target="head"/>
 </h:head>
 <h:body>
 	<div id="container">
 		<div id="content">
+			<h:form>
+				<p:poll interval="60" listener="#{loginBean.verificaAtividadeAgenda()}"/>
+				<p:dialog id="myDialogId" widgetVar="myDialogVar" modal="true" header="Agenda">
+					<h:outputText value="Você tem um compromisso agendado, por favor verifique sua agenda."/>
+				</p:dialog>
+			</h:form>
 			<h:panelGroup>
 				<h:outputLabel value="QUESTOR SISTEMAS INTELIGENTES" style="padding-bottom:40px;"/>
 				<h:outputLabel value="CONTROLE DE RELACIONAMENTO COMERCIAL" style="float:right;padding-bottom:40px;"/>

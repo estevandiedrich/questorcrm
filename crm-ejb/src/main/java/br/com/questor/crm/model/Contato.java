@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
@@ -47,10 +48,13 @@ public class Contato implements Serializable{
 	
 	@NotNull
 	private String nome;
+	@Email
 	@NotNull
 	private String email;
 	
 	private String telefone;
+	
+	private String celular;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "cargo_id")
@@ -105,5 +109,13 @@ public class Contato implements Serializable{
 
 	public void setCargo(Cargo cargo) {
 		this.cargo = cargo;
+	}
+
+	public String getCelular() {
+		return celular;
+	}
+
+	public void setCelular(String celular) {
+		this.celular = celular;
 	}
 }

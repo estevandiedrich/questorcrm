@@ -4,8 +4,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Model;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -14,7 +14,9 @@ import javax.persistence.EntityManager;
 import br.com.questor.crm.model.Modulo;
 
 @Stateful
-@Model
+//@Model
+@Named
+@SessionScoped
 public class SalvarModulo {
 	@Inject
 	private Logger log;
@@ -31,6 +33,11 @@ public class SalvarModulo {
 	@Named
 	public Modulo getNewModulo() {
 		return newModulo;
+	}
+	public String editar(Modulo modulo)
+	{
+		newModulo = modulo;
+		return "/pages/protected/admin/modulo?faces-redirect=true";
 	}
 	public void excluir(Modulo modulo)
 	{

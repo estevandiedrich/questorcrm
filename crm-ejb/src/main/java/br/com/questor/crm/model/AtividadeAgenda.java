@@ -36,7 +36,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 	{
 			@NamedQuery(name = "AtividadeAgenda.findAll",query = "SELECT aa FROM AtividadeAgenda AS aa INNER JOIN aa.usuario AS u INNER JOIN u.Role AS r ORDER BY aa.dataEHora "),
 			@NamedQuery(name = "AtividadeAgenda.findByLead",query = "SELECT aa FROM AtividadeAgenda AS aa JOIN FETCH aa.usuario WHERE aa.lead.id = :lead ORDER BY aa.dataEHora "),
-			@NamedQuery(name = "AtividadeAgenda.findByPrincipal",query = "SELECT aa FROM AtividadeAgenda AS aa JOIN FETCH aa.lead JOIN FETCH aa.usuario JOIN aa.participantesInternos pi WHERE aa.usuario.id = :principal OR pi.participantesInternos.id = :principal ORDER BY aa.dataEHora ")
+			@NamedQuery(name = "AtividadeAgenda.findByPrincipal",query = "SELECT aa FROM AtividadeAgenda AS aa JOIN FETCH aa.lead JOIN FETCH aa.usuario JOIN aa.participantesInternos pi WHERE aa.usuario.id = :principal OR pi.participantesInternos.id = :principal ORDER BY aa.dataEHora "),
+			@NamedQuery(name = "AtividadeAgenda.findByPrincipalEData",query = "SELECT aa FROM AtividadeAgenda AS aa JOIN FETCH aa.lead JOIN FETCH aa.usuario JOIN aa.participantesInternos pi WHERE (aa.usuario.id = :principal OR pi.participantesInternos.id = :principal) AND (aa.dataEHora BETWEEN :dataInicial AND :dataFinal) AND aa.avisado = false ORDER BY aa.dataEHora ")
 	}
 )
 @SequenceGenerator(name="ATIVIDADE_AGENDA_SEQUENCE", sequenceName="ATIVIDADE_AGENDA_SEQUENCE", allocationSize=1, initialValue=1)
@@ -45,6 +46,9 @@ public class AtividadeAgenda implements Serializable{
 	{
 		this.dataEHora = new Date();
 		this.hora = new Date();
+		avisarComAntecedencia = false;
+		avisado = false;
+		antecedencia = "10";
 		participanteExternoSelecionado = new Contato();
 		participanteInternoSelecionado = new Principals();
 		participantesInternos = new ArrayList<>();
@@ -73,6 +77,10 @@ public class AtividadeAgenda implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "contato_id")
 	private Contato contato;
+	
+	private boolean avisarComAntecedencia;
+	
+	private boolean avisado;
 	
 	@OneToMany(mappedBy = "atividadeAgenda", targetEntity = AtividadeAgendaParticipantesInternos.class, fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	private List<AtividadeAgendaParticipantesInternos> participantesInternos;
@@ -178,5 +186,21 @@ public class AtividadeAgenda implements Serializable{
 
 	public void setParticipanteInternoSelecionado(Principals participanteInternoSelecionado) {
 		this.participanteInternoSelecionado = participanteInternoSelecionado;
+	}
+
+	public boolean isAvisarComAntecedencia() {
+		return avisarComAntecedencia;
+	}
+
+	public void setAvisarComAntecedencia(boolean avisarComAntecedencia) {
+		this.avisarComAntecedencia = avisarComAntecedencia;
+	}
+
+	public boolean isAvisado() {
+		return avisado;
+	}
+
+	public void setAvisado(boolean avisado) {
+		this.avisado = avisado;
 	}
 }

@@ -6,10 +6,21 @@
    template="/WEB-INF/templates/default.xhtml">
    <ui:define name="content">
    <script type="text/javascript">
+   $(window).load(function() {
+	    jsf.ajax.addOnEvent(function (data) {
+	        if (data.status == "success") {debugger
+	        	tipoContratacaoDataTable();
+	        }
+	    })
+   });
    $(document).ready(function() {
-	    var table = $('#tipoContratacaoDataTable').DataTable();
-	 
-	    $('#tipoContratacaoDataTable tbody').on( 'click', 'tr', function () {
+	   tipoContratacaoDataTable();
+	} );
+   function tipoContratacaoDataTable()
+   {
+	   var table = $('#regTipoContratacao\\:tipoContratacaoDataTable').DataTable();
+		 
+	    $('#regTipoContratacao\\:tipoContratacaoDataTable tbody').on( 'click', 'tr', function () {
 	        if ( $(this).hasClass('selected') ) {
 	            $(this).removeClass('selected');
 	        }
@@ -18,7 +29,7 @@
 	            $(this).addClass('selected');
 	        }
 	    } );
-	} );
+   }
    </script>
    
       <h1>Cadastro de Tipos de Contratação</h1>
@@ -32,24 +43,42 @@
             <h:commandButton id="salvar"
                action="#{salvarTipoContratacao.salvar}" value="Salvar" />
          </h:panelGrid>
+      
+	      <h2>Tipos de Contratação</h2>
+	      <h:panelGrid id="tipoContratacaoPanelGrid">
+		      <h:panelGroup rendered="#{empty tipoContratacao}">
+		         <em>Nenhum Tipo de Contratação registrado.</em>
+		      </h:panelGroup>
+		      <h:dataTable id="tipoContratacaoDataTable" var="_tipoContratacao" value="#{tipoContratacao}"
+				rendered="#{not empty tipoContratacao}"
+				styleClass="table"
+				width="100%"
+	         	style="display:inline-table;"
+				 headerClass="table-header"
+				 rowClasses="table-odd-row,table-even-row">
+		         <h:column>
+		            <f:facet name="header">Id</f:facet>
+		            <h:outputText value="#{_tipoContratacao.id}"/>
+		            </h:column>
+		         <h:column>
+		            <f:facet name="header">Descrição</f:facet>
+		            <h:outputText value="#{_tipoContratacao.descricao}"/>
+		            </h:column>
+		        <h:column>
+					<f:facet name="header"></f:facet>
+				        <h:commandLink value="Editar"
+							action="#{salvarTipoContratacao.editar(_tipoContratacao)}">
+							<f:ajax render="regTipoContratacao:descricao"/>
+						</h:commandLink>
+				</h:column>
+		        <h:column>
+					<f:facet name="header"></f:facet>
+					<h:commandLink value="Excluir" action="#{salvarTipoContratacao.excluir(_tipoContratacao)}" onclick="javascript:return confirm('Deseja realmente excluir este registro ?');">
+						<f:ajax render="regTipoContratacao:tipoContratacaoPanelGrid"/>
+					</h:commandLink>
+				</h:column>                
+		      </h:dataTable>
+	      </h:panelGrid>
       </h:form>
-      <h2>Tipos de Contratação</h2>
-      <h:panelGroup rendered="#{empty tipoContratacao}">
-         <em>Nenhum Tipo de Contratação registrado.</em>
-      </h:panelGroup>
-      <h:dataTable id="tipoContratacaoDataTable" var="_tipoContratacao" value="#{tipoContratacao}"
-		rendered="#{not empty tipoContratacao}"
-		styleClass="table"
-		 headerClass="table-header"
-		 rowClasses="table-odd-row,table-even-row">
-         <h:column>
-            <f:facet name="header">Id</f:facet>
-            <h:outputText value="#{_tipoContratacao.id}"/>
-            </h:column>
-         <h:column>
-            <f:facet name="header">Descrição</f:facet>
-            <h:outputText value="#{_tipoContratacao.descricao}"/>
-            </h:column>                
-      </h:dataTable>
    </ui:define>
 </ui:composition>

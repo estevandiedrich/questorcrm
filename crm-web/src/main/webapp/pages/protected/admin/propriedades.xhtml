@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+   xmlns:f="http://xmlns.jcp.org/jsf/core"
+   xmlns:h="http://xmlns.jcp.org/jsf/html"
+   template="/WEB-INF/templates/default.xhtml">
+   <ui:define name="content">
+   <script type="text/javascript">
+   $(document).ready(function() {
+		dataTable();	 
+	} );
+	$(window).load(function() {
+	    jsf.ajax.addOnEvent(function (data) {
+	        if (data.status == "success") {debugger
+	        	dataTable();
+	        }
+	    })
+	});
+	function dataTable()
+	{
+		var table = $('#regPropriedade\\:propriedadeDataTable').DataTable();
+		 
+	    $('#regPropriedade\\:propriedadeDataTable tbody').on( 'click', 'tr', function () {
+	        if ( $(this).hasClass('selected') ) {
+	            $(this).removeClass('selected');
+	        }
+	        else {
+	            table.$('tr.selected').removeClass('selected');
+	            $(this).addClass('selected');
+	        }
+	    } );
+	}
+   </script>
+   
+      <h1>Nova Propriedade</h1>
+
+      <h:form id="regPropriedade">
+		<h:panelGrid>
+			<h:outputLabel for="chave" value="Chave:" />
+            <h:inputText id="chave" value="#{newPropriedade.chave}" />
+            <h:message for="chave" errorClass="invalid" />
+            <h:outputLabel for="valor" value="Valor:" />
+            <h:inputText id="valor" value="#{newPropriedade.valor}" />
+            <h:message for="valor" errorClass="invalid" />
+         <p>
+            <h:commandButton id="salvar"
+               action="#{salvarPropriedade.salvar}" value="Salvar" />
+         </p>
+         </h:panelGrid>
+      
+		  <h2>Propriedades</h2>
+	      <h:panelGrid id="propriedadesDataGrid">
+		      <h:panelGroup rendered="#{empty propriedades}">
+		         <em>Nenhum propriedade registrado.</em>
+		      </h:panelGroup>
+		      <h:dataTable id="propriedadeDataTable" var="_propriedade" value="#{propriedades}"
+				rendered="#{not empty propriedades}"
+				styleClass="table"
+				width="100%"
+				style="display:inline-table;"
+				headerClass="table-header"
+				rowClasses="table-odd-row,table-even-row">
+		        <h:column>
+		          <f:facet name="header">Id</f:facet>
+		              <h:outputText value="#{_propriedade.id}"/>
+		        </h:column>
+		        <h:column>
+		          <f:facet name="header">Chave</f:facet>
+		              <h:outputText value="#{_propriedade.chave}"/>
+		        </h:column>
+		        <h:column>
+		          <f:facet name="header">Valor</f:facet>
+		              <h:outputText value="#{_propriedade.valor}"/>
+		        </h:column>
+		        <h:column>
+					<f:facet name="header"></f:facet>
+				        <h:commandLink value="Editar"
+							action="#{salvarPropriedade.editar(_propriedade)}">
+							<f:ajax render="regPropriedade:descricao"/>
+						</h:commandLink>
+				</h:column>
+		      </h:dataTable>
+	      </h:panelGrid>
+      </h:form>
+   </ui:define>
+</ui:composition>

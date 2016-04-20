@@ -34,6 +34,11 @@ public class SalvarCargo {
 	public Cargo getNewCargo() {
 		return newCargo;
 	}
+	public String novo()
+	{
+		initNewCargo();
+		return "/pages/protected/admin/cargo?faces-redirect=true";
+	}
 	public String editar(Cargo cargo)
 	{
 		newCargo = cargo;

@@ -63,6 +63,7 @@
 								modalParticipantesExternosDataTable();
 								atividadesAgenda();
 							} else if(data.source.id == "regAtividadeAgenda:participantesInternosImg"){
+							} else if(data.source.id == "regAtividadeAgenda:avisarComAntecedencia"){
 							} else {
 								atividadesAgenda();
 					        	inicializaMultiDatesPicker();
@@ -298,16 +299,22 @@
 					pattern="dd/MM/yyyy" />
 				<h:outputLabel for="hora" value="Hora:" />
 				<h:inputText id="hora" value="#{newAtividadeAgenda.hora}">
-					<f:convertDateTime type="time" pattern="HH:mm:ss" />
+					<f:convertDateTime type="time" pattern="HH:mm:ss" locale="pt_BR" timeZone="GMT-3"/>
 				</h:inputText>
-				<h:outputLabel for="antecedencia"
-					value="Avisar com antecedencia de:" />
-				<h:selectOneMenu id="antecedencia"
-					value="#{newAtividadeAgenda.antecedencia}">
-					<f:selectItem itemLabel="10 minutos" itemValue="10" />
-					<f:selectItem itemLabel="20 minutos" itemValue="20" />
-					<f:selectItem itemLabel="30 minutos" itemValue="30" />
-				</h:selectOneMenu>
+				<h:outputLabel for="avisarComAntecedencia" value="Avisar com antecedencia ?"/>
+				<h:selectBooleanCheckbox id="avisarComAntecedencia" value="#{newAtividadeAgenda.avisarComAntecedencia}">
+					<f:ajax event="change" listener="#{salvarAtividadeAgenda.avisarComAntecedenciaHandler}" render="regAtividadeAgenda:antecedenciaPanelGrid"/>
+				</h:selectBooleanCheckbox>
+				<h:panelGrid id="antecedenciaPanelGrid">
+					<h:outputLabel for="antecedencia"
+						value="Avisar com antecedencia de:" rendered="#{newAtividadeAgenda.avisarComAntecedencia}"/>
+					<h:selectOneMenu id="antecedencia"
+						value="#{newAtividadeAgenda.antecedencia}" rendered="#{newAtividadeAgenda.avisarComAntecedencia}">
+						<f:selectItem itemLabel="10 minutos" itemValue="10" />
+						<f:selectItem itemLabel="20 minutos" itemValue="20" />
+						<f:selectItem itemLabel="30 minutos" itemValue="30" />
+					</h:selectOneMenu>
+				</h:panelGrid>
 			</h:panelGrid>
 			<br />
 			<h:commandButton id="adicionarAtividadeAgenda"
@@ -370,7 +377,7 @@
 					<h:column>
 						<f:facet name="header">Data</f:facet>
 						<h:outputText value="#{_atividadeAgenda.dataEHora}">
-							<f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm:ss" />
+							<f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm:ss" locale="pt_BR" timeZone="GMT-3"/>
 						</h:outputText>
 					</h:column>
 				</h:dataTable>

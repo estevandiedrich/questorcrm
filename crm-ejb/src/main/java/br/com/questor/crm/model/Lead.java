@@ -1,11 +1,13 @@
 package br.com.questor.crm.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,14 +37,14 @@ import br.com.questor.crm.enums.LeadEnum;
 		}
 )
 @NamedQueries(value = {
-		@NamedQuery(name = "Lead.findByIds",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade WHERE l.id IN (:leads) ORDER BY l.nome"),
-		@NamedQuery(name = "Conta.findByIds",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.CONTA AND l.id IN (:leads) ORDER BY l.nome"),
+		@NamedQuery(name = "Lead.findByIds",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade JOIN FETCH l.usuarioQueCadastrou LEFT JOIN FETCH l.origem LEFT JOIN FETCH l.atividade WHERE l.id IN (:leads) ORDER BY l.nome"),
+		@NamedQuery(name = "Conta.findByIds",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade JOIN FETCH l.usuarioQueCadastrou LEFT JOIN FETCH l.origem LEFT JOIN FETCH l.atividade WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.CONTA AND l.id IN (:leads) ORDER BY l.nome"),
 		@NamedQuery(name = "Lead.findLeadsEmAvaliacao",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.EM_AVALIACAO ORDER BY l.dataCadastro DESC"),
 		@NamedQuery(name = "Lead.findByIdsSemUFCidade",query = "SELECT l FROM Lead l WHERE l.id IN (:leads) ORDER BY l.nome"),
 		@NamedQuery(name = "Conta.findByIdsSemUFCidade",query = "SELECT l FROM Lead l WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.CONTA AND l.id IN (:leads) ORDER BY l.nome"),
 		@NamedQuery(name = "Distribuidor.findByIdsSemUFCidade",query = "SELECT l FROM Lead l WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.DISTRIBUIDOR AND l.id IN (:leads) ORDER BY l.nome"),
-		@NamedQuery(name = "Lead.findAll",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade ORDER BY l.nome"),
-		@NamedQuery(name = "Conta.findAll",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.CONTA ORDER BY l.nome"),
+		@NamedQuery(name = "Lead.findAll",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade JOIN FETCH l.usuarioQueCadastrou LEFT JOIN FETCH l.origem LEFT JOIN FETCH l.atividade ORDER BY l.nome"),
+		@NamedQuery(name = "Conta.findAll",query = "SELECT l FROM Lead l JOIN FETCH l.uf JOIN FETCH l.cidade JOIN FETCH l.usuarioQueCadastrou LEFT JOIN FETCH l.origem LEFT JOIN FETCH l.atividade WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.CONTA ORDER BY l.nome"),
 		@NamedQuery(name = "Lead.findAllSemUFCidade",query = "SELECT l FROM Lead l ORDER BY l.nome"),
 		@NamedQuery(name = "Conta.findAllSemUFCidade",query = "SELECT l FROM Lead l WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.CONTA ORDER BY l.nome"),
 		@NamedQuery(name = "Distribuidor.findAllSemUFCidade",query = "SELECT l FROM Lead l WHERE l.statusLead = br.com.questor.crm.enums.LeadEnum.DISTRIBUIDOR ORDER BY l.nome"),
@@ -70,6 +72,8 @@ public class Lead implements Serializable {
 		this.cidade = new Cidade();
 		this.cidadesPorUf = new ArrayList<Cidade>();
 		this.notas = new ArrayList<Nota>();
+		this.origem = new Origem();
+		this.atividade = new Atividade();
 	}
 	/**
 	 * 
@@ -92,6 +96,11 @@ public class Lead implements Serializable {
 	@OneToMany(mappedBy = "lead", targetEntity = Nota.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<Nota> notas;
 	
+	private String site;
+	
+	@Column(length=2000)
+	private String observacao;
+	
 	private String numero;
 	
 	private String logradouro;
@@ -100,6 +109,8 @@ public class Lead implements Serializable {
 	
 	private String bairro;
 	
+	private String quantidadeFuncionarios;
+	
 	private String cep;
 	@ManyToOne(cascade=CascadeType.DETACH,fetch = FetchType.LAZY)
 	  @JoinColumn(name = "cidade_id")
@@ -107,6 +118,13 @@ public class Lead implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "uf_id")
 	private UF uf;
+	@ManyToOne(fetch = FetchType.LAZY)
+	  @JoinColumn(name = "origem_id")
+	private Origem origem;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	  @JoinColumn(name = "atividade_id")
+	private Atividade atividade;
 	
 	@Transient
 	private Contato contatoSelecionado;
@@ -154,6 +172,8 @@ public class Lead implements Serializable {
 	private int tipoDocumento;
 	
 	private String documento;
+	@Column(length=13,precision=2)
+	private BigDecimal receitaAnual;
 	
 	public LeadEnum[] getStatusLeadValues()
 	{
@@ -375,4 +395,53 @@ public class Lead implements Serializable {
 	public void setEndereco(String endereco) {
 		this.endereco = endereco;
 	}
+
+	public String getSite() {
+		return site;
+	}
+
+	public void setSite(String site) {
+		this.site = site;
+	}
+
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
+
+	public Origem getOrigem() {
+		return origem;
+	}
+
+	public void setOrigem(Origem origem) {
+		this.origem = origem;
+	}
+
+	public String getQuantidadeFuncionarios() {
+		return quantidadeFuncionarios;
+	}
+
+	public void setQuantidadeFuncionarios(String quantidadeFuncionarios) {
+		this.quantidadeFuncionarios = quantidadeFuncionarios;
+	}
+
+	public Atividade getAtividade() {
+		return atividade;
+	}
+
+	public void setAtividade(Atividade atividade) {
+		this.atividade = atividade;
+	}
+
+	public BigDecimal getReceitaAnual() {
+		return receitaAnual;
+	}
+
+	public void setReceitaAnual(BigDecimal receitaAnual) {
+		this.receitaAnual = receitaAnual;
+	}
+	
 }

@@ -66,6 +66,13 @@
 	                <h:outputText value="#{_modulo.produto.descricao}"/>
 	            </h:column>
 	            <h:column>
+				<f:facet name="header"></f:facet>
+			        <h:commandLink value="Editar"
+						action="#{salvarModulo.editar(_modulo)}">
+						<f:ajax render="regModulos:descricao"/>
+					</h:commandLink>
+				</h:column>
+	            <h:column>
 					<h:commandLink id="excluir" value="Excluir" action="#{salvarModulo.excluir(_modulo)}" onclick="javascript:return confirm('Deseja realmente excluir este registro ?');">
 						<f:ajax render="regModulos:modulosPanelGrid"/>
 					</h:commandLink>

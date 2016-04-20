@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -70,9 +71,9 @@ public class ProdutoModulosSelecionados implements Serializable{
 	private TipoContratacao tipoContratacao;
 	
 	private BigDecimal quantidade;
-	
+	@Column(length=13,precision=2)
 	private BigDecimal valorUnitario;
-	
+	@Column(length=13,precision=2)
 	private BigDecimal valorTotal;
 	
 	private String observacao;

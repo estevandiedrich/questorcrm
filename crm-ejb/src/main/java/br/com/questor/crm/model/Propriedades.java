@@ -23,7 +23,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 )
 @XmlRootElement
 @NamedQueries(value={
-		@NamedQuery(name = "Propriedades.findByChave",query = "SELECT p FROM Propriedades p WHERE p.chave = :chave")
+		@NamedQuery(name = "Propriedades.findByChave",query = "SELECT p FROM Propriedades p WHERE p.chave = :chave"),
+		@NamedQuery(name = "Propriedades.findAll",query = "SELECT p FROM Propriedades p")
 		}
 )
 @SequenceGenerator(name="PROPRIEDADES_SEQUENCE", sequenceName="PROPRIEDADES_SEQUENCE", allocationSize=1, initialValue=1)
@@ -60,6 +61,4 @@ public class Propriedades implements Serializable{
 	public void setValor(String valor) {
 		this.valor = valor;
 	}
-	
-	
 }

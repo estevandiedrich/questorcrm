@@ -9,6 +9,15 @@
    $(document).ready(function() {
 		dataTable();
 		cargoDataTable();
+		$('#regLeads\\:telefone').inputmask({
+	           mask: "(99)9999-99999"
+	 		}
+		);
+		$('#regLeads\\:celular').inputmask({
+	           mask: "(99)9999-99999"
+	 		}
+		);
+		$('#regLeads\\:cargo').numeric();
 	} );
 	$(window).load(function() {
 	    jsf.ajax.addOnEvent(function (data) {
@@ -72,6 +81,9 @@
             <h:outputLabel for="telefone" value="Telefone:" />
             <h:inputText id="telefone" value="#{newContato.telefone}" />
             <h:message for="telefone" errorClass="invalid" />
+            <h:outputLabel for="celular" value="Celular:" />
+            <h:inputText id="celular" value="#{newContato.celular}" />
+            <h:message for="celular" errorClass="invalid" />
             <h:outputLabel for="cargo" value="Cargo:" />
             <h:panelGroup>
 				<h:inputText id="cargo"
@@ -80,10 +92,11 @@
 					onclick="javascript:modalCargos()" />
 				<h:inputText id="cargo_desc" disabled="true" style="border:none;background:white;"/>
 			</h:panelGroup>
+			<h:message id="cargoMessage" for="cargo" errorClass="invalid" />
          <p>
             <h:commandButton id="salvarContato"
                action="#{salvarContato.adicionar(lead)}" value="Adicionar Contato" >
-               <f:ajax execute="regLeads:nomeContato regLeads:email regLeads:telefone regLeads:cargo" render="regLeads:nomeContato regLeads:email regLeads:telefone regLeads:cargo regLeads:cargo_desc regLeads:contatosDataGrid"/>
+               <f:ajax execute="regLeads:nomeContato regLeads:email regLeads:telefone regLeads:celular regLeads:cargo" render="regLeads:nomeContato regLeads:email regLeads:telefone regLeads:celular regLeads:cargo regLeads:cargoMessage regLeads:cargo_desc regLeads:contatosDataGrid"/>
             </h:commandButton>
          </p>
          </h:panelGrid>

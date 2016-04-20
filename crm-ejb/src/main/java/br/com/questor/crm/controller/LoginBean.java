@@ -1,8 +1,11 @@
 package br.com.questor.crm.controller;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Schedule;
 import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -10,6 +13,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import javax.persistence.TemporalType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -18,7 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.context.RequestContext;
 
+import br.com.questor.crm.model.AtividadeAgenda;
 import br.com.questor.crm.model.Principals;
+import io.undertow.util.DateUtils;
 
 @Stateful
 //@Model
@@ -99,5 +105,29 @@ public class LoginBean {
 			
 		}
 		return "/pages/public/login?faces-redirect=true";
+	}
+	public void verificaAtividadeAgenda()
+	{
+		log.info("Buscando atividade agenda para o usuario "+getPrincipalsFromDB().getNome());
+		List<AtividadeAgenda> aa = em.createNamedQuery("AtividadeAgenda.findByPrincipalEData").setParameter("principal", getPrincipalsFromDB().getId()).setParameter("dataInicial", new Date(),TemporalType.DATE).setParameter("dataFinal", new Date(),TemporalType.TIMESTAMP).getResultList();
+		if(aa != null && aa.size() > 0)
+		{
+			for(AtividadeAgenda a:aa)
+			{
+				GregorianCalendar gc = new GregorianCalendar();
+				gc.setTime(a.getDataEHora());
+				if(a.isAvisarComAntecedencia())
+				{
+					gc.add(Calendar.MINUTE, Integer.parseInt(a.getAntecedencia())*-1);
+				}
+				if((new Date()).after(gc.getTime()))
+				{
+					RequestContext.getCurrentInstance().execute("PF('myDialogVar').show();");
+					a.setAvisado(true);
+					em.merge(a);
+					break;
+				}
+			}
+		}
 	}
 }
