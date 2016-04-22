@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -22,6 +24,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 		}
 )
 @XmlRootElement
+@NamedQueries(value = {
+		@NamedQuery(name = "AtividadeAgendaParticipantesExternos.findByAtividadeAgenda",query = "SELECT aape FROM AtividadeAgendaParticipantesExternos aape WHERE aape.atividadeAgenda.id = :atividadeAgenda")
+})
 @SequenceGenerator(name="ATIVIDADE_AGENDA_PARTICIPANTES_EXTERNOS_SEQUENCE", sequenceName="ATIVIDADE_AGENDA_PARTICIPANTES_EXTERNOS_SEQUENCE", allocationSize=1, initialValue=1)
 public class AtividadeAgendaParticipantesExternos implements Serializable{
 	/**
@@ -32,11 +37,11 @@ public class AtividadeAgendaParticipantesExternos implements Serializable{
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="ATIVIDADE_AGENDA_PARTICIPANTES_EXTERNOS_SEQUENCE")
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	  @JoinColumn(name = "atividadeagenda_id")
 	private AtividadeAgenda atividadeAgenda;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	  @JoinColumn(name = "participanteexterno_id")
 	private Contato participanteExterno;
 

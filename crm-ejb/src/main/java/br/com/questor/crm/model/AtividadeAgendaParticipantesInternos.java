@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -22,6 +24,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 		}
 )
 @XmlRootElement
+@NamedQueries(value = {
+		@NamedQuery(name = "AtividadeAgendaParticipantesInternos.findByAtividadeAgenda",query = "SELECT aapi FROM AtividadeAgendaParticipantesInternos aapi WHERE aapi.atividadeAgenda.id = :atividadeAgenda")
+})
 @SequenceGenerator(name="ATIVIDADE_AGENDA_PARTICIPANTES_INTERNOS_SEQUENCE", sequenceName="ATIVIDADE_AGENDA_PARTICIPANTES_INTERNOS_SEQUENCE", allocationSize=1, initialValue=1)
 public class AtividadeAgendaParticipantesInternos implements Serializable{
 	/**

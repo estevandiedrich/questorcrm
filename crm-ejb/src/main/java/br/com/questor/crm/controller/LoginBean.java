@@ -13,6 +13,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TemporalType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -24,7 +25,6 @@ import org.primefaces.context.RequestContext;
 
 import br.com.questor.crm.model.AtividadeAgenda;
 import br.com.questor.crm.model.Principals;
-import io.undertow.util.DateUtils;
 
 @Stateful
 //@Model
@@ -109,25 +109,32 @@ public class LoginBean {
 	public void verificaAtividadeAgenda()
 	{
 		log.info("Buscando atividade agenda para o usuario "+getPrincipalsFromDB().getNome());
-		List<AtividadeAgenda> aa = em.createNamedQuery("AtividadeAgenda.findByPrincipalEData").setParameter("principal", getPrincipalsFromDB().getId()).setParameter("dataInicial", new Date(),TemporalType.DATE).setParameter("dataFinal", new Date(),TemporalType.TIMESTAMP).getResultList();
-		if(aa != null && aa.size() > 0)
+		try
 		{
-			for(AtividadeAgenda a:aa)
+			List<AtividadeAgenda> aa = em.createNamedQuery("AtividadeAgenda.findByPrincipalEData").setParameter("principal", getPrincipalsFromDB().getId()).setParameter("dataInicial", new Date(),TemporalType.DATE).setParameter("dataFinal", new Date(),TemporalType.TIMESTAMP).getResultList();
+			if(aa != null && aa.size() > 0)
 			{
-				GregorianCalendar gc = new GregorianCalendar();
-				gc.setTime(a.getDataEHora());
-				if(a.isAvisarComAntecedencia())
+				for(AtividadeAgenda a:aa)
 				{
-					gc.add(Calendar.MINUTE, Integer.parseInt(a.getAntecedencia())*-1);
-				}
-				if((new Date()).after(gc.getTime()))
-				{
-					RequestContext.getCurrentInstance().execute("PF('myDialogVar').show();");
-					a.setAvisado(true);
-					em.merge(a);
-					break;
+					GregorianCalendar gc = new GregorianCalendar();
+					gc.setTime(a.getDataEHora());
+					if(a.isAvisarComAntecedencia())
+					{
+						gc.add(Calendar.MINUTE, Integer.parseInt(a.getAntecedencia())*-1);
+					}
+					if((new Date()).after(gc.getTime()))
+					{
+						RequestContext.getCurrentInstance().execute("PF('myDialogVar').show();");
+						a.setAvisado(true);
+						em.merge(a);
+						break;
+					}
 				}
 			}
+		}
+		catch(NoResultException e)
+		{
+			log.info("Nenhuma atividade agenda encontrada");
 		}
 	}
 }

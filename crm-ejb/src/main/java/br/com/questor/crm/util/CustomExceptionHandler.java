@@ -49,7 +49,8 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper{
 
 	                //log error ?
 	                //log.log(Level.SEVERE, "Critical Exception!", t);
-	            	String errorPageLocation = "/pages/public/login.xhtml";
+//	            	String errorPageLocation = "/pages/public/login.xhtml";
+	            	String errorPageLocation = fc.getViewRoot().getViewId();
 	                if (t instanceof ViewExpiredException) {
 	                    requestMap.put("javax.servlet.error.message", "Session expired, try again!");
 	                    fc.setViewRoot(fc.getApplication().getViewHandler().createView(fc, errorPageLocation));
@@ -57,8 +58,8 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper{
 	                    fc.renderResponse();
 	                } else {
 	                    //redirect error page
-	                    requestMap.put("javax.servlet.error.message", t.getMessage());
-	                    nav.handleNavigation(fc, null, errorPageLocation);
+//	                    requestMap.put("javax.servlet.error.message", t.getMessage());
+//	                    nav.handleNavigation(fc, null, errorPageLocation);
 	                }
 
 	                fc.renderResponse();

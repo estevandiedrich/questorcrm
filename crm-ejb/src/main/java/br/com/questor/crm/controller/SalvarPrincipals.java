@@ -475,7 +475,7 @@ public class SalvarPrincipals implements Serializable {
 		}
 		catch(NoResultException e)
 		{
-			log.log(Level.SEVERE, "Não há imagem cadastrada", e);
+			log.log(Level.SEVERE, "Não há imagem cadastrada");
 		}
 		return carregaImagem(imagem);
 	}

@@ -64,6 +64,10 @@
 								atividadesAgenda();
 							} else if(data.source.id == "regAtividadeAgenda:participantesInternosImg"){
 							} else if(data.source.id == "regAtividadeAgenda:avisarComAntecedencia"){
+							} else if(data.source.id.indexOf("participantesExternosCommandLink") > -1){
+								participantesExternosAdicionadosDataTable();
+							} else if(data.source.id.indexOf("participantesInternosCommandLink") > -1){
+								participantesInternosAdicionadosDataTable();
 							} else {
 								atividadesAgenda();
 					        	inicializaMultiDatesPicker();
@@ -106,6 +110,44 @@
 	   var table3 = $('#regAtividadeAgenda\\:participantesExternosDataTable').DataTable();
 
 		$('#regAtividadeAgenda\\:participantesExternosDataTable tbody').on('click','tr',
+		function() {
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+			} else {
+				table3.$('tr.selected').removeClass(
+						'selected');
+				$(this).addClass('selected');
+			}
+		});
+   }
+   function modalParticipantesInternosAtividadeAgenda()
+   {
+	   $('#myModalParticipantesInternosAdicionados').modal('show');
+   }
+   function participantesInternosAdicionadosDataTable()
+   {
+	   var table3 = $('#regAtividadeAgenda\\:participantesInternosAdicionadosDataTable').DataTable();
+
+		$('#regAtividadeAgenda\\:participantesInternosAdicionadosDataTable tbody').on('click','tr',
+		function() {
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+			} else {
+				table3.$('tr.selected').removeClass(
+						'selected');
+				$(this).addClass('selected');
+			}
+		});
+   }
+   function modalParticipantesExternosAtividadeAgenda()
+   {
+	   $('#myModalParticipantesExternosAdicionados').modal('show');
+   }
+   function participantesExternosAdicionadosDataTable()
+   {
+	   var table3 = $('#regAtividadeAgenda\\:participantesExternosAdicionadosDataTable').DataTable();
+
+		$('#regAtividadeAgenda\\:participantesExternosAdicionadosDataTable tbody').on('click','tr',
 		function() {
 			if ($(this).hasClass('selected')) {
 				$(this).removeClass('selected');
@@ -320,9 +362,6 @@
 			<h:commandButton id="adicionarAtividadeAgenda"
 				action="#{salvarAtividadeAgenda.adicionarAtividadeAgenda()}"
 				value="Adicionar">
-				<f:ajax
-					execute="regAtividadeAgenda:lembrete regAtividadeAgenda:dataEHora regAtividadeAgenda:hora regAtividadeAgenda:participantes"
-					render="regAtividadeAgenda:pre-select-dates regAtividadeAgenda:compromissosPanelGrid regAtividadeAgenda:compromissosAgendadosPanelGrid" />
 			</h:commandButton>
 
 			<h1>Agenda</h1>
@@ -360,7 +399,7 @@
 						<f:facet name="header"></f:facet>
 						<h:commandLink id="participantesInternosCommandLink"
 							value="Participantes Internos"
-							action="#{salvarAtividadeAgenda.setAtividadeAgenda(_atividadeAgenda)}"
+							action="#{salvarAtividadeAgenda.setParticipantesInternos(_atividadeAgenda)}"
 							onclick="javascript:modalParticipantesInternosAtividadeAgenda()">
 							<f:ajax render="regAtividadeAgenda:participantesInternosAtividadeAgendaPanelGrid" />
 						</h:commandLink>
@@ -369,7 +408,7 @@
 						<f:facet name="header"></f:facet>
 						<h:commandLink id="participantesExternosCommandLink"
 							value="Participantes Externos"
-							action="#{salvarAtividadeAgenda.setAtividadeAgenda(_atividadeAgenda)}"
+							action="#{salvarAtividadeAgenda.setParticipantesExternos(_atividadeAgenda)}"
 							onclick="javascript:modalParticipantesExternosAtividadeAgenda()">
 							<f:ajax render="regAtividadeAgenda:participantesExternosAtividadeAgendaPanelGrid" />
 						</h:commandLink>
@@ -429,6 +468,88 @@
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary"
 								onclick="javascript:selecionarParticipanteExterno()">Selecionar</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal -->
+			<div id="myModalParticipantesExternosAdicionados" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content" style="display: inline-block;">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Participantes externos</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGrid id="participantesExternosAtividadeAgendaPanelGrid">
+								<h:panelGroup rendered="#{empty salvarAtividadeAgenda.participantesExternos}">
+									<em>Nenhum participante externo adicionado.</em>
+								</h:panelGroup>
+								<h:dataTable id="participantesExternosAdicionadosDataTable"
+									var="_participanteExterno" value="#{salvarAtividadeAgenda.participantesExternos}"
+									rendered="#{not empty salvarAtividadeAgenda.participantesExternos}"
+									styleClass="table" width="100%" style="display:inline-table;"
+									headerClass="table-header"
+									rowClasses="table-odd-row,table-even-row">
+									<h:column>
+										<f:facet name="header">Id</f:facet>
+										<h:outputText value="#{_participanteExterno.participanteExterno.id}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Nome</f:facet>
+										<h:outputText value="#{_participanteExterno.participanteExterno.nome}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Email</f:facet>
+										<h:outputText value="#{_participanteExterno.participanteExterno.email}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Telefone</f:facet>
+										<h:outputText value="#{_participanteExterno.participanteExterno.telefone}" />
+									</h:column>
+								</h:dataTable>
+							</h:panelGrid>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal -->
+			<div id="myModalParticipantesInternosAdicionados" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content" style="display: inline-block;">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">X</button>
+							<h4 class="modal-title">Participantes internos</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGrid id="participantesInternosAtividadeAgendaPanelGrid">
+								<h:panelGroup rendered="#{empty salvarAtividadeAgenda.participantesInternos}">
+									<em>Nenhum participante interno adicionado.</em>
+								</h:panelGroup>
+								<h:dataTable id="participantesInternosAdicionadosDataTable"
+									var="_participanteInterno" value="#{salvarAtividadeAgenda.participantesInternos}"
+									rendered="#{not empty salvarAtividadeAgenda.participantesInternos}"
+									styleClass="table" width="100%" style="display:inline-table;"
+									headerClass="table-header"
+									rowClasses="table-odd-row,table-even-row">
+									<h:column>
+									<f:facet name="header">Id</f:facet>
+						                <h:outputText value="#{_participanteInterno.participantesInternos.id}"/>
+						            </h:column>
+									<h:column>
+										<f:facet name="header">Nome</f:facet>
+						                <h:outputText value="#{_participanteInterno.participantesInternos.principalId}"/>
+						            </h:column>
+								</h:dataTable>
+							</h:panelGrid>
+						</div>
+						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
 						</div>
 					</div>

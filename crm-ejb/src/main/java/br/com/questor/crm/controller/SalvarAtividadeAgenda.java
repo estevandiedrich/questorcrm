@@ -56,6 +56,20 @@ public class SalvarAtividadeAgenda {
 	
 	private Lead leadSelecionada;
 	
+	private List<AtividadeAgendaParticipantesExternos> participantesExternos;
+	
+	private List<AtividadeAgendaParticipantesInternos> participantesInternos;
+	
+	public void setParticipantesExternos(AtividadeAgenda atividadeAgenda)
+	{
+		participantesExternos = em.createNamedQuery("AtividadeAgendaParticipantesExternos.findByAtividadeAgenda").setParameter("atividadeAgenda", atividadeAgenda.getId()).getResultList();
+	}
+	
+	public void setParticipantesInternos(AtividadeAgenda atividadeAgenda)
+	{
+		participantesInternos = em.createNamedQuery("AtividadeAgendaParticipantesInternos.findByAtividadeAgenda").setParameter("atividadeAgenda", atividadeAgenda.getId()).getResultList();
+	}
+	
 	public void adicionarAtividadeAgenda()
 	{
 		GregorianCalendar dataEHora = new GregorianCalendar();
@@ -163,5 +177,15 @@ public class SalvarAtividadeAgenda {
 	@PostConstruct
 	public void initNewAtividadeAgenda() {
 		newAtividadeAgenda = new AtividadeAgenda();
+		leadSelecionada = new Lead();
 	}
+
+	public List<AtividadeAgendaParticipantesExternos> getParticipantesExternos() {
+		return participantesExternos;
+	}
+
+	public List<AtividadeAgendaParticipantesInternos> getParticipantesInternos() {
+		return participantesInternos;
+	}
+	
 }

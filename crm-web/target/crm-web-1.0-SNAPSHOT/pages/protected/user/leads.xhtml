@@ -161,6 +161,10 @@
 					           affixesStay:false
 					 		}
 						);
+						$('#regLeads\\:cep').inputmask({
+					           mask: "99.999-999"
+					 		}
+						);
 					});
 			$(window).load(function() {
 				jsf.ajax.addOnEvent(function(data) {
@@ -334,7 +338,7 @@
 						<h:inputText id="quantidadeFuncionarios" value="#{newLead.quantidadeFuncionarios}" style="text-align:right;"/>
 						<h:message for="quantidadeFuncionarios" errorClass="invalid" />
 						<h:outputLabel for="receitaAnual" value="Receita anual:" />
-						<h:inputText id="receitaAnual" value="#{newLead.receitaAnual}" style="text-align:right;">
+						<h:inputText id="receitaAnual" value="#{newLead.receitaAnual}" style="text-align:right;" maxlength="17">
 							<f:convertNumber pattern="#,##0.00"/>
 						</h:inputText>
 						<h:message for="receitaAnual" errorClass="invalid" />
@@ -348,7 +352,7 @@
 						<h:inputText id="numero" value="#{newLead.numero}" style="text-align:right;"/>
 						<h:message for="numero" errorClass="invalid" />
 						<h:outputLabel for="cep" value="CEP:" />
-						<h:inputText id="cep" value="#{newLead.cep}" />
+						<h:inputText id="cep" value="#{newLead.cep}" style="text-align:right;"/>
 						<h:message for="cep" errorClass="invalid" />
 						<h:outputLabel for="membro" value="Membro:" />
 						<h:panelGroup>
