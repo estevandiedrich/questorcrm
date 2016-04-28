@@ -283,7 +283,7 @@
 						<h:inputText id="site" value="#{newLead.site}" />
 						<h:message for="site" errorClass="invalid" />
 						<h:outputLabel for="observacao" value="Observação:" />
-						<h:inputTextarea id="observacao" value="#{newLead.observacao}" style="width:800px;"/>
+						<h:inputTextarea id="observacao" value="#{newLead.observacao}" style="width:400px;"/>
 						<h:message for="observacao" errorClass="invalid" />
 						<h:outputLabel for="foto" value="Foto:" />
 						<h:inputFile id="foto" value="#{newLead.imagemPart}">
@@ -464,9 +464,10 @@
 					</h:column>
 				</h:dataTable>
 				<br/>
-				<h:commandButton id="salvarLead" value="Salvar" action="#{salvarLead.salvar}">
-<!-- 					<f:ajax render="@form" execute="@form"/> -->
-				</h:commandButton>
+				<h:panelGroup>
+					<h:commandButton id="salvarLead" value="Salvar" action="#{salvarLead.salvar}"/>
+					<h:commandButton id="cancelarLead" value="Cancelar" action="#{salvarLead.novo}" style="margin-left:20px;"/>
+				</h:panelGroup>
 			</h:panelGrid>
 			<h2>Leads</h2>
 			<h:panelGrid id="leadsPanelGrid">

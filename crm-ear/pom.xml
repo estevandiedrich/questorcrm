@@ -9,7 +9,7 @@
       <version>1.0-SNAPSHOT</version>
    </parent>
 	<properties>
-	    <jboss-as.deploy.hostname>localhost</jboss-as.deploy.hostname>  <!-- Where to deploy. -->
+	    <jboss-as.deploy.hostname>192.168.50.89</jboss-as.deploy.hostname>  <!-- Where to deploy. -->
 	    <jboss-as.deploy.user>estevan</jboss-as.deploy.user>
 	    <jboss-as.deploy.pass>Estevan@123</jboss-as.deploy.pass>
 	</properties>

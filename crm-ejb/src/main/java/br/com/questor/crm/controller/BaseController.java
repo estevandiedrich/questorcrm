@@ -6,11 +6,11 @@ import java.io.IOException;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-import br.com.questor.crm.model.Imagem;
+import br.com.questor.crm.model.Arquivo;
 
 public class BaseController {
 
-	public StreamedContent carregaImagem(Imagem imagem) throws IOException
+	public StreamedContent carregaImagem(Arquivo imagem) throws IOException
 	{
 //		FacesContext context = FacesContext.getCurrentInstance();
 
@@ -20,9 +20,9 @@ public class BaseController {
 //	    }
 //	    else {
 //			Imagem imagem = newLead.getImagem();
-			if(imagem != null && imagem.getImagem() != null)
+			if(imagem != null && imagem.getContent() != null)
 			{
-		        StreamedContent streamedContent = new DefaultStreamedContent(new ByteArrayInputStream(imagem.getImagem()),imagem.getContentType());
+		        StreamedContent streamedContent = new DefaultStreamedContent(new ByteArrayInputStream(imagem.getContent()),imagem.getContentType());
 		        return streamedContent;
 			}
 			else

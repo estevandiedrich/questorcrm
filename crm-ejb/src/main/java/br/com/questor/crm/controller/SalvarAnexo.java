@@ -18,8 +18,8 @@ import org.apache.commons.io.IOUtils;
 import org.primefaces.model.DefaultStreamedContent;
 
 import br.com.questor.crm.model.Anexo;
+import br.com.questor.crm.model.Arquivo;
 import br.com.questor.crm.model.Email;
-import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
 
 @Stateful
@@ -38,28 +38,28 @@ public class SalvarAnexo {
 	
 	public void adicionar(Lead lead) throws IOException
 	{
-		Imagem imagem = new Imagem();
+		Arquivo imagem = new Arquivo();
 		imagem.setContentType(newAnexo.getPart().getContentType());
-		imagem.setImagem(IOUtils.toByteArray(newAnexo.getPart().getInputStream()));
+		imagem.setContent(IOUtils.toByteArray(newAnexo.getPart().getInputStream()));
 		imagem.setNome(newAnexo.getPart().getSubmittedFileName());
 		imagem.setSize(newAnexo.getPart().getSize());
-		newAnexo.setImagem(imagem);
+		newAnexo.setArquivo(imagem);
 		lead.getAnexos().add(newAnexo);
 		initNewAnexo();
 	}
 	public DefaultStreamedContent baixarAnexo(Anexo anexo)
 	{
-		InputStream arquivo = new ByteArrayInputStream(anexo.getImagem().getImagem());
-		return new DefaultStreamedContent(arquivo, anexo.getContentType(), anexo.getImagem().getNome());
+		InputStream arquivo = new ByteArrayInputStream(anexo.getArquivo().getContent());
+		return new DefaultStreamedContent(arquivo, anexo.getContentType(), anexo.getArquivo().getNome());
 	}
 	public void adicionar(Email email) throws IOException
 	{
-		Imagem imagem = new Imagem();
+		Arquivo imagem = new Arquivo();
 		imagem.setContentType(newAnexo.getPart().getContentType());
-		imagem.setImagem(IOUtils.toByteArray(newAnexo.getPart().getInputStream()));
+		imagem.setContent(IOUtils.toByteArray(newAnexo.getPart().getInputStream()));
 		imagem.setNome(newAnexo.getPart().getSubmittedFileName());
 		imagem.setSize(newAnexo.getPart().getSize());
-		newAnexo.setImagem(imagem);
+		newAnexo.setArquivo(imagem);
 		email.getAnexos().add(newAnexo);
 		initNewAnexo();
 	}

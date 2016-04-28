@@ -31,11 +31,11 @@ import br.com.questor.crm.data.CotacaoListProducer;
 import br.com.questor.crm.data.EmailListProducer;
 import br.com.questor.crm.data.OportunidadeContatoListProducer;
 import br.com.questor.crm.model.Anexo;
+import br.com.questor.crm.model.Arquivo;
 import br.com.questor.crm.model.Contato;
 import br.com.questor.crm.model.ContatoEmail;
 import br.com.questor.crm.model.Cotacao;
 import br.com.questor.crm.model.Email;
-import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
 import br.com.questor.crm.model.ModuloSelecionado;
 import br.com.questor.crm.model.Oportunidade;
@@ -114,9 +114,9 @@ public class SalvarOportunidade {
 			contatoEmailList.add(contatoEmail);
 		}
 		
-		Imagem anexo = new Imagem();
+		Arquivo anexo = new Arquivo();
 		anexo.setContentType("application/pdf");
-		anexo.setImagem(relatorio.toByteArray());
+		anexo.setContent(relatorio.toByteArray());
 		anexo.setNome("proposta.pdf");
 		anexo.setSize(relatorio.size());
 		
@@ -125,7 +125,7 @@ public class SalvarOportunidade {
 		proposta.setDescricao("Proposta Comercial");
 		proposta.setSize(relatorio.size());
 		proposta.setLead(oportunidade.getConta());
-		proposta.setImagem(anexo);
+		proposta.setArquivo(anexo);
 		
 		Email emailProposta = new Email();
 		oportunidade.getConta().setEmails(emailListProducer.retrieveAllEmailsByLeadOrderedBySentDate(oportunidade.getConta()));

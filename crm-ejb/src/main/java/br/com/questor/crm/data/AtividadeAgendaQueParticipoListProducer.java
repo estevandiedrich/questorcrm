@@ -13,7 +13,6 @@ import javax.persistence.EntityManager;
 
 import br.com.questor.crm.controller.LoginBean;
 import br.com.questor.crm.model.AtividadeAgenda;
-import br.com.questor.crm.model.Email;
 
 @RequestScoped
 public class AtividadeAgendaQueParticipoListProducer {

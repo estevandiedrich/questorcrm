@@ -200,7 +200,7 @@
 					<h:message for="observacao" errorClass="invalid" />
 					<h:outputLabel for="distribuidor" value="Distribuidor:" />
 					<h:panelGroup>
-						<h:inputText id="distribuidor" value="#{newPrincipal.distribuidor.id}"/>
+						<h:inputText id="distribuidor" value="#{salvarPrincipals.distribuidor.id}"/>
 						<h:graphicImage library="images" name="magnifying.png"
 							onclick="javascript:modalDistribuidor()" />
 						<h:inputText id="distribuidor_desc" disabled="true" style="border:none;background:white;"/>
@@ -267,9 +267,12 @@
 			</h:panelGrid>
 			
 			<br />
-			<h:commandButton id="salvar" action="#{salvarPrincipals.salvar()}"
-				value="Salvar" type="submit"/>
-
+			<h:panelGroup>
+				<h:commandButton id="salvar" action="#{salvarPrincipals.salvar()}"
+					value="Salvar" type="submit"/>
+				<h:commandButton id="cancelar" value="Cancelar" action="#{salvarPrincipals.novo}" style="margin-left:20px;"/>
+			</h:panelGroup>
+			
 		<h:panelGrid id="principalsPanelGrid">
 			<h2>Usuários</h2>
 			<h:panelGroup rendered="#{empty principals}">

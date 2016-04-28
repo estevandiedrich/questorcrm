@@ -13,7 +13,6 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 
 import br.com.questor.crm.controller.LoginBean;
-import br.com.questor.crm.model.Cargo;
 import br.com.questor.crm.model.GrupoUsuariosLead;
 import br.com.questor.crm.model.GrupoUsuariosPrincipals;
 import br.com.questor.crm.model.Lead;

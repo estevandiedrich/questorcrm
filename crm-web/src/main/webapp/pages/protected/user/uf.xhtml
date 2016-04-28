@@ -18,9 +18,9 @@
 	});
 	function dataTable()
 	{
-		var table = $('#ufsDataTable').DataTable();
+		var table = $('#regUFs\\:ufsDataTable').DataTable();
 		 
-	    $('#ufsDataTable tbody').on( 'click', 'tr', function () {
+	    $('#regUFs\\:ufsDataTable tbody').on( 'click', 'tr', function () {
 	        if ( $(this).hasClass('selected') ) {
 	            $(this).removeClass('selected');
 	        }
@@ -54,36 +54,49 @@
                action="#{salvarUF.salvar}" value="Salvar" />
          </p>
          </h:panelGrid>
+		  <h2>UFs</h2>
+	      <h:panelGrid id="ufsDataGrid">
+		      <h:panelGroup rendered="#{empty ufs}">
+		         <em>Nenhuma uf registrada.</em>
+		      </h:panelGroup>
+		      <h:dataTable id="ufsDataTable" var="_uf" value="#{ufs}"
+				rendered="#{not empty ufs}"
+				styleClass="table"
+				width="100%"
+				style="display:inline-table;"
+				headerClass="table-header"
+				rowClasses="table-odd-row,table-even-row">
+		        <h:column>
+		          <f:facet name="header">Id</f:facet>
+		              <h:outputText value="#{_uf.id}"/>
+		        </h:column>
+		        <h:column>
+		          <f:facet name="header">Nome</f:facet>
+		              <h:outputText value="#{_uf.nome}"/>
+		        </h:column>
+		        <h:column>
+		          <f:facet name="header">Sigla</f:facet>
+		              <h:outputText value="#{_uf.sigla}"/>
+		        </h:column>
+		        <h:column>
+		          <f:facet name="header">Prazo</f:facet>
+		              <h:outputText value="#{_uf.prazo}"/>
+		        </h:column>
+		        <h:column>
+					<f:facet name="header"></f:facet>
+				        <h:commandLink value="Editar"
+							action="#{salvarUF.editar(_uf)}">
+							<f:ajax render="regUFs:nome regUFs:sigla regUFs:prazo"/>
+						</h:commandLink>
+				</h:column>
+		        <h:column>
+					<f:facet name="header"></f:facet>
+					<h:commandLink value="Excluir" action="#{salvarUF.excluir(_uf)}" onclick="javascript:return confirm('Deseja realmente excluir este registro ?');">
+						<f:ajax render="regUFs:ufsDataGrid"/>
+					</h:commandLink>
+				</h:column>
+		      </h:dataTable>
+	      </h:panelGrid>
       </h:form>
-	  <h2>UFs</h2>
-      <h:panelGrid id="ufsDataGrid">
-	      <h:panelGroup rendered="#{empty ufs}">
-	         <em>Nenhuma uf registrada.</em>
-	      </h:panelGroup>
-	      <h:dataTable id="ufsDataTable" var="_uf" value="#{ufs}"
-			rendered="#{not empty ufs}"
-			styleClass="table"
-			width="100%"
-			style="display:inline-table;"
-			headerClass="table-header"
-			rowClasses="table-odd-row,table-even-row">
-	        <h:column>
-	          <f:facet name="header">Id</f:facet>
-	              <h:outputText value="#{_uf.id}"/>
-	        </h:column>
-	        <h:column>
-	          <f:facet name="header">Nome</f:facet>
-	              <h:outputText value="#{_uf.nome}"/>
-	        </h:column>
-	        <h:column>
-	          <f:facet name="header">Sigla</f:facet>
-	              <h:outputText value="#{_uf.sigla}"/>
-	        </h:column>
-	        <h:column>
-	          <f:facet name="header">Prazo</f:facet>
-	              <h:outputText value="#{_uf.prazo}"/>
-	        </h:column>
-	      </h:dataTable>
-      </h:panelGrid>
    </ui:define>
 </ui:composition>

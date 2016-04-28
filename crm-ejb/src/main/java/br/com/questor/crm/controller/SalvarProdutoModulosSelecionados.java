@@ -15,11 +15,11 @@ import javax.persistence.EntityManager;
 
 import br.com.questor.crm.data.ModuloListProducer;
 import br.com.questor.crm.data.ModuloSelecionadoListProducer;
+import br.com.questor.crm.model.Cotacao;
 import br.com.questor.crm.model.Modulo;
 import br.com.questor.crm.model.ModuloSelecionado;
 import br.com.questor.crm.model.Produto;
 import br.com.questor.crm.model.ProdutoModulosSelecionados;
-import br.com.questor.crm.model.Cotacao;
 import br.com.questor.crm.model.TipoContratacao;
 
 @Stateful

@@ -9,8 +9,6 @@
 		<h:panelGrid columns="2" columnClasses="leftColumn,rightColumnIndex">
 			<h:form id="index">
 				<h:panelGrid>
-					<h:commandLink value="Novo Usuário" action="#{salvarPrincipals.novo}"
-						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
 					<h:commandLink value="Usuários" action="#{salvarPrincipals.listagem}"
 						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
 					<h:commandLink value="Meu Perfil" action="#{salvarPrincipals.editarMeuPerfil}"
@@ -20,12 +18,8 @@
 					<h:commandLink value="Grupo de usuários" action="#{salvarGrupoUsuarios.novo}"
 						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
 					<h:panelGrid>
-						<h:commandLink value="Nova Lead ou Conta"
-							action="#{salvarLead.novo}" />
 						<h:commandLink value="Leads e Contas"
 							action="#{salvarLead.listagem}" />
-						<h:commandLink value="Nova Oportunidade"
-							action="#{salvarOportunidade.novo}" />
 						<h:commandLink value="Oportunidades"
 							action="#{salvarOportunidade.listagem}" />
 					</h:panelGrid>
@@ -44,14 +38,10 @@
 						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
 					<h:commandLink value="Tipos de Contratação"
 							action="#{salvarTipoContratacao.novo}" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
-					<h:outputLink value="/crm/pages/protected/user/uf.xhtml"
-						rendered="#{loginBean.isCallerInRole('ADMIN')}">
-						<h:outputText value="UFs" />
-					</h:outputLink>
-					<h:outputLink value="/crm/pages/protected/user/cidade.xhtml"
-						rendered="#{loginBean.isCallerInRole('ADMIN')}">
-						<h:outputText value="Cidades" />
-					</h:outputLink>
+					<h:commandLink value="UFs" action="#{salvarUF.novo}"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
+					<h:commandLink value="Cidades" action="#{salvarCidade.novo}"
+						rendered="#{loginBean.isCallerInRole('ADMIN')}" />
 					<h:commandLink value="Propriedades"
 							action="#{salvarPropriedade.novo}" rendered="#{loginBean.isCallerInRole('ADMIN')}"/>
 				</h:panelGrid>

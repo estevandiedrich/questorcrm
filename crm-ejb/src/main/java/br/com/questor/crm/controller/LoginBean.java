@@ -13,7 +13,6 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TemporalType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -132,7 +131,7 @@ public class LoginBean {
 				}
 			}
 		}
-		catch(NoResultException e)
+		catch(Exception e)
 		{
 			log.info("Nenhuma atividade agenda encontrada");
 		}

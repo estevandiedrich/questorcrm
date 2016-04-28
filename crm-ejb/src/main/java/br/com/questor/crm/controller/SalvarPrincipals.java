@@ -24,7 +24,6 @@ import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 
 import org.apache.commons.io.IOUtils;
@@ -34,11 +33,11 @@ import org.primefaces.model.StreamedContent;
 
 import br.com.questor.crm.data.GrupoUsuariosPrincipalsListProducer;
 import br.com.questor.crm.data.RolesListProducer;
+import br.com.questor.crm.model.Arquivo;
 import br.com.questor.crm.model.Cargo;
 import br.com.questor.crm.model.GrupoUsuarios;
 import br.com.questor.crm.model.GrupoUsuariosPrincipals;
 import br.com.questor.crm.model.ImagePart;
-import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
 import br.com.questor.crm.model.Principals;
 import br.com.questor.crm.model.Roles;
@@ -75,6 +74,8 @@ public class SalvarPrincipals implements Serializable {
 	
 	@Inject
 	private LoginBean loginBean;
+	
+	private Lead distribuidor;
 	
 	@Produces
 	@Named
@@ -147,21 +148,42 @@ public class SalvarPrincipals implements Serializable {
 		principalsEventSrc.fire(principal);
 		initNewPrincipal();
 	}
-	public void gerarThumbnail(Imagem imagem) throws Exception
+	public void gerarThumbnail(Arquivo imagem) throws Exception
 	{
 		BufferedImage bufferedImage = new BufferedImage(30,40,BufferedImage.TYPE_INT_RGB);
-		ByteArrayInputStream bais = new ByteArrayInputStream(imagem.getImagem());
+		ByteArrayInputStream bais = new ByteArrayInputStream(imagem.getContent());
 		Image image = ImageIO.read(bais).getScaledInstance(30, 40, BufferedImage.SCALE_SMOOTH);
 		bufferedImage.createGraphics().drawImage(image, 0, 0, null);
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
-		Imagem thumbnail = new Imagem();
-		thumbnail.setNome(newPrincipal.getImagemPart().getName());
-		thumbnail.setSize(120);
-		thumbnail.setContentType(newPrincipal.getImagemPart().getContentType());
-		thumbnail.setImagem(byteArrayOutputStream.toByteArray());
-		newPrincipal.setThumbnail(thumbnail);
-		em.persist(thumbnail);
+		
+		Arquivo thumbnail = null;
+		try
+		{
+			thumbnail = (Arquivo) em.createNamedQuery("Principals.findThumbnailById").setParameter("id", newPrincipal.getId()).getSingleResult();
+		}
+		catch(Exception e)
+		{
+			log.severe("Não tem thumbnail");
+		}
+		if(thumbnail == null)
+		{
+			thumbnail = new Arquivo();
+			thumbnail.setNome(newPrincipal.getImagemPart().getName());
+			thumbnail.setSize(byteArrayOutputStream.toByteArray().length);
+			thumbnail.setContentType(newPrincipal.getImagemPart().getContentType());
+			thumbnail.setContent(byteArrayOutputStream.toByteArray());
+			newPrincipal.setThumbnail(thumbnail);
+			em.persist(thumbnail);
+		}
+		else
+		{
+			thumbnail.setNome(newPrincipal.getImagemPart().getName());
+			thumbnail.setSize(byteArrayOutputStream.toByteArray().length);
+			thumbnail.setContentType(newPrincipal.getImagemPart().getContentType());
+			thumbnail.setContent(byteArrayOutputStream.toByteArray());
+			em.merge(thumbnail);
+		}
 	}
 	public boolean valido()
 	{
@@ -185,45 +207,66 @@ public class SalvarPrincipals implements Serializable {
 				FacesContext.getCurrentInstance().addMessage("regPrincipals:senha", m);
 				return Boolean.FALSE;
 			}
+			if(!newPrincipal.getPassword().equals(newPrincipal.getConfirmarSenha()))
+			{
+				FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Senhas não conferem.", null);
+				FacesContext.getCurrentInstance().addMessage("regPrincipals:senha", m);
+				FacesContext.getCurrentInstance().addMessage("regPrincipals:confirmarSenha", m);
+			}
 		}
 		return Boolean.TRUE;
 	}
 	public void salvaImagemEAssinatura() throws Exception
 	{
+		Arquivo imagem = null;
+		try
+		{
+			imagem = (Arquivo) em.createNamedQuery("Principals.findImagemById").setParameter("id", newPrincipal.getId()).getSingleResult();
+		}
+		catch(Exception e)
+		{
+			log.info("Imagem não encontrada");
+		}
 		if(newPrincipal.getImagemPart() != null)
 		{
-			if(newPrincipal.getImagem() == null || newPrincipal.getImagem().getId() == null)
+			if(imagem == null)
 			{
-				Imagem imagem = new Imagem();
+				imagem = new Arquivo();
 				imagem.setNome(newPrincipal.getImagemPart().getName());
 				imagem.setSize(newPrincipal.getImagemPart().getSize());
 				imagem.setContentType(newPrincipal.getImagemPart().getContentType());
-				imagem.setImagem(IOUtils.toByteArray(newPrincipal.getImagemPart().getInputStream()));
+				imagem.setContent(IOUtils.toByteArray(newPrincipal.getImagemPart().getInputStream()));
 				newPrincipal.setImagem(imagem);
 				em.persist(imagem);
 				gerarThumbnail(imagem);
 			}
 			else
 			{
-				Imagem imagem = newPrincipal.getImagem();
 				imagem.setNome(newPrincipal.getImagemPart().getName());
 				imagem.setSize(newPrincipal.getImagemPart().getSize());
 				imagem.setContentType(newPrincipal.getImagemPart().getContentType());
-				imagem.setImagem(IOUtils.toByteArray(newPrincipal.getImagemPart().getInputStream()));
+				imagem.setContent(IOUtils.toByteArray(newPrincipal.getImagemPart().getInputStream()));
 				em.merge(imagem);
-				gerarThumbnail(imagem);
+				try
+				{
+					gerarThumbnail(imagem);
+				}
+				catch(Exception e)
+				{
+					log.severe("Falha ao gerar Thumbnail");
+				}
 			}
 			
 		}
 		else
 		{
-			if(newPrincipal.getImagem() == null || newPrincipal.getImagem().getId() == null)
+			if(imagem == null)
 			{
-				Imagem imagem = new Imagem();
+				imagem = new Arquivo();
 				imagem.setNome("Imagem Padrão");
 				imagem.setSize(120);
 				imagem.setContentType("image/jpeg");
-				imagem.setImagem(gerarImagemPadrao());
+				imagem.setContent(gerarImagemPadrao());
 				newPrincipal.setImagem(imagem);
 				newPrincipal.setThumbnail(imagem);
 				em.persist(imagem);
@@ -231,23 +274,31 @@ public class SalvarPrincipals implements Serializable {
 		}
 		if(newPrincipal.getAssinaturaPart() != null)
 		{
-			if(newPrincipal.getAssinaturaEmail() == null || newPrincipal.getAssinaturaEmail().getId() == null)
+			Arquivo assinatura = null;
+			try
 			{
-				Imagem assinatura = new Imagem();
+				assinatura = (Arquivo) em.createNamedQuery("Principals.findAssinaturaById").setParameter("id", newPrincipal.getId()).getSingleResult();
+			}
+			catch(Exception e)
+			{
+				log.info("Imagem não encontrada");
+			}
+			if(assinatura == null)
+			{
+				assinatura = new Arquivo();
 				assinatura.setNome(newPrincipal.getAssinaturaPart().getName());
 				assinatura.setSize(newPrincipal.getAssinaturaPart().getSize());
 				assinatura.setContentType(newPrincipal.getAssinaturaPart().getContentType());
-				assinatura.setImagem(IOUtils.toByteArray(newPrincipal.getAssinaturaPart().getInputStream()));
+				assinatura.setContent(IOUtils.toByteArray(newPrincipal.getAssinaturaPart().getInputStream()));
 				newPrincipal.setAssinaturaEmail(assinatura);
 				em.persist(assinatura);
 			}
 			else
 			{
-				Imagem assinatura = newPrincipal.getAssinaturaEmail();
 				assinatura.setNome(newPrincipal.getAssinaturaPart().getName());
 				assinatura.setSize(newPrincipal.getAssinaturaPart().getSize());
 				assinatura.setContentType(newPrincipal.getAssinaturaPart().getContentType());
-				assinatura.setImagem(IOUtils.toByteArray(newPrincipal.getAssinaturaPart().getInputStream()));
+				assinatura.setContent(IOUtils.toByteArray(newPrincipal.getAssinaturaPart().getInputStream()));
 				em.merge(assinatura);
 			}
 		}
@@ -258,10 +309,6 @@ public class SalvarPrincipals implements Serializable {
 	}
 	private void salvarNovoUsuario()
 	{
-		if(newPrincipal.getDistribuidor().getId() == null)
-		{
-			newPrincipal.setDistribuidor(null);
-		}
 		if(newPrincipal.getRole().getRole() == null)
 		{
 			Roles newRole = new Roles();
@@ -358,6 +405,14 @@ public class SalvarPrincipals implements Serializable {
 		{
 			if(valido())
 			{
+				if(distribuidor.getId() == null)
+				{
+					newPrincipal.setDistribuidor(null);
+				}
+				else
+				{
+					newPrincipal.setDistribuidor(distribuidor);
+				}
 				salvaImagemEAssinatura();
 				if(newPrincipal.getId() == null)
 				{
@@ -377,11 +432,27 @@ public class SalvarPrincipals implements Serializable {
 	}
 	public boolean imagemCarregada()
 	{
-		return newPrincipal != null && newPrincipal.getImagem() != null && newPrincipal.getImagem().getId() != null;
+		try
+		{
+			return newPrincipal != null && newPrincipal.getImagem() != null && newPrincipal.getImagem().getId() != null;
+		}
+		catch(Exception e)
+		{
+			log.info("Imagem nao carregada");
+			return Boolean.FALSE;
+		}
 	}
 	public boolean assinaturaCarregada()
 	{
-		return newPrincipal != null && newPrincipal.getAssinaturaEmail() != null && newPrincipal.getAssinaturaEmail().getId() != null;
+		try
+		{
+			return newPrincipal != null && newPrincipal.getAssinaturaEmail() != null && newPrincipal.getAssinaturaEmail().getId() != null;
+		}
+		catch(Exception e)
+		{
+			log.info("Assinatura nao carregada");
+			return Boolean.FALSE;
+		}
 	}
 	public String primeiroAcesso(Principals principals)
 	{
@@ -405,31 +476,41 @@ public class SalvarPrincipals implements Serializable {
 	{		
 		if(newPrincipal != null && newPrincipal.getId() != null)
 		{
-			if(newPrincipal.getDistribuidor() == null)
-			{
-				newPrincipal.setDistribuidor(new Lead());
-			}
 			if(newPrincipal.getImagem() != null)
 			{
-				Imagem imagem = (Imagem)em.createNamedQuery("Principals.findImagemById").setParameter("id", newPrincipal.getId()).getSingleResult();
-				newPrincipal.setImagem(imagem);
-				ImagePart imagemPart = new ImagePart();
-				imagemPart.setSize(newPrincipal.getImagem().getSize());
-				imagemPart.setName(newPrincipal.getImagem().getNome());
-				imagemPart.setInputStream(IOUtils.toInputStream(new String(newPrincipal.getImagem().getImagem())));
-				imagemPart.setContentType(newPrincipal.getImagem().getContentType());
-				newPrincipal.setImagemPart(imagemPart);
+				try
+				{
+					Arquivo imagem = (Arquivo)em.createNamedQuery("Principals.findImagemById").setParameter("id", newPrincipal.getId()).getSingleResult();
+					newPrincipal.setImagem(imagem);
+					ImagePart imagemPart = new ImagePart();
+					imagemPart.setSize(newPrincipal.getImagem().getSize());
+					imagemPart.setName(newPrincipal.getImagem().getNome());
+					imagemPart.setInputStream(IOUtils.toInputStream(new String(newPrincipal.getImagem().getContent())));
+					imagemPart.setContentType(newPrincipal.getImagem().getContentType());
+					newPrincipal.setImagemPart(imagemPart);
+				}
+				catch(Exception e)
+				{
+					log.info("Sem imagem salva");
+				}
 			}
 			if(newPrincipal.getAssinaturaEmail() != null)
 			{
-				Imagem assinatura = (Imagem)em.createNamedQuery("Principals.findAssinaturaById").setParameter("id", newPrincipal.getId()).getSingleResult();
-				newPrincipal.setAssinaturaEmail(assinatura);
-				ImagePart imagemPart = new ImagePart();
-				imagemPart.setSize(newPrincipal.getAssinaturaEmail().getSize());
-				imagemPart.setName(newPrincipal.getAssinaturaEmail().getNome());
-				imagemPart.setInputStream(IOUtils.toInputStream(new String(newPrincipal.getAssinaturaEmail().getImagem())));
-				imagemPart.setContentType(newPrincipal.getAssinaturaEmail().getContentType());
-				newPrincipal.setAssinaturaPart(imagemPart);
+				try
+				{
+					Arquivo assinatura = (Arquivo)em.createNamedQuery("Principals.findAssinaturaById").setParameter("id", newPrincipal.getId()).getSingleResult();
+					newPrincipal.setAssinaturaEmail(assinatura);
+					ImagePart imagemPart = new ImagePart();
+					imagemPart.setSize(newPrincipal.getAssinaturaEmail().getSize());
+					imagemPart.setName(newPrincipal.getAssinaturaEmail().getNome());
+					imagemPart.setInputStream(IOUtils.toInputStream(new String(newPrincipal.getAssinaturaEmail().getContent())));
+					imagemPart.setContentType(newPrincipal.getAssinaturaEmail().getContentType());
+					newPrincipal.setAssinaturaPart(imagemPart);
+				}
+				catch(Exception e)
+				{
+					log.info("Sem assinatura salva");
+				}
 			}
 			List<GrupoUsuariosPrincipals> gruposUsuariosPrincipals = grupoUsuariosPrincipalsListProducer.retrieveAllGrupoUsuariosPrincipalsByPrincipal(newPrincipal);
 			newPrincipal.setGruposUsuarios(gruposUsuariosPrincipals);
@@ -441,54 +522,63 @@ public class SalvarPrincipals implements Serializable {
 			{
 				Lead distribuidor = (Lead) em.createNamedQuery("Principals.findDistribuidorById").setParameter("id", newPrincipal.getId()).getSingleResult();
 				newPrincipal.setDistribuidor(distribuidor);
+				this.distribuidor = distribuidor;
 			}
-			catch(NoResultException nre)
+			catch(Exception nre)
 			{
-				log.log(Level.SEVERE, "Não tem distribuidor", nre);
+				log.log(Level.SEVERE, "Não tem distribuidor");
+				newPrincipal.setDistribuidor(null);
+				this.distribuidor = new Lead();
 			}
 		}
 	}
 	@PostConstruct
 	public void initNewPrincipal() {
 		newPrincipal = new Principals();
-		newPrincipal.setDistribuidor(new Lead());
+//		newPrincipal.setDistribuidor(new Lead());
 	}
 	public StreamedContent carregaAssinatura(Principals principals) throws IOException
 	{
-		Imagem imagem = null;
+		Arquivo imagem = null;
 		try
 		{
-			imagem = (Imagem)em.createNamedQuery("Principals.findAssinaturaById").setParameter("id", principals.getId()).getSingleResult();
+			imagem = (Arquivo)em.createNamedQuery("Principals.findAssinaturaById").setParameter("id", principals.getId()).getSingleResult();
 		}
-		catch(NoResultException e)
+		catch(Exception e)
 		{
-			log.log(Level.SEVERE, "Não há assinatura cadastrada", e);
+			log.log(Level.SEVERE, "Não há assinatura cadastrada");
 		}
 		return carregaImagem(imagem);
 	}
 	public StreamedContent carregaImagem(Principals principals) throws IOException
 	{
-		Imagem imagem = null;
+		Arquivo imagem = null;
 		try
 		{
-			imagem = (Imagem)em.createNamedQuery("Principals.findImagemById").setParameter("id", principals.getId()).getSingleResult();
+			imagem = (Arquivo)em.createNamedQuery("Principals.findImagemById").setParameter("id", principals.getId()).getSingleResult();
 		}
-		catch(NoResultException e)
+		catch(Exception e)
 		{
 			log.log(Level.SEVERE, "Não há imagem cadastrada");
 		}
 		return carregaImagem(imagem);
 	}
-	public StreamedContent carregaImagem(Imagem imagem)
+	public StreamedContent carregaImagem(Arquivo imagem)
 	{
-		if(imagem != null && imagem.getImagem() != null)
+		if(imagem != null && imagem.getContent() != null)
 		{
-	        StreamedContent streamedContent = new DefaultStreamedContent(new ByteArrayInputStream(imagem.getImagem()),imagem.getContentType());
+	        StreamedContent streamedContent = new DefaultStreamedContent(new ByteArrayInputStream(imagem.getContent()),imagem.getContentType());
 	        return streamedContent;
 		}
 		else
 		{
 			return new DefaultStreamedContent();
 		}
+	}
+	public Lead getDistribuidor() {
+		return distribuidor;
+	}
+	public void setDistribuidor(Lead distribuidor) {
+		this.distribuidor = distribuidor;
 	}
 }

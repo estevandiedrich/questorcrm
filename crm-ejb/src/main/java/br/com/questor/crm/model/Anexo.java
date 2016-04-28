@@ -10,11 +10,12 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.servlet.http.Part;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
@@ -25,6 +26,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 		}
 )
 @XmlRootElement
+@NamedQueries(value={
+		@NamedQuery(name = "Anexo.findAll",query = "SELECT a FROM Anexo a "),
+		@NamedQuery(name = "Anexo.findByLead",query = "SELECT a FROM Anexo a JOIN FETCH a.arquivo WHERE a.lead.id = :leadId ")
+})
 @SequenceGenerator(name="ANEXO_SEQUENCE", sequenceName="ANEXO_SEQUENCE", allocationSize=1, initialValue=1)
 public class Anexo implements Serializable{
 	/**
@@ -40,8 +45,9 @@ public class Anexo implements Serializable{
 	private String contentType;
 	
 	private long size;
-	@NotNull
-	private Imagem imagem;
+	@ManyToOne(fetch = FetchType.LAZY)
+	  @JoinColumn(name = "arquivo_id")
+	private Arquivo arquivo;
 	
 	@Transient
 	private Part part;
@@ -86,12 +92,12 @@ public class Anexo implements Serializable{
 		this.size = size;
 	}
 
-	public Imagem getImagem() {
-		return imagem;
+	public Arquivo getArquivo() {
+		return arquivo;
 	}
 
-	public void setImagem(Imagem imagem) {
-		this.imagem = imagem;
+	public void setArquivo(Arquivo arquivo) {
+		this.arquivo = arquivo;
 	}
 
 	public Part getPart() {

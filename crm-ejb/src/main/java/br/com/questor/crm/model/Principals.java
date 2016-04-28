@@ -23,8 +23,8 @@ import javax.persistence.UniqueConstraint;
 import javax.servlet.http.Part;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.hibernate.validator.constraints.Email;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
@@ -59,8 +59,8 @@ public class Principals implements Serializable {
 		Role = new Roles();
 		gruposUsuarios = new ArrayList<GrupoUsuariosPrincipals>();
 		grupoUsuariosSelecionado = new GrupoUsuarios();
-		imagem = new Imagem();
-		assinaturaEmail = new Imagem();
+		imagem = new Arquivo();
+		assinaturaEmail = new Arquivo();
 		primeiroLogin = true;
 		nome = "";
 		cargo = new Cargo();
@@ -100,19 +100,22 @@ public class Principals implements Serializable {
 	
 	private String Password;
 	
+	@Transient
+	private String confirmarSenha;
+	
 	private boolean primeiroLogin;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	  @JoinColumn(name = "assinturaemail_id")
-	private Imagem assinaturaEmail;
+	private Arquivo assinaturaEmail;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	  @JoinColumn(name = "imagem_id")
-	private Imagem imagem;
+	private Arquivo imagem;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	  @JoinColumn(name = "thumbnail_id")
-	private Imagem thumbnail;
+	private Arquivo thumbnail;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	  @JoinColumn(name = "cargo_id")
@@ -176,11 +179,11 @@ public class Principals implements Serializable {
 		this.primeiroLogin = primeiroLogin;
 	}
 
-	public Imagem getImagem() {
+	public Arquivo getImagem() {
 		return imagem;
 	}
 
-	public void setImagem(Imagem imagem) {
+	public void setImagem(Arquivo imagem) {
 		this.imagem = imagem;
 	}
 
@@ -208,11 +211,11 @@ public class Principals implements Serializable {
 		this.grupoUsuariosSelecionado = grupoUsuariosSelecionado;
 	}
 
-	public Imagem getAssinaturaEmail() {
+	public Arquivo getAssinaturaEmail() {
 		return assinaturaEmail;
 	}
 
-	public void setAssinaturaEmail(Imagem assinaturaEmail) {
+	public void setAssinaturaEmail(Arquivo assinaturaEmail) {
 		this.assinaturaEmail = assinaturaEmail;
 	}
 
@@ -248,11 +251,11 @@ public class Principals implements Serializable {
 		this.telefone = telefone;
 	}
 
-	public Imagem getThumbnail() {
+	public Arquivo getThumbnail() {
 		return thumbnail;
 	}
 
-	public void setThumbnail(Imagem thumbnail) {
+	public void setThumbnail(Arquivo thumbnail) {
 		this.thumbnail = thumbnail;
 	}
 
@@ -279,4 +282,13 @@ public class Principals implements Serializable {
 	public void setDistribuidor(Lead distribuidor) {
 		this.distribuidor = distribuidor;
 	}
+
+	public String getConfirmarSenha() {
+		return confirmarSenha;
+	}
+
+	public void setConfirmarSenha(String confirmarSenha) {
+		this.confirmarSenha = confirmarSenha;
+	}
+	
 }

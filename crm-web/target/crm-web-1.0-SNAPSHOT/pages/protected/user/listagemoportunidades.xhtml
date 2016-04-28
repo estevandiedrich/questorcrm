@@ -87,6 +87,9 @@
 		}
 		</script>
 		<h:form id="listagemOportunidades">
+			<br/>
+			<h:commandButton id="nova" value="Nova Oportunidade" action="#{salvarOportunidade.novo}"/>
+			<br/>
 			<h2>Oportunidades</h2>
 			<h:panelGroup rendered="#{empty oportunidades}">
 				<em>Nenhuma oportunidade registrada.</em>
@@ -131,9 +134,6 @@
 					</p:commandLink>
 				</h:column>
 			</h:dataTable>
-			<br/>
-			<h:commandButton id="nova" value="Nova Oportunidade" action="#{salvarOportunidade.novo}"/>
-			
 			<!-- Modal -->
 			<div id="myModalCotacoesOportunidade" class="modal fade"
 				role="dialog">

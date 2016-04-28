@@ -43,8 +43,11 @@
             <h:inputText id="valor" value="#{newPropriedade.valor}" />
             <h:message for="valor" errorClass="invalid" />
          <p>
+         <h:panelGroup>
             <h:commandButton id="salvar"
                action="#{salvarPropriedade.salvar}" value="Salvar" />
+            <h:commandButton id="cancelar" value="Cancelar" action="#{salvarPropriedade.novo}" style="margin-left:20px;"/>
+         </h:panelGroup>
          </p>
          </h:panelGrid>
       

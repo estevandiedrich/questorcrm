@@ -36,6 +36,9 @@
 	}
    </script>
       <h:form id="listagemLeads">
+      	<br/>
+      	<h:commandButton id="nova" value="Nova Lead ou Conta" action="#{salvarLead.novo}"/>
+      	<br/>
 		<h2>Leads</h2>
 		<h:panelGrid id="leadsPanelGrid">
 			<h:panelGroup rendered="#{empty leads}">
@@ -88,9 +91,6 @@
 				</h:column>
 			</h:dataTable>
 		</h:panelGrid>
-		<br/>
-		<h:commandButton id="nova" value="Nova Lead ou Conta" action="#{salvarLead.novo}"/>
-		
 		</h:form>
    </ui:define>
 </ui:composition>

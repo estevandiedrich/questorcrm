@@ -154,7 +154,7 @@ public class Lead implements Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	  @JoinColumn(name = "imagem_id")
-	private Imagem imagem;
+	private Arquivo imagem;
 	
 	@Transient
 	private Part imagemPart;
@@ -204,11 +204,11 @@ public class Lead implements Serializable {
 		this.emails = emails;
 	}
 
-	public Imagem getImagem() {
+	public Arquivo getImagem() {
 		return imagem;
 	}
 
-	public void setImagem(Imagem imagem) {
+	public void setImagem(Arquivo imagem) {
 		this.imagem = imagem;
 	}
 

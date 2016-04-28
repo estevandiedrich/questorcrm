@@ -63,6 +63,19 @@
 						<f:facet name="header">Descrição</f:facet>
 						<h:outputText value="#{_atividade.descricao}" />
 					</h:column>
+					<h:column>
+						<f:facet name="header"></f:facet>
+					        <h:commandLink value="Editar"
+								action="#{salvarAtividade.editar(_atividade)}">
+								<f:ajax render="regAtividades:descricao"/>
+							</h:commandLink>
+					</h:column>
+			        <h:column>
+						<f:facet name="header"></f:facet>
+						<h:commandLink value="Excluir" action="#{salvarAtividade.excluir(_atividade)}" onclick="javascript:return confirm('Deseja realmente excluir este registro ?');">
+							<f:ajax render="regAtividades:tablePanelAtividades"/>
+						</h:commandLink>
+					</h:column>
 				</h:dataTable>
 			</h:panelGrid>
 		</h:form>

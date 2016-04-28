@@ -58,6 +58,9 @@
 					<h:outputLabel for="senha" value="Senha:" />
 					<h:inputSecret id="senha" value="#{newPrincipal.password}"/>
 					<h:message for="senha" errorClass="invalid" />
+					<h:outputLabel for="confirmarSenha" value="Confirmar senha:" />
+					<h:inputSecret id="confirmarSenha" value="#{newPrincipal.confirmarSenha}"/>
+					<h:message for="confirmarSenha" errorClass="invalid" />
 					<h:outputLabel for="nome" value="Nome:" />
 					<h:inputText id="nome" value="#{newPrincipal.nome}"/>
 					<h:message for="nome" errorClass="invalid" />
@@ -76,6 +79,9 @@
 					<h:outputLabel for="cargo" value="Cargo:" />
 					<h:inputText id="cargo" value="#{newPrincipal.cargo.descricao}" disabled="true"/>
 					<h:message for="cargo" errorClass="invalid" />
+					<h:outputLabel for="distribuidor" value="Distribuidor:" />
+					<h:inputText id="distribuidor" value="#{newPrincipal.distribuidor.nome}" disabled="true"/>
+					<h:message for="distribuidor" errorClass="invalid" />
 					<h:outputLabel for="foto" value="Foto:" />
 					<h:inputFile id="foto" value="#{newPrincipal.imagemPart}">
 						<f:validator binding="#{fileUploadValidator}"/>

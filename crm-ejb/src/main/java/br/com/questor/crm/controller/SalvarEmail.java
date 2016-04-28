@@ -38,10 +38,10 @@ import br.com.questor.crm.data.ContatoEmailListProducer;
 import br.com.questor.crm.data.ContatoListProducer;
 import br.com.questor.crm.data.EmailListProducer;
 import br.com.questor.crm.model.Anexo;
+import br.com.questor.crm.model.Arquivo;
 import br.com.questor.crm.model.Contato;
 import br.com.questor.crm.model.ContatoEmail;
 import br.com.questor.crm.model.Email;
-import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
 import br.com.questor.crm.model.Principals;
 import br.com.questor.crm.model.Propriedades;
@@ -110,7 +110,7 @@ public class SalvarEmail {
             messageBodyPart = new MimeBodyPart();
             for(Anexo anexo:newEmail.getAnexos())
             {
-            	addAttachment(multipart, anexo.getImagem());
+            	addAttachment(multipart, anexo.getArquivo());
             }
             message.setContent(multipart);
             
@@ -121,14 +121,14 @@ public class SalvarEmail {
             log.info("Erro a enviar o email : " + e.getMessage());        
         }
     }
-	private static void addAttachment(Multipart multipart, Imagem imagem)
+	private static void addAttachment(Multipart multipart, Arquivo arquivo)
 	{
 //	    DataSource source = new FileDataSource(filename);
-		DataHandler source = new DataHandler(imagem.getImagem(),imagem.getContentType());
+		DataHandler source = new DataHandler(arquivo.getContent(),arquivo.getContentType());
 	    BodyPart messageBodyPart = new MimeBodyPart();        
 	    try {
 			messageBodyPart.setDataHandler(source);
-			messageBodyPart.setFileName(imagem.getNome());
+			messageBodyPart.setFileName(arquivo.getNome());
 			multipart.addBodyPart(messageBodyPart);
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
@@ -240,9 +240,9 @@ public class SalvarEmail {
 			{
 				if(anexo.getId() == null)
 				{
-					if(anexo.getImagem().getId() == null)
+					if(anexo.getArquivo().getId() == null)
 					{
-						em.persist(anexo.getImagem());
+						em.persist(anexo.getArquivo());
 					}
 					anexo.setEmail(newEmail);
 					em.persist(anexo);

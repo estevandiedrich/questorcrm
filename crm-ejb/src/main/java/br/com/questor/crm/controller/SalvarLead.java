@@ -31,6 +31,7 @@ import br.com.questor.crm.data.GrupoUsuariosPrincipalsListProducer;
 import br.com.questor.crm.data.NotaListProducer;
 import br.com.questor.crm.data.OportunidadeListProducer;
 import br.com.questor.crm.model.Anexo;
+import br.com.questor.crm.model.Arquivo;
 import br.com.questor.crm.model.Atividade;
 import br.com.questor.crm.model.AtividadeAgenda;
 import br.com.questor.crm.model.Cidade;
@@ -39,7 +40,6 @@ import br.com.questor.crm.model.Email;
 import br.com.questor.crm.model.GrupoUsuarios;
 import br.com.questor.crm.model.GrupoUsuariosLead;
 import br.com.questor.crm.model.GrupoUsuariosPrincipals;
-import br.com.questor.crm.model.Imagem;
 import br.com.questor.crm.model.Lead;
 import br.com.questor.crm.model.Nota;
 import br.com.questor.crm.model.Oportunidade;
@@ -137,11 +137,11 @@ public class SalvarLead implements Serializable {
 	public void salvar() throws Exception {
 		log.info("Salvando Lead" + newLead.getNome());
 			if (newLead.getImagemPart() != null) {
-				Imagem imagem = new Imagem();
+				Arquivo imagem = new Arquivo();
 				imagem.setNome(newLead.getImagemPart().getName());
 				imagem.setSize(newLead.getImagemPart().getSize());
 				imagem.setContentType(newLead.getImagemPart().getContentType());
-				imagem.setImagem(IOUtils.toByteArray(newLead.getImagemPart().getInputStream()));
+				imagem.setContent(IOUtils.toByteArray(newLead.getImagemPart().getInputStream()));
 				em.persist(imagem);
 				newLead.setImagem(imagem);
 			}
@@ -174,7 +174,7 @@ public class SalvarLead implements Serializable {
 				if(anexo.getId() == null)
 				{
 					anexo.setLead(newLead);
-					em.persist(anexo.getImagem());
+					em.persist(anexo.getArquivo());
 					em.persist(anexo);
 				}
 			}
@@ -318,10 +318,10 @@ public class SalvarLead implements Serializable {
 	}
 	public StreamedContent carregaImagem(Lead lead) throws IOException
 	{
-		Imagem imagem = (Imagem)em.createNamedQuery("Lead.findImagemById").setParameter("id", lead.getId()).getSingleResult();
-		if(imagem != null && imagem.getImagem() != null)
+		Arquivo arquivo = (Arquivo)em.createNamedQuery("Lead.findImagemById").setParameter("id", lead.getId()).getSingleResult();
+		if(arquivo != null && arquivo.getContent() != null)
 		{
-	        StreamedContent streamedContent = new DefaultStreamedContent(new ByteArrayInputStream(imagem.getImagem()),imagem.getContentType());
+	        StreamedContent streamedContent = new DefaultStreamedContent(new ByteArrayInputStream(arquivo.getContent()),arquivo.getContentType());
 	        return streamedContent;
 		}
 		else

@@ -30,9 +30,9 @@
 	}
 	function dataTable()
 	{
-		var table = $('#cidadesDataTable').DataTable();
+		var table = $('#regCidades\\:cidadesDataTable').DataTable();
 		 
-	    $('#cidadesDataTable tbody').on( 'click', 'tr', function () {
+	    $('#regCidades\\:cidadesDataTable tbody').on( 'click', 'tr', function () {
 	        if ( $(this).hasClass('selected') ) {
 	            $(this).removeClass('selected');
 	        }
@@ -75,33 +75,46 @@
                action="#{salvarCidade.salvar}" value="Salvar" />
          </p>
          </h:panelGrid>
+	      <h2>Cidades</h2>
+	      <h:panelGrid id="cidadesDataGrid">
+		      <h:panelGroup rendered="#{empty cidadesComUF}">
+		         <em>Nenhuma cidade registrada.</em>
+		      </h:panelGroup>
+		      <h:dataTable id="cidadesDataTable" var="_cidade" value="#{cidadesComUF}"
+				rendered="#{not empty cidadesComUF}"
+				styleClass="table"
+				width="100%"
+				style="display:inline-table;"
+				 headerClass="table-header"
+				 rowClasses="table-odd-row,table-even-row">
+		         <h:column>
+		          <f:facet name="header">Id</f:facet>
+		              <h:outputText value="#{_cidade.id}"/>
+		         </h:column>
+		         <h:column>
+		          <f:facet name="header">Nome</f:facet>
+		              <h:outputText value="#{_cidade.nome}"/>
+		          </h:column>
+		          <h:column>
+		          <f:facet name="header">UF</f:facet>
+		              <h:outputText value="#{_cidade.uf.nome}"/>
+		          </h:column>
+		          <h:column>
+					<f:facet name="header"></f:facet>
+				        <h:commandLink value="Editar"
+							action="#{salvarCidade.editar(_cidade)}">
+							<f:ajax render="regCidades:nome regCidades:uf"/>
+						</h:commandLink>
+				</h:column>
+		        <h:column>
+					<f:facet name="header"></f:facet>
+					<h:commandLink value="Excluir" action="#{salvarCidade.excluir(_cidade)}" onclick="javascript:return confirm('Deseja realmente excluir este registro ?');">
+						<f:ajax render="regCidades:cidadesDataGrid"/>
+					</h:commandLink>
+				</h:column>
+		      </h:dataTable>
+	      </h:panelGrid>
       </h:form>
-      <h2>Cidades</h2>
-      <h:panelGrid id="cidadesDataGrid">
-	      <h:panelGroup rendered="#{empty cidadesComUF}">
-	         <em>Nenhuma cidade registrada.</em>
-	      </h:panelGroup>
-	      <h:dataTable id="cidadesDataTable" var="_cidade" value="#{cidadesComUF}"
-			rendered="#{not empty cidadesComUF}"
-			styleClass="table"
-			width="100%"
-			style="display:inline-table;"
-			 headerClass="table-header"
-			 rowClasses="table-odd-row,table-even-row">
-	         <h:column>
-	          <f:facet name="header">Id</f:facet>
-	              <h:outputText value="#{_cidade.id}"/>
-	         </h:column>
-	         <h:column>
-	          <f:facet name="header">Nome</f:facet>
-	              <h:outputText value="#{_cidade.nome}"/>
-	          </h:column>
-	          <h:column>
-	          <f:facet name="header">UF</f:facet>
-	              <h:outputText value="#{_cidade.uf.nome}"/>
-	          </h:column>
-	      </h:dataTable>
-      </h:panelGrid>
   		<!-- Modal -->
 		<div id="myModal" class="modal fade" role="dialog">
 			<div class="modal-dialog">

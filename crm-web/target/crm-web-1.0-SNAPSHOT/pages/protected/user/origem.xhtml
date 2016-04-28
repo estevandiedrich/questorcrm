@@ -63,6 +63,19 @@
 						<f:facet name="header">Descrição</f:facet>
 						<h:outputText value="#{_origem.descricao}" />
 					</h:column>
+					<h:column>
+						<f:facet name="header"></f:facet>
+					        <h:commandLink value="Editar"
+								action="#{salvarOrigem.editar(_origem)}">
+								<f:ajax render="regOrigens:descricao"/>
+							</h:commandLink>
+					</h:column>
+			        <h:column>
+						<f:facet name="header"></f:facet>
+						<h:commandLink value="Excluir" action="#{salvarOrigem.excluir(_origem)}" onclick="javascript:return confirm('Deseja realmente excluir este registro ?');">
+							<f:ajax render="regOrigens:tablePanelOrigens"/>
+						</h:commandLink>
+					</h:column>
 				</h:dataTable>
 			</h:panelGrid>
 		</h:form>

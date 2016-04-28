@@ -2,7 +2,6 @@ package br.com.questor.crm.data;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
@@ -15,8 +14,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import br.com.questor.crm.model.Cotacao;
-import br.com.questor.crm.model.ModuloSelecionado;
-import br.com.questor.crm.model.Produto;
 import br.com.questor.crm.model.ProdutoModulosSelecionados;
 
 @RequestScoped

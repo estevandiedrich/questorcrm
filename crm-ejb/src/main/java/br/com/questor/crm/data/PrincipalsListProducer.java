@@ -11,15 +11,9 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
 
 import br.com.questor.crm.controller.LoginBean;
 import br.com.questor.crm.model.GrupoUsuarios;
-import br.com.questor.crm.model.GrupoUsuariosPrincipals;
 import br.com.questor.crm.model.Principals;
 import br.com.questor.crm.model.Roles;
 

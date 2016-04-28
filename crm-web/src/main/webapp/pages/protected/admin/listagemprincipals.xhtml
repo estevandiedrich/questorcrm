@@ -30,8 +30,10 @@
 			}
 		</script>
 
-		<h1>Listagem de Usuários</h1>
 		<h:form id="listagemPrincipals">
+			<br/>
+			<h:commandButton id="novo" value="Novo Usuário" action="#{salvarPrincipals.novo}"/>
+			<br/>
 			<h:panelGrid id="principalsPanelGrid">
 				<h2>Usuários</h2>
 				<h:panelGroup rendered="#{empty principals}">
@@ -73,7 +75,6 @@
 						</h:column>
 				</h:dataTable>
 			</h:panelGrid>
-			<h:commandButton id="novo" value="Novo Usuário" action="#{salvarPrincipals.novo}"/>
 		</h:form>
 	</ui:define>
 </ui:composition>
