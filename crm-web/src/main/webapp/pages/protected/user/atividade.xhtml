@@ -42,7 +42,10 @@
 				<h:message for="descricao" errorClass="invalid" />
 				<p>
 					<h:commandButton id="adicionarAtividade"
-						action="#{salvarAtividade.salvar()}" value="Adicionar Atividade">
+						action="#{salvarAtividade.salvar()}" value="Salvar">
+					</h:commandButton>
+					<h:commandButton id="cancelar" value="Cancelar" action="#{salvarAtividade.novo}" style="margin-left:20px;">
+						<f:ajax/>
 					</h:commandButton>
 				</p>
 			</h:panelGrid>

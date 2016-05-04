@@ -170,7 +170,9 @@
 				<h:panelGroup>
 					<h:commandButton id="salvar" action="#{salvarProduto.salvar()}"
 						value="Salvar" />
-					<h:commandButton id="cancelar" value="Cancelar" action="#{salvarProduto.novo}" style="margin-left:20px;"/>
+					<h:commandButton id="cancelar" value="Cancelar" action="#{salvarProduto.novo}" style="margin-left:20px;">
+						<f:ajax/>
+					</h:commandButton>
 				</h:panelGroup>
 			</h:panelGrid>
 			<h2>Produtos</h2>

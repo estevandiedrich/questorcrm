@@ -14,9 +14,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.TemporalType;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -76,11 +73,20 @@ public class LoginBean {
 	}
 	public Principals getPrincipalsFromDB()
 	{
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Principals> criteria = cb.createQuery(Principals.class);
-		Root<Principals> principal = criteria.from(Principals.class);
-		criteria.select(principal).where(cb.equal(principal.get("principalId"), username));
-		Principals principal2 = em.createQuery(criteria).getSingleResult();
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Principals> criteria = cb.createQuery(Principals.class);
+//		Root<Principals> principal = criteria.from(Principals.class);
+//		criteria.select(principal).where(cb.equal(principal.get("principalId"), username));
+//		Principals principal2 = em.createQuery(criteria).getSingleResult();
+		Principals principal2 = null;
+		try
+		{
+			principal2 = (Principals) em.createNamedQuery("Principals.findByEmail").setParameter("email", username).getSingleResult();
+		}
+		catch(Exception e)
+		{
+			principal2 = new Principals();
+		}
 		return principal2;
 	}
 	public boolean isCallerInRole(String role)
@@ -107,9 +113,10 @@ public class LoginBean {
 	}
 	public void verificaAtividadeAgenda()
 	{
-		log.info("Buscando atividade agenda para o usuario "+getPrincipalsFromDB().getNome());
 		try
 		{
+			log.info("Buscando atividade agenda para o usuario "+getPrincipalsFromDB().getNome());
+			
 			List<AtividadeAgenda> aa = em.createNamedQuery("AtividadeAgenda.findByPrincipalEData").setParameter("principal", getPrincipalsFromDB().getId()).setParameter("dataInicial", new Date(),TemporalType.DATE).setParameter("dataFinal", new Date(),TemporalType.TIMESTAMP).getResultList();
 			if(aa != null && aa.size() > 0)
 			{

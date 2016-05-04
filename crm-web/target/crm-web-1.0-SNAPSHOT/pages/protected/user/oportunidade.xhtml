@@ -238,7 +238,9 @@
 				<h:panelGroup>
 					<h:commandButton id="salvar" action="#{salvarOportunidade.salvar}"
 						value="Salvar" />
-					<h:commandButton id="cancelar" value="Cancelar" action="#{salvarOportunidade.novo}" style="margin-left:20px;"/>
+					<h:commandButton id="cancelar" value="Cancelar" action="#{salvarOportunidade.listagem}" style="margin-left:20px;">
+						<f:ajax/>
+					</h:commandButton>
 				</h:panelGroup>
 			</h:panelGrid>
 			<h2>Oportunidades</h2>

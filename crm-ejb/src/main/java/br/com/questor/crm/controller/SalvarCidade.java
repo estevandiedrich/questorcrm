@@ -53,7 +53,14 @@ public class SalvarCidade {
 	}
 	public void salvar() throws Exception {
 		log.info("Salvando Cidade" + newCidade.getNome());
-		em.persist(newCidade);
+		if(newCidade.getId() == null)
+		{
+			em.persist(newCidade);
+		}
+		else
+		{
+			em.merge(newCidade);
+		}
 		cidadeEventSrc.fire(newCidade);
 		initNewCidade();
 	}

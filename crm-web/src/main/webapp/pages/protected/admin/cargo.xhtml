@@ -43,7 +43,9 @@
          <h:panelGroup>
             <h:commandButton id="salvar"
                action="#{salvarCargo.salvar}" value="Salvar" />
-			<h:commandButton id="cancelar" value="Cancelar" action="#{salvarCargo.novo}" style="margin-left:20px;"/>
+			<h:commandButton id="cancelar" value="Cancelar" action="#{salvarCargo.novo}" style="margin-left:20px;">
+				<f:ajax/>
+			</h:commandButton>
 		</h:panelGroup>
          </p>
          </h:panelGrid>

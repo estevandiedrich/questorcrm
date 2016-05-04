@@ -53,7 +53,14 @@ public class SalvarUF {
 	}
 	public void salvar() throws Exception {
 		log.info("Salvando UF" + newUf.getNome());
-		em.persist(newUf);
+		if(newUf.getId() == null)
+		{
+			em.persist(newUf);
+		}
+		else
+		{
+			em.merge(newUf);
+		}
 		ufEventSrc.fire(newUf);
 		initNewUf();
 	}

@@ -466,7 +466,9 @@
 				<br/>
 				<h:panelGroup>
 					<h:commandButton id="salvarLead" value="Salvar" action="#{salvarLead.salvar}"/>
-					<h:commandButton id="cancelarLead" value="Cancelar" action="#{salvarLead.novo}" style="margin-left:20px;"/>
+					<h:commandButton id="cancelarLead" value="Cancelar" action="#{salvarLead.listagem}" style="margin-left:20px;">
+						<f:ajax/>
+					</h:commandButton>
 				</h:panelGroup>
 			</h:panelGrid>
 			<h2>Leads</h2>

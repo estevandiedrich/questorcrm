@@ -236,8 +236,8 @@ public class SalvarPrincipals implements Serializable {
 				imagem.setSize(newPrincipal.getImagemPart().getSize());
 				imagem.setContentType(newPrincipal.getImagemPart().getContentType());
 				imagem.setContent(IOUtils.toByteArray(newPrincipal.getImagemPart().getInputStream()));
-				newPrincipal.setImagem(imagem);
 				em.persist(imagem);
+				newPrincipal.setImagem(imagem);
 				gerarThumbnail(imagem);
 			}
 			else
@@ -267,22 +267,22 @@ public class SalvarPrincipals implements Serializable {
 				imagem.setSize(120);
 				imagem.setContentType("image/jpeg");
 				imagem.setContent(gerarImagemPadrao());
+				em.persist(imagem);
 				newPrincipal.setImagem(imagem);
 				newPrincipal.setThumbnail(imagem);
-				em.persist(imagem);
 			}
+		}
+		Arquivo assinatura = null;
+		try
+		{
+			assinatura = (Arquivo) em.createNamedQuery("Principals.findAssinaturaById").setParameter("id", newPrincipal.getId()).getSingleResult();
+		}
+		catch(Exception e)
+		{
+			log.info("Imagem não encontrada");
 		}
 		if(newPrincipal.getAssinaturaPart() != null)
 		{
-			Arquivo assinatura = null;
-			try
-			{
-				assinatura = (Arquivo) em.createNamedQuery("Principals.findAssinaturaById").setParameter("id", newPrincipal.getId()).getSingleResult();
-			}
-			catch(Exception e)
-			{
-				log.info("Imagem não encontrada");
-			}
 			if(assinatura == null)
 			{
 				assinatura = new Arquivo();
@@ -290,8 +290,8 @@ public class SalvarPrincipals implements Serializable {
 				assinatura.setSize(newPrincipal.getAssinaturaPart().getSize());
 				assinatura.setContentType(newPrincipal.getAssinaturaPart().getContentType());
 				assinatura.setContent(IOUtils.toByteArray(newPrincipal.getAssinaturaPart().getInputStream()));
-				newPrincipal.setAssinaturaEmail(assinatura);
 				em.persist(assinatura);
+				newPrincipal.setAssinaturaEmail(assinatura);
 			}
 			else
 			{
@@ -304,7 +304,10 @@ public class SalvarPrincipals implements Serializable {
 		}
 		else
 		{
-			newPrincipal.setAssinaturaEmail(null);
+			if(assinatura == null)
+			{
+				newPrincipal.setAssinaturaEmail(null);
+			}
 		}
 	}
 	private void salvarNovoUsuario()
@@ -352,8 +355,8 @@ public class SalvarPrincipals implements Serializable {
 			}
 			senhaNaoCifrada = Arrays.toString(senha).replace("[", "").replace(",", "").replace(" ","").replace("]", "");
 			newPrincipal.setPassword(Util.createPasswordHash("SHA-256","BASE64",null, null, senhaNaoCifrada));
-			em.persist(newPrincipal.getRole());
 			em.persist(newPrincipal);
+			em.persist(newPrincipal.getRole());
 			salvarEmail.enviarEmailNovoUsuario(newPrincipal,senhaNaoCifrada);
 //				Feed newFeed = new Feed();
 //				newFeed.setTexto("Novo usuário cadastrado: "+newPrincipal.getNome());
@@ -535,6 +538,7 @@ public class SalvarPrincipals implements Serializable {
 	@PostConstruct
 	public void initNewPrincipal() {
 		newPrincipal = new Principals();
+		this.distribuidor = new Lead();
 //		newPrincipal.setDistribuidor(new Lead());
 	}
 	public StreamedContent carregaAssinatura(Principals principals) throws IOException

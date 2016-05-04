@@ -73,6 +73,9 @@
          <p>
             <h:commandButton id="salvar"
                action="#{salvarCidade.salvar}" value="Salvar" />
+            <h:commandButton id="cancelar" value="Cancelar" action="#{salvarCidade.novo}" style="margin-left:20px;">
+				<f:ajax/>
+			</h:commandButton>
          </p>
          </h:panelGrid>
 	      <h2>Cidades</h2>

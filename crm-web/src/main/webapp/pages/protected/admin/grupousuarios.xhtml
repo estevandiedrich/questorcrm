@@ -48,7 +48,9 @@
             <h:panelGroup>
             	<h:commandButton id="salvar"
                		action="#{salvarGrupoUsuarios.salvar}" value="Salvar" />
-            	<h:commandButton id="cancelar" value="Cancelar" action="#{salvarGrupoUsuarios.novo}" style="margin-left:20px;"/>
+            	<h:commandButton id="cancelar" value="Cancelar" action="#{salvarGrupoUsuarios.novo}" style="margin-left:20px;">
+            		<f:ajax/>
+            	</h:commandButton>
             </h:panelGroup>
 		</h:panelGrid>
       

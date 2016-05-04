@@ -270,7 +270,9 @@
 			<h:panelGroup>
 				<h:commandButton id="salvar" action="#{salvarPrincipals.salvar()}"
 					value="Salvar" type="submit"/>
-				<h:commandButton id="cancelar" value="Cancelar" action="#{salvarPrincipals.novo}" style="margin-left:20px;"/>
+				<h:commandButton id="cancelar" value="Cancelar" action="#{salvarPrincipals.listagem}" style="margin-left:20px;">
+					<f:ajax/>
+				</h:commandButton>
 			</h:panelGroup>
 			
 		<h:panelGrid id="principalsPanelGrid">
